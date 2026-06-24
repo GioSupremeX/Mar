@@ -5,34 +5,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useListGuestbookMessages, useCreateGuestbookMessage, getListGuestbookMessagesQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, Sparkles, Heart, Star, Send } from "lucide-react";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name is too short").max(50, "Name is too long"),
-  message: z.string().min(5, "Message is too short").max(300, "Message is too long"),
+  name: z.string().min(2, "Name required").max(50),
+  message: z.string().min(5, "Message required").max(300),
   emoji: z.string().optional(),
 });
 
-const cuteEmojis = ["✨", "💖", "🌸", "🎨", "🐉", "🦋", "🍄", "🌙"];
+const emojis = ["✨", "🌸", "🎨", "🐉", "🦋", "🌙"];
 
 export default function Guestbook() {
   const { data: messages, isLoading } = useListGuestbookMessages();
   const createMessage = useCreateGuestbookMessage();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const [success, setSuccess] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      message: "",
-      emoji: "✨",
-    },
+    defaultValues: { name: "", message: "", emoji: "✨" },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -42,58 +35,52 @@ export default function Guestbook() {
         onSuccess: () => {
           form.reset();
           queryClient.invalidateQueries({ queryKey: getListGuestbookMessagesQueryKey() });
-          toast({
-            title: "Message sent! ✨",
-            description: "Thanks for visiting my sketchbook!",
-          });
-        },
-        onError: () => {
-          toast({
-            variant: "destructive",
-            title: "Oh no!",
-            description: "Something went wrong. Please try again.",
-          });
+          setSuccess(true);
+          setTimeout(() => setSuccess(false), 3000);
         },
       }
     );
   }
 
   return (
-    <section id="guestbook" className="w-full max-w-4xl px-6 py-24">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mb-12 text-center"
-      >
-        <div className="flex justify-center mb-4 text-[#C9B8F0]">
-          <BookOpen className="h-12 w-12" />
-        </div>
-        <h2 className="font-display text-4xl font-black text-[#3D2C5E] md:text-5xl">Guestbook</h2>
-        <p className="mt-4 text-lg text-[#3D2C5E]/70">Leave a little magic behind before you go!</p>
-      </motion.div>
+    <section id="guestbook" className="w-full py-24 max-w-4xl mx-auto px-4">
+      <div className="text-center mb-16">
+        <h2 className="font-display text-4xl font-semibold text-[var(--ink)]">Guestbook</h2>
+        <p className="mt-2 text-[var(--ink-muted)] font-sans">Leave a mark before you go.</p>
+      </div>
 
-      <div className="grid gap-12 md:grid-cols-[1fr_1.5fr]">
+      <div className="grid md:grid-cols-2 gap-16">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="glass-panel rounded-[2rem] p-6 sm:p-8"
+          className="bg-white/40 p-8 rounded-2xl shadow-sm border border-[var(--glass-border)] h-fit"
         >
-          <h3 className="mb-6 font-display text-2xl font-bold text-[#3D2C5E]">Sign the book</h3>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[#3D2C5E]/80">Your Name</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Wandering Traveler..." 
+                      <Input placeholder="Your Name" {...field} className="bottom-border-input text-lg font-sans placeholder:text-[var(--ink-muted)]/50 text-[var(--ink)]" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Your Message..." 
                         {...field} 
-                        className="rounded-xl border-white/50 bg-white/50 placeholder:text-[#3D2C5E]/40 focus-visible:ring-[#C9B8F0]"
+                        className="bottom-border-input text-lg font-sans placeholder:text-[var(--ink-muted)]/50 text-[var(--ink)] resize-none min-h-[100px]" 
                       />
                     </FormControl>
                     <FormMessage />
@@ -106,18 +93,13 @@ export default function Guestbook() {
                 name="emoji"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[#3D2C5E]/80">Pick an icon</FormLabel>
-                    <div className="flex flex-wrap gap-2">
-                      {cuteEmojis.map((emoji) => (
+                    <div className="flex gap-3 mt-4">
+                      {emojis.map((emoji) => (
                         <button
                           key={emoji}
                           type="button"
                           onClick={() => field.onChange(emoji)}
-                          className={`flex h-10 w-10 items-center justify-center rounded-full text-xl transition-all ${
-                            field.value === emoji 
-                              ? "bg-[#C9B8F0] shadow-md scale-110" 
-                              : "bg-white/50 hover:bg-white hover:scale-105"
-                          }`}
+                          className={`text-xl p-2 rounded-full transition-all ${field.value === emoji ? 'bg-[var(--app-accent)]/30 scale-110' : 'hover:bg-black/5 opacity-50 hover:opacity-100'}`}
                         >
                           {emoji}
                         </button>
@@ -127,74 +109,57 @@ export default function Guestbook() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#3D2C5E]/80">Your Message</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="I love your art! 🌸" 
-                        className="min-h-[120px] resize-none rounded-xl border-white/50 bg-white/50 placeholder:text-[#3D2C5E]/40 focus-visible:ring-[#C9B8F0]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button 
+              <button 
                 type="submit" 
                 disabled={createMessage.isPending}
-                className="w-full rounded-xl bg-gradient-to-r from-[#C9B8F0] to-[#F7C5D5] py-6 text-lg font-bold text-[#3D2C5E] hover:shadow-lg transition-all hover:scale-[1.02]"
+                className="w-full bg-[var(--ink)] text-white py-4 rounded-xl font-medium font-sans hover:bg-[var(--ink)]/90 transition-colors disabled:opacity-50 mt-4"
               >
-                {createMessage.isPending ? "Sending Magic..." : (
-                  <>
-                    <Send className="mr-2 h-5 w-5" /> Leave Message
-                  </>
-                )}
-              </Button>
+                {createMessage.isPending ? "Sending..." : success ? "Sent!" : "Sign Guestbook"}
+              </button>
             </form>
           </Form>
         </motion.div>
 
-        <div className="space-y-6">
-          {isLoading ? (
-            <div className="flex h-40 items-center justify-center">
-              <Sparkles className="h-8 w-8 animate-spin text-[#C9B8F0]" />
-            </div>
-          ) : messages && messages.length > 0 ? (
-            messages.map((msg, index) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="glass-panel relative rounded-2xl p-6"
-              >
-                <div className="absolute -left-3 -top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm text-xl">
-                  {msg.emoji || "✨"}
-                </div>
-                <div className="ml-4">
-                  <h4 className="font-display font-bold text-[#3D2C5E]">{msg.name}</h4>
-                  <p className="mt-2 text-[#3D2C5E]/80 whitespace-pre-wrap">{msg.message}</p>
-                  <p className="mt-4 text-xs text-[#3D2C5E]/40">
-                    {new Date(msg.createdAt).toLocaleDateString(undefined, { 
-                      year: 'numeric', month: 'short', day: 'numeric' 
-                    })}
+        <div className="relative">
+          {/* Lined paper effect background */}
+          <div 
+            className="absolute inset-0 opacity-20 pointer-events-none rounded-xl"
+            style={{ 
+              backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, var(--app-accent) 40px)',
+              backgroundSize: '100% 40px' 
+            }} 
+          />
+          
+          <div className="space-y-8 relative z-10 pt-2 h-[500px] overflow-y-auto pr-4 custom-scrollbar">
+            {isLoading ? (
+              <div className="text-center text-[var(--ink-muted)]">Loading messages...</div>
+            ) : messages?.length ? (
+              messages.map((msg, i) => (
+                <motion.div 
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="pb-4 border-b border-transparent"
+                >
+                  <p className="font-sans text-[var(--ink)] text-lg leading-relaxed mb-2">
+                    {msg.emoji} {msg.message}
                   </p>
-                </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-[#C9B8F0]/50 p-8 text-center text-[#3D2C5E]/50">
-              <Heart className="mb-4 h-12 w-12 text-[#F7C5D5]" />
-              <p>It's quiet here... be the first to leave a message!</p>
-            </div>
-          )}
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-display font-semibold text-[var(--ink)] text-xl">— {msg.name}</span>
+                    <span className="font-handwriting text-[var(--ink-muted)] text-xl">
+                      {new Date(msg.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="text-center text-[var(--ink-muted)] font-handwriting text-2xl mt-10">
+                Be the first to sign!
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>

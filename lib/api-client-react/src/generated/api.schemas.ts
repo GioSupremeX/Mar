@@ -9,6 +9,57 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface AdminLoginInput {
+  password: string;
+}
+
+export interface AdminLoginResponse {
+  token: string;
+}
+
+export interface Artwork {
+  id: number;
+  title: string;
+  category: string;
+  imageUrl: string;
+  /** @nullable */
+  description?: string | null;
+  position: number;
+  createdAt: string;
+}
+
+export interface ArtworkInput {
+  /** @maxLength 100 */
+  title: string;
+  /** @maxLength 50 */
+  category: string;
+  imageUrl: string;
+  /** @maxLength 500 */
+  description?: string;
+  position?: number;
+}
+
+export interface SiteSettings {
+  artistName: string;
+  tagline: string;
+  bio: string;
+  heroSubtitle: string;
+  accentColor: string;
+}
+
+export interface SiteSettingsInput {
+  /** @maxLength 80 */
+  artistName?: string;
+  /** @maxLength 120 */
+  tagline?: string;
+  /** @maxLength 1000 */
+  bio?: string;
+  /** @maxLength 200 */
+  heroSubtitle?: string;
+  /** @maxLength 20 */
+  accentColor?: string;
+}
+
 export interface GuestbookMessage {
   id: number;
   name: string;

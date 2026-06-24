@@ -1,62 +1,42 @@
 import { motion } from "framer-motion";
-import { Trophy, Star, Medal, Crown } from "lucide-react";
 
 const achievements = [
-  { id: 1, title: "100+ Drawings", subtitle: "Sketchbook filled", icon: Star, color: "text-[#C9B8F0]", bg: "bg-[#C9B8F0]/20" },
-  { id: 2, title: "First Digital Piece", subtitle: "Level Up!", icon: Palette, color: "text-[#F7C5D5]", bg: "bg-[#F7C5D5]/20" },
-  { id: 3, title: "Dragon Tamer", subtitle: "Rare collection", icon: Crown, color: "text-amber-400", bg: "bg-amber-400/20" },
-  { id: 4, title: "Fan Art Feature", subtitle: "Community love", icon: Trophy, color: "text-[#B8D8F0]", bg: "bg-[#B8D8F0]/20" },
+  { id: 1, title: "100+ Drawings", desc: "Sketchbook filled", category: "Milestones" },
+  { id: 2, title: "First Digital Piece", desc: "Level Up!", category: "Milestones" },
+  { id: 3, title: "Dragon Tamer", desc: "Rare collection", category: "Roblox" },
+  { id: 4, title: "Fan Art Feature", desc: "Community love", category: "Milestones" },
 ];
-
-// Need a simple Palette icon fallback
-function Palette(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
-      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
-      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
-      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
-      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
-    </svg>
-  );
-}
 
 export default function Achievements() {
   return (
-    <section className="w-full max-w-5xl px-6 py-12">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
+    <section className="w-full py-16 max-w-5xl mx-auto px-4">
+      <div className="text-center mb-12">
+        <h2 className="font-display text-3xl font-semibold text-[var(--ink)]">Trophy Case</h2>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {achievements.map((item, index) => (
           <motion.div
             key={item.id}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
-            whileHover={{ y: -5 }}
-            className="group relative flex flex-col items-center justify-center overflow-hidden rounded-[2rem] bg-white/60 p-6 text-center shadow-lg backdrop-blur-sm border border-white/50"
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+            className="flex flex-col items-center p-6 bg-[var(--gold)]/10 border border-[var(--gold)]/30 rounded-[2rem] text-center hover:-translate-y-1 transition-transform"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            
-            {/* Shine effect */}
-            <div className="absolute -inset-[100%] z-10 hidden animate-[spin_4s_linear_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:block" />
-
-            <div className={`relative z-20 mb-4 flex h-16 w-16 items-center justify-center rounded-full ${item.bg}`}>
-              <item.icon className={`h-8 w-8 ${item.color}`} />
+            <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center border-2 border-[var(--gold)] mb-4">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--gold)]">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
             </div>
-            
-            <h4 className="relative z-20 font-display text-lg font-bold text-[#3D2C5E] leading-tight">{item.title}</h4>
-            <p className="relative z-20 mt-1 text-sm font-medium text-[#3D2C5E]/60">{item.subtitle}</p>
+            <span className="text-xs font-semibold text-[var(--ink-muted)] tracking-wider uppercase mb-2">{item.category}</span>
+            <h4 className="font-display text-xl font-semibold text-[var(--ink)]">{item.title}</h4>
+            <p className="font-handwriting text-lg text-[var(--ink)]/70 mt-1">{item.desc}</p>
           </motion.div>
         ))}
       </div>

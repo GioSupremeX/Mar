@@ -9,7 +9,6 @@ import * as zod from 'zod';
 
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -18,7 +17,139 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Returns all guestbook messages sorted by newest first
+ * @summary Admin login with password
+ */
+export const AdminLoginBody = zod.object({
+  "password": zod.string()
+})
+
+export const AdminLoginResponse = zod.object({
+  "token": zod.string()
+})
+
+
+/**
+ * @summary List all artworks
+ */
+export const ListArtworksResponseItem = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "imageUrl": zod.string(),
+  "description": zod.string().nullish(),
+  "position": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+export const ListArtworksResponse = zod.array(ListArtworksResponseItem)
+
+
+/**
+ * @summary Create artwork (admin)
+ */
+export const createArtworkBodyTitleMax = 100;
+
+export const createArtworkBodyCategoryMax = 50;
+
+export const createArtworkBodyDescriptionMax = 500;
+
+
+
+export const CreateArtworkBody = zod.object({
+  "title": zod.string().max(createArtworkBodyTitleMax),
+  "category": zod.string().max(createArtworkBodyCategoryMax),
+  "imageUrl": zod.string(),
+  "description": zod.string().max(createArtworkBodyDescriptionMax).optional(),
+  "position": zod.number().optional()
+})
+
+
+/**
+ * @summary Update artwork (admin)
+ */
+export const UpdateArtworkParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const updateArtworkBodyTitleMax = 100;
+
+export const updateArtworkBodyCategoryMax = 50;
+
+export const updateArtworkBodyDescriptionMax = 500;
+
+
+
+export const UpdateArtworkBody = zod.object({
+  "title": zod.string().max(updateArtworkBodyTitleMax),
+  "category": zod.string().max(updateArtworkBodyCategoryMax),
+  "imageUrl": zod.string(),
+  "description": zod.string().max(updateArtworkBodyDescriptionMax).optional(),
+  "position": zod.number().optional()
+})
+
+export const UpdateArtworkResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "imageUrl": zod.string(),
+  "description": zod.string().nullish(),
+  "position": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete artwork (admin)
+ */
+export const DeleteArtworkParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary Get all site settings
+ */
+export const GetSiteSettingsResponse = zod.object({
+  "artistName": zod.string(),
+  "tagline": zod.string(),
+  "bio": zod.string(),
+  "heroSubtitle": zod.string(),
+  "accentColor": zod.string()
+})
+
+
+/**
+ * @summary Update site settings (admin)
+ */
+export const updateSiteSettingsBodyArtistNameMax = 80;
+
+export const updateSiteSettingsBodyTaglineMax = 120;
+
+export const updateSiteSettingsBodyBioMax = 1000;
+
+export const updateSiteSettingsBodyHeroSubtitleMax = 200;
+
+export const updateSiteSettingsBodyAccentColorMax = 20;
+
+
+
+export const UpdateSiteSettingsBody = zod.object({
+  "artistName": zod.string().max(updateSiteSettingsBodyArtistNameMax).optional(),
+  "tagline": zod.string().max(updateSiteSettingsBodyTaglineMax).optional(),
+  "bio": zod.string().max(updateSiteSettingsBodyBioMax).optional(),
+  "heroSubtitle": zod.string().max(updateSiteSettingsBodyHeroSubtitleMax).optional(),
+  "accentColor": zod.string().max(updateSiteSettingsBodyAccentColorMax).optional()
+})
+
+export const UpdateSiteSettingsResponse = zod.object({
+  "artistName": zod.string(),
+  "tagline": zod.string(),
+  "bio": zod.string(),
+  "heroSubtitle": zod.string(),
+  "accentColor": zod.string()
+})
+
+
+/**
  * @summary List guestbook messages
  */
 export const ListGuestbookMessagesResponseItem = zod.object({
@@ -46,6 +177,14 @@ export const CreateGuestbookMessageBody = zod.object({
   "name": zod.string().min(1).max(createGuestbookMessageBodyNameMax),
   "message": zod.string().min(1).max(createGuestbookMessageBodyMessageMax),
   "emoji": zod.string().max(createGuestbookMessageBodyEmojiMax).optional()
+})
+
+
+/**
+ * @summary Delete guestbook message (admin)
+ */
+export const DeleteGuestbookMessageParams = zod.object({
+  "id": zod.coerce.number()
 })
 
 

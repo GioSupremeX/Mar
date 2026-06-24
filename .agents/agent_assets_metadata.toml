@@ -5,37 +5,37 @@ outputs = []
 id = "0zD6ivWbFFIiOjyoyAke8"
 uri = "file://artifacts/portfolio/public/images/art-1.png"
 type = "image"
-title = "anime sketch of magical girl"
+title = "gallery artwork 1"
 
 [[generated]]
 id = "BfI-zTxtpv82ck4ZOta3y"
 uri = "file://artifacts/portfolio/public/images/art-2.png"
 type = "image"
-title = "fantasy elf warrior art"
+title = "gallery artwork 2"
 
 [[generated]]
 id = "l5H8_HNiBMNLLC6MEvIvk"
 uri = "file://artifacts/portfolio/public/images/art-3.png"
 type = "image"
-title = "cute little witch illustration"
+title = "gallery artwork 3"
 
 [[generated]]
 id = "kVqIuMY4GEBOecZ6WTqS5"
 uri = "file://artifacts/portfolio/public/images/art-4.png"
 type = "image"
-title = "detailed dragon fan art"
+title = "gallery artwork 4"
 
 [[generated]]
 id = "SpZt-SKeq_YBuwolCfJG1"
 uri = "file://artifacts/portfolio/public/images/art-5.png"
 type = "image"
-title = "pastel watercolor floating island"
+title = "gallery artwork 5"
 
 [[generated]]
 id = "-12c2D-9WIxynSnqrGqdx"
 uri = "file://artifacts/portfolio/public/images/art-6.png"
 type = "image"
-title = "sketchbook cat wizard doodle"
+title = "gallery artwork 6"
 
 [[generated]]
 id = "8nYgd7zwONpku_uzDy5Kn"
@@ -53,10 +53,22 @@ title = "epic starry night dragon"
 id = "VjMH9uPTjl8UDa3rNEoKI"
 uri = "file://artifacts/portfolio/public/images/avatar.png"
 type = "image"
-title = "girl artist avatar cute"
+title = "avatar portrait"
 
 [[generated]]
 id = "i_CkhnJT7W31yowT_01u5"
 uri = "file://artifacts/portfolio/public/images/game-dragon.png"
 type = "image"
 title = "dragon adventures game banner"
+
+[[generated]]
+id = "9xDyNxETUZc-GRjg89T2h"
+uri = "file://artifacts/portfolio/public/images/game-forsaken.png"
+type = "image"
+title = "forsaken game banner"
+
+[[generated]]
+id = "zLP9l-bzTZey8zn-yZgBZ"
+uri = "file://artifacts/portfolio/public/images/game-block.png"
+type = "image"
+title = "block tales game banner"

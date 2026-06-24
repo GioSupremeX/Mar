@@ -1,6 +1,5 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
@@ -9,16 +8,16 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
   - name: guestbook
-    description: Guestbook message operations
+  - name: artworks
+  - name: settings
+  - name: admin
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -27,12 +26,154 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login with password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminLoginResponse"
+        "401":
+          description: Wrong password
+
+  /artworks:
+    get:
+      operationId: listArtworks
+      tags: [artworks]
+      summary: List all artworks
+      responses:
+        "200":
+          description: List of artworks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Artwork"
+    post:
+      operationId: createArtwork
+      tags: [artworks]
+      summary: Create artwork (admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArtworkInput"
+      responses:
+        "201":
+          description: Artwork created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artwork"
+        "400":
+          description: Invalid input
+        "401":
+          description: Unauthorized
+
+  /artworks/{id}:
+    put:
+      operationId: updateArtwork
+      tags: [artworks]
+      summary: Update artwork (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArtworkInput"
+      responses:
+        "200":
+          description: Artwork updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artwork"
+        "404":
+          description: Not found
+        "401":
+          description: Unauthorized
+    delete:
+      operationId: deleteArtwork
+      tags: [artworks]
+      summary: Delete artwork (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+        "401":
+          description: Unauthorized
+
+  /settings:
+    get:
+      operationId: getSiteSettings
+      tags: [settings]
+      summary: Get all site settings
+      responses:
+        "200":
+          description: Site settings object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+    put:
+      operationId: updateSiteSettings
+      tags: [settings]
+      summary: Update site settings (admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteSettingsInput"
+      responses:
+        "200":
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+        "401":
+          description: Unauthorized
+
   /guestbook:
     get:
       operationId: listGuestbookMessages
       tags: [guestbook]
       summary: List guestbook messages
-      description: Returns all guestbook messages sorted by newest first
       responses:
         "200":
           description: List of messages
@@ -62,15 +203,127 @@ paths:
         "400":
           description: Invalid input
 
+  /guestbook/{id}:
+    delete:
+      operationId: deleteGuestbookMessage
+      tags: [guestbook]
+      summary: Delete guestbook message (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+        "401":
+          description: Unauthorized
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
+
+    AdminLoginInput:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+
+    AdminLoginResponse:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+
+    Artwork:
+      type: object
+      required: [id, title, category, imageUrl, position, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        imageUrl:
+          type: string
+        description:
+          type: ["string", "null"]
+        position:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    ArtworkInput:
+      type: object
+      required: [title, category, imageUrl]
+      properties:
+        title:
+          type: string
+          maxLength: 100
+        category:
+          type: string
+          maxLength: 50
+        imageUrl:
+          type: string
+        description:
+          type: string
+          maxLength: 500
+        position:
+          type: integer
+
+    SiteSettings:
+      type: object
+      required: [artistName, tagline, bio, heroSubtitle, accentColor]
+      properties:
+        artistName:
+          type: string
+        tagline:
+          type: string
+        bio:
+          type: string
+        heroSubtitle:
+          type: string
+        accentColor:
+          type: string
+
+    SiteSettingsInput:
+      type: object
+      properties:
+        artistName:
+          type: string
+          maxLength: 80
+        tagline:
+          type: string
+          maxLength: 120
+        bio:
+          type: string
+          maxLength: 1000
+        heroSubtitle:
+          type: string
+          maxLength: 200
+        accentColor:
+          type: string
+          maxLength: 20
 
     GuestbookMessage:
       type: object

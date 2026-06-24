@@ -20,9 +20,15 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminLoginInput,
+  AdminLoginResponse,
+  Artwork,
+  ArtworkInput,
   GuestbookMessage,
   GuestbookMessageInput,
-  HealthStatus
+  HealthStatus,
+  SiteSettings,
+  SiteSettingsInput
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -46,7 +52,6 @@ export const getHealthCheckUrl = () => {
 }
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const healthCheck = async ( options?: RequestInit): Promise<HealthStatus> => {
@@ -115,6 +120,515 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
 
 
+export const getAdminLoginUrl = () => {
+
+
+
+
+  return `/api/admin/login`
+}
+
+/**
+ * @summary Admin login with password
+ */
+export const adminLogin = async (adminLoginInput: AdminLoginInput, options?: RequestInit): Promise<AdminLoginResponse> => {
+
+  return customFetch<AdminLoginResponse>(getAdminLoginUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminLoginInput,)
+  }
+);}
+
+
+
+
+export const getAdminLoginMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminLogin>>, TError,{data: BodyType<AdminLoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminLogin>>, TError,{data: BodyType<AdminLoginInput>}, TContext> => {
+
+const mutationKey = ['adminLogin'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminLogin>>, {data: BodyType<AdminLoginInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  adminLogin(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminLoginMutationResult = NonNullable<Awaited<ReturnType<typeof adminLogin>>>
+    export type AdminLoginMutationBody = BodyType<AdminLoginInput>
+    export type AdminLoginMutationError = ErrorType<void>
+
+    /**
+ * @summary Admin login with password
+ */
+export const useAdminLogin = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminLogin>>, TError,{data: BodyType<AdminLoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof adminLogin>>,
+        TError,
+        {data: BodyType<AdminLoginInput>},
+        TContext
+      > => {
+      return useMutation(getAdminLoginMutationOptions(options));
+    }
+
+export const getListArtworksUrl = () => {
+
+
+
+
+  return `/api/artworks`
+}
+
+/**
+ * @summary List all artworks
+ */
+export const listArtworks = async ( options?: RequestInit): Promise<Artwork[]> => {
+
+  return customFetch<Artwork[]>(getListArtworksUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListArtworksQueryKey = () => {
+    return [
+    `/api/artworks`
+    ] as const;
+    }
+
+
+export const getListArtworksQueryOptions = <TData = Awaited<ReturnType<typeof listArtworks>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listArtworks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListArtworksQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listArtworks>>> = ({ signal }) => listArtworks({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listArtworks>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListArtworksQueryResult = NonNullable<Awaited<ReturnType<typeof listArtworks>>>
+export type ListArtworksQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List all artworks
+ */
+
+export function useListArtworks<TData = Awaited<ReturnType<typeof listArtworks>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listArtworks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListArtworksQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateArtworkUrl = () => {
+
+
+
+
+  return `/api/artworks`
+}
+
+/**
+ * @summary Create artwork (admin)
+ */
+export const createArtwork = async (artworkInput: ArtworkInput, options?: RequestInit): Promise<Artwork> => {
+
+  return customFetch<Artwork>(getCreateArtworkUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      artworkInput,)
+  }
+);}
+
+
+
+
+export const getCreateArtworkMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createArtwork>>, TError,{data: BodyType<ArtworkInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createArtwork>>, TError,{data: BodyType<ArtworkInput>}, TContext> => {
+
+const mutationKey = ['createArtwork'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createArtwork>>, {data: BodyType<ArtworkInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createArtwork(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateArtworkMutationResult = NonNullable<Awaited<ReturnType<typeof createArtwork>>>
+    export type CreateArtworkMutationBody = BodyType<ArtworkInput>
+    export type CreateArtworkMutationError = ErrorType<void>
+
+    /**
+ * @summary Create artwork (admin)
+ */
+export const useCreateArtwork = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createArtwork>>, TError,{data: BodyType<ArtworkInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createArtwork>>,
+        TError,
+        {data: BodyType<ArtworkInput>},
+        TContext
+      > => {
+      return useMutation(getCreateArtworkMutationOptions(options));
+    }
+
+export const getUpdateArtworkUrl = (id: number,) => {
+
+
+
+
+  return `/api/artworks/${id}`
+}
+
+/**
+ * @summary Update artwork (admin)
+ */
+export const updateArtwork = async (id: number,
+    artworkInput: ArtworkInput, options?: RequestInit): Promise<Artwork> => {
+
+  return customFetch<Artwork>(getUpdateArtworkUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      artworkInput,)
+  }
+);}
+
+
+
+
+export const getUpdateArtworkMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateArtwork>>, TError,{id: number;data: BodyType<ArtworkInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateArtwork>>, TError,{id: number;data: BodyType<ArtworkInput>}, TContext> => {
+
+const mutationKey = ['updateArtwork'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateArtwork>>, {id: number;data: BodyType<ArtworkInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateArtwork(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateArtworkMutationResult = NonNullable<Awaited<ReturnType<typeof updateArtwork>>>
+    export type UpdateArtworkMutationBody = BodyType<ArtworkInput>
+    export type UpdateArtworkMutationError = ErrorType<void>
+
+    /**
+ * @summary Update artwork (admin)
+ */
+export const useUpdateArtwork = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateArtwork>>, TError,{id: number;data: BodyType<ArtworkInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateArtwork>>,
+        TError,
+        {id: number;data: BodyType<ArtworkInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateArtworkMutationOptions(options));
+    }
+
+export const getDeleteArtworkUrl = (id: number,) => {
+
+
+
+
+  return `/api/artworks/${id}`
+}
+
+/**
+ * @summary Delete artwork (admin)
+ */
+export const deleteArtwork = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteArtworkUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteArtworkMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteArtwork>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteArtwork>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteArtwork'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteArtwork>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteArtwork(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteArtworkMutationResult = NonNullable<Awaited<ReturnType<typeof deleteArtwork>>>
+
+    export type DeleteArtworkMutationError = ErrorType<void>
+
+    /**
+ * @summary Delete artwork (admin)
+ */
+export const useDeleteArtwork = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteArtwork>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteArtwork>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteArtworkMutationOptions(options));
+    }
+
+export const getGetSiteSettingsUrl = () => {
+
+
+
+
+  return `/api/settings`
+}
+
+/**
+ * @summary Get all site settings
+ */
+export const getSiteSettings = async ( options?: RequestInit): Promise<SiteSettings> => {
+
+  return customFetch<SiteSettings>(getGetSiteSettingsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSiteSettingsQueryKey = () => {
+    return [
+    `/api/settings`
+    ] as const;
+    }
+
+
+export const getGetSiteSettingsQueryOptions = <TData = Awaited<ReturnType<typeof getSiteSettings>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSiteSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSiteSettingsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSiteSettings>>> = ({ signal }) => getSiteSettings({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSiteSettings>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSiteSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof getSiteSettings>>>
+export type GetSiteSettingsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get all site settings
+ */
+
+export function useGetSiteSettings<TData = Awaited<ReturnType<typeof getSiteSettings>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSiteSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSiteSettingsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateSiteSettingsUrl = () => {
+
+
+
+
+  return `/api/settings`
+}
+
+/**
+ * @summary Update site settings (admin)
+ */
+export const updateSiteSettings = async (siteSettingsInput: SiteSettingsInput, options?: RequestInit): Promise<SiteSettings> => {
+
+  return customFetch<SiteSettings>(getUpdateSiteSettingsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      siteSettingsInput,)
+  }
+);}
+
+
+
+
+export const getUpdateSiteSettingsMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSiteSettings>>, TError,{data: BodyType<SiteSettingsInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateSiteSettings>>, TError,{data: BodyType<SiteSettingsInput>}, TContext> => {
+
+const mutationKey = ['updateSiteSettings'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateSiteSettings>>, {data: BodyType<SiteSettingsInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateSiteSettings(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateSiteSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof updateSiteSettings>>>
+    export type UpdateSiteSettingsMutationBody = BodyType<SiteSettingsInput>
+    export type UpdateSiteSettingsMutationError = ErrorType<void>
+
+    /**
+ * @summary Update site settings (admin)
+ */
+export const useUpdateSiteSettings = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSiteSettings>>, TError,{data: BodyType<SiteSettingsInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateSiteSettings>>,
+        TError,
+        {data: BodyType<SiteSettingsInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateSiteSettingsMutationOptions(options));
+    }
+
 export const getListGuestbookMessagesUrl = () => {
 
 
@@ -124,7 +638,6 @@ export const getListGuestbookMessagesUrl = () => {
 }
 
 /**
- * Returns all guestbook messages sorted by newest first
  * @summary List guestbook messages
  */
 export const listGuestbookMessages = async ( options?: RequestInit): Promise<GuestbookMessage[]> => {
@@ -262,5 +775,75 @@ export const useCreateGuestbookMessage = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getCreateGuestbookMessageMutationOptions(options));
+    }
+
+export const getDeleteGuestbookMessageUrl = (id: number,) => {
+
+
+
+
+  return `/api/guestbook/${id}`
+}
+
+/**
+ * @summary Delete guestbook message (admin)
+ */
+export const deleteGuestbookMessage = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteGuestbookMessageUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteGuestbookMessageMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGuestbookMessage>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteGuestbookMessage>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteGuestbookMessage'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteGuestbookMessage>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteGuestbookMessage(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteGuestbookMessageMutationResult = NonNullable<Awaited<ReturnType<typeof deleteGuestbookMessage>>>
+
+    export type DeleteGuestbookMessageMutationError = ErrorType<void>
+
+    /**
+ * @summary Delete guestbook message (admin)
+ */
+export const useDeleteGuestbookMessage = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGuestbookMessage>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteGuestbookMessage>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteGuestbookMessageMutationOptions(options));
     }
 
