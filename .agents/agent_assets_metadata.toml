@@ -1,0 +1,62 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "0zD6ivWbFFIiOjyoyAke8"
+uri = "file://artifacts/portfolio/public/images/art-1.png"
+type = "image"
+title = "anime sketch of magical girl"
+
+[[generated]]
+id = "BfI-zTxtpv82ck4ZOta3y"
+uri = "file://artifacts/portfolio/public/images/art-2.png"
+type = "image"
+title = "fantasy elf warrior art"
+
+[[generated]]
+id = "l5H8_HNiBMNLLC6MEvIvk"
+uri = "file://artifacts/portfolio/public/images/art-3.png"
+type = "image"
+title = "cute little witch illustration"
+
+[[generated]]
+id = "kVqIuMY4GEBOecZ6WTqS5"
+uri = "file://artifacts/portfolio/public/images/art-4.png"
+type = "image"
+title = "detailed dragon fan art"
+
+[[generated]]
+id = "SpZt-SKeq_YBuwolCfJG1"
+uri = "file://artifacts/portfolio/public/images/art-5.png"
+type = "image"
+title = "pastel watercolor floating island"
+
+[[generated]]
+id = "-12c2D-9WIxynSnqrGqdx"
+uri = "file://artifacts/portfolio/public/images/art-6.png"
+type = "image"
+title = "sketchbook cat wizard doodle"
+
+[[generated]]
+id = "8nYgd7zwONpku_uzDy5Kn"
+uri = "file://artifacts/portfolio/public/images/art-7.png"
+type = "image"
+title = "dreamy girl portrait stars"
+
+[[generated]]
+id = "Er5ExralDGGYQwJbTGkL_"
+uri = "file://artifacts/portfolio/public/images/art-8.png"
+type = "image"
+title = "epic starry night dragon"
+
+[[generated]]
+id = "VjMH9uPTjl8UDa3rNEoKI"
+uri = "file://artifacts/portfolio/public/images/avatar.png"
+type = "image"
+title = "girl artist avatar cute"
+
+[[generated]]
+id = "i_CkhnJT7W31yowT_01u5"
+uri = "file://artifacts/portfolio/public/images/game-dragon.png"
+type = "image"
+title = "dragon adventures game banner"

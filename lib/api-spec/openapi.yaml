@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: guestbook
+    description: Guestbook message operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /guestbook:
+    get:
+      operationId: listGuestbookMessages
+      tags: [guestbook]
+      summary: List guestbook messages
+      description: Returns all guestbook messages sorted by newest first
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GuestbookMessage"
+    post:
+      operationId: createGuestbookMessage
+      tags: [guestbook]
+      summary: Leave a guestbook message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuestbookMessageInput"
+      responses:
+        "201":
+          description: Message created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuestbookMessage"
+        "400":
+          description: Invalid input
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +72,34 @@ components:
       required:
         - status
 
+    GuestbookMessage:
+      type: object
+      required: [id, name, message, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        message:
+          type: string
+        emoji:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    GuestbookMessageInput:
+      type: object
+      required: [name, message]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        message:
+          type: string
+          minLength: 1
+          maxLength: 300
+        emoji:
+          type: string
+          maxLength: 10
