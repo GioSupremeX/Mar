@@ -4,6 +4,7 @@ import guestbookRouter from "./guestbook";
 import adminRouter from "./admin";
 import artworksRouter from "./artworks";
 import settingsRouter from "./settings";
+import storageRouter from "./storage";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use(adminRouter);
 router.use(artworksRouter);
 router.use(settingsRouter);
 router.use(guestbookRouter);
+router.use(storageRouter);
 
 export default router;
