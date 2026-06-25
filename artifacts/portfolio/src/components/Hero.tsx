@@ -2,6 +2,18 @@ import { motion } from "framer-motion";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 import { Sparkles, StarCluster, CatDoodle } from "./Doodles";
 
+interface Stat { value: string; label: string; }
+
+function safeParseJSON<T>(str: string | undefined, fallback: T): T {
+  try { return str ? JSON.parse(str) as T : fallback; } catch { return fallback; }
+}
+
+const DEFAULT_STATS: Stat[] = [
+  { value: "100+", label: "artworks" },
+  { value: "3", label: "fandoms" },
+  { value: "2 yrs", label: "drawing" },
+];
+
 export default function Hero() {
   const { data: settings } = useGetSiteSettings();
 
@@ -12,138 +24,164 @@ export default function Hero() {
   const artistName = settings?.artistName || "Art & Magic";
   const tagline = settings?.tagline || "Digital artist, dragon tamer & professional daydreamer";
   const subtitle = settings?.heroSubtitle || "Step inside to see my latest sketches, fan art, and adventures.";
+  const avatarUrl = settings?.avatarUrl || "";
+  const stats = safeParseJSON<Stat[]>(settings?.heroStats, DEFAULT_STATS);
+
+  const containerVariants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.12 } },
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 24 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
+  };
 
   return (
     <section
       id="home"
       className="relative flex min-h-[100dvh] w-full flex-col md:flex-row items-center justify-center py-24 px-6 gap-12 md:gap-20"
     >
-      {/* Doodles */}
-      <div className="absolute top-28 left-8 text-[var(--app-accent)] opacity-60">
+      {/* Ambient doodles */}
+      <div className="absolute top-28 left-6 text-[var(--app-accent)] opacity-50 pointer-events-none">
         <StarCluster />
       </div>
-      <div className="absolute bottom-36 right-16 text-[var(--app-accent-pink)] opacity-50">
+      <div className="absolute bottom-40 right-14 text-[var(--app-accent-pink)] opacity-40 pointer-events-none">
         <Sparkles />
       </div>
-      <div className="absolute top-40 right-40 text-[var(--app-accent)] opacity-30 hidden lg:block">
+      <div className="absolute top-36 right-44 text-[var(--app-accent)] opacity-20 pointer-events-none hidden lg:block">
         <CatDoodle />
       </div>
-      <div className="absolute bottom-24 left-24 opacity-20 text-[var(--app-accent-pink)] hidden md:block">
-        <StarCluster />
-      </div>
 
-      {/* Text Side */}
+      {/* Text side */}
       <motion.div
-        initial={{ opacity: 0, y: 32 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
         className="flex-1 flex flex-col items-center md:items-start text-center md:text-left z-10 max-w-lg"
       >
-        {/* Currently Creating badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="glass-panel flex items-center gap-2.5 px-4 py-2 mb-8 self-center md:self-start"
-          style={{ background: "rgba(244,184,208,0.2)", borderColor: "rgba(244,184,208,0.4)" }}
+        {/* Live badge */}
+        <motion.div variants={itemVariants}
+          className="flex items-center gap-2.5 px-4 py-2 mb-7 rounded-full self-center md:self-start border"
+          style={{ background: "rgba(244,184,208,0.18)", borderColor: "rgba(244,184,208,0.45)" }}
         >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--app-accent-pink)] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--app-accent-pink)]"></span>
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--app-accent-pink)] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--app-accent-pink)]" />
           </span>
           <span className="text-xs font-medium tracking-wider uppercase text-[var(--ink-muted)]">Currently drawing</span>
           <span className="font-handwriting text-base text-[var(--ink)]">Starfall Dragon ✦</span>
         </motion.div>
 
-        <h1 className="font-display font-semibold text-[var(--ink)] tracking-tight leading-none"
-          style={{ fontSize: "clamp(52px, 7vw, 96px)" }}>
+        <motion.h1
+          variants={itemVariants}
+          className="font-display font-semibold text-[var(--ink)] tracking-tight leading-none"
+          style={{ fontSize: "clamp(48px, 6.5vw, 88px)" }}
+        >
           {artistName}
-        </h1>
+        </motion.h1>
 
-        <p className="font-handwriting text-3xl text-[var(--app-accent)] mt-3 -rotate-1">
+        <motion.p variants={itemVariants} className="font-handwriting text-3xl text-[var(--app-accent)] mt-3 -rotate-1">
           {tagline}
-        </p>
+        </motion.p>
 
-        <p className="mt-7 text-lg text-[var(--ink-muted)] max-w-md leading-relaxed font-sans">
+        <motion.p variants={itemVariants} className="mt-6 text-lg text-[var(--ink-muted)] max-w-md leading-relaxed font-sans">
           {subtitle}
-        </p>
+        </motion.p>
 
-        {/* Stats row */}
-        <div className="flex gap-8 mt-8">
-          {[["100+", "artworks"], ["3", "fandoms"], ["∞", "cat naps"]].map(([n, l]) => (
-            <div key={l} className="text-center md:text-left">
-              <div className="font-display text-2xl text-[var(--ink)] font-semibold">{n}</div>
-              <div className="text-xs text-[var(--ink-muted)] font-medium tracking-wider uppercase">{l}</div>
-            </div>
-          ))}
-        </div>
+        {/* Stats */}
+        {stats.length > 0 && (
+          <motion.div variants={itemVariants} className="flex gap-8 mt-8">
+            {stats.map((s) => (
+              <div key={s.label} className="text-center md:text-left">
+                <div className="font-display text-2xl text-[var(--ink)] font-semibold">{s.value}</div>
+                <div className="text-[10px] text-[var(--ink-muted)] font-medium tracking-widest uppercase">{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        )}
 
-        <button
+        <motion.button
+          variants={itemVariants}
           onClick={scrollToGallery}
-          className="mt-10 rounded-full px-9 py-4 text-white font-sans font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-[var(--app-accent)]/30 relative overflow-hidden group"
+          whileHover={{ y: -2, boxShadow: "0 12px 40px rgba(179,157,219,0.4)" }}
+          whileTap={{ scale: 0.97 }}
+          className="mt-10 rounded-full px-10 py-4 text-white font-sans font-medium text-lg focus:outline-none focus:ring-4 focus:ring-[var(--app-accent)]/30 relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}
         >
-          <span className="relative z-10">Explore My Art</span>
-          <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></span>
-        </button>
+          Explore My Art
+        </motion.button>
       </motion.div>
 
-      {/* Avatar Side */}
+      {/* Avatar side */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.88 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+        initial={{ opacity: 0, scale: 0.85, rotate: -2 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
         className="flex-1 flex justify-center z-10"
       >
         <div className="relative">
-          {/* Soft rings */}
-          <div className="absolute inset-0 -m-10 rounded-full border border-[var(--app-accent-pink)]/20 animate-[spin_40s_linear_infinite]" />
-          <div className="absolute inset-0 -m-5 rounded-full border border-[var(--app-accent)]/25 animate-[spin_25s_linear_infinite_reverse]" />
+          {/* Animated rings */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 -m-12 rounded-full border border-dashed border-[var(--app-accent-pink)]/25"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 -m-6 rounded-full border border-[var(--app-accent)]/20"
+          />
 
           {/* Glow */}
-          <div className="absolute inset-0 rounded-full blur-3xl opacity-30"
-            style={{ background: "radial-gradient(circle, var(--app-accent), transparent 70%)" }} />
-
-          {/* Cat ears on the avatar frame */}
-          <div className="absolute -top-6 left-10 z-20">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <polygon points="4,34 0,4 20,20" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1.5" strokeLinejoin="round"/>
-              <polygon points="6,30 3,9 16,20" fill="#F4B8D0" opacity="0.7"/>
-            </svg>
-          </div>
-          <div className="absolute -top-6 right-10 z-20">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <polygon points="32,34 36,4 16,20" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1.5" strokeLinejoin="round"/>
-              <polygon points="30,30 33,9 20,20" fill="#F4B8D0" opacity="0.7"/>
-            </svg>
-          </div>
+          <div className="absolute inset-0 rounded-full blur-3xl opacity-25"
+            style={{ background: "radial-gradient(circle, var(--app-accent), transparent 70%)" }}
+          />
 
           {/* Avatar frame */}
-          <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[360px] lg:h-[360px] overflow-hidden rounded-full border-4 border-white/70 shadow-2xl"
-            style={{ background: "var(--bg-2)" }}>
-            <img
-              src="/images/avatar.png"
-              alt={artistName}
-              className="w-full h-full object-cover rounded-full"
-              onError={(e) => {
-                const img = e.target as HTMLImageElement;
-                img.style.display = "none";
-                const parent = img.parentElement!;
-                parent.style.background = "linear-gradient(135deg, #EDE8FF 0%, #FFE8F4 100%)";
-                parent.innerHTML += `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:80px;color:#B39DDB;opacity:0.6">✦</div>`;
-              }}
-            />
+          <div
+            className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[360px] lg:h-[360px] rounded-full shadow-2xl overflow-hidden"
+            style={{ border: "3px solid rgba(255,255,255,0.7)" }}
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={artistName} className="w-full h-full object-cover" />
+            ) : (
+              /* Beautiful no-avatar state */
+              <div className="w-full h-full flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #EDE8FF 0%, #FFF0F8 50%, #E8F0FF 100%)" }}
+              >
+                <div className="text-center select-none">
+                  <div className="font-display font-semibold text-[var(--app-accent)] opacity-50"
+                    style={{ fontSize: "clamp(48px, 8vw, 80px)" }}
+                  >
+                    {artistName.slice(0, 2)}
+                  </div>
+                  <div className="text-4xl mt-2 opacity-30">✦</div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Small floating cat badge */}
+          {/* Floating badge */}
           <motion.div
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute -bottom-2 -right-4 glass-panel px-3 py-1.5 shadow-md"
-            style={{ background: "rgba(244,184,208,0.4)" }}
+            animate={{ y: [0, -7, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -bottom-2 -right-3 rounded-full px-4 py-2 shadow-md border backdrop-blur-md"
+            style={{ background: "rgba(255,255,255,0.85)", borderColor: "rgba(179,157,219,0.3)" }}
           >
-            <span className="font-handwriting text-base text-[var(--ink)]">cat lover ♡</span>
+            <span className="font-handwriting text-base text-[var(--ink)]">digital artist ✦</span>
           </motion.div>
+
+          {/* Sparkle accents */}
+          <motion.div
+            animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.9, 0.4] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+            className="absolute -top-3 right-8 text-[var(--app-accent-pink)] text-lg"
+          >✦</motion.div>
+          <motion.div
+            animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
+            className="absolute top-8 -left-4 text-[var(--app-accent)] text-sm"
+          >⋆</motion.div>
         </div>
       </motion.div>
     </section>

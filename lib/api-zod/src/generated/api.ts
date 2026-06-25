@@ -113,7 +113,15 @@ export const GetSiteSettingsResponse = zod.object({
   "tagline": zod.string(),
   "bio": zod.string(),
   "heroSubtitle": zod.string(),
-  "accentColor": zod.string()
+  "accentColor": zod.string(),
+  "avatarUrl": zod.string().optional(),
+  "heroStats": zod.string().optional(),
+  "moodBoard": zod.string().optional(),
+  "trophies": zod.string().optional(),
+  "games": zod.string().optional(),
+  "journey": zod.string().optional(),
+  "currentObsession": zod.string().optional(),
+  "hobbies": zod.string().optional()
 })
 
 
@@ -130,6 +138,22 @@ export const updateSiteSettingsBodyHeroSubtitleMax = 200;
 
 export const updateSiteSettingsBodyAccentColorMax = 20;
 
+export const updateSiteSettingsBodyAvatarUrlMax = 500;
+
+export const updateSiteSettingsBodyHeroStatsMax = 2000;
+
+export const updateSiteSettingsBodyMoodBoardMax = 4000;
+
+export const updateSiteSettingsBodyTrophiesMax = 4000;
+
+export const updateSiteSettingsBodyGamesMax = 4000;
+
+export const updateSiteSettingsBodyJourneyMax = 4000;
+
+export const updateSiteSettingsBodyCurrentObsessionMax = 500;
+
+export const updateSiteSettingsBodyHobbiesMax = 2000;
+
 
 
 export const UpdateSiteSettingsBody = zod.object({
@@ -137,7 +161,15 @@ export const UpdateSiteSettingsBody = zod.object({
   "tagline": zod.string().max(updateSiteSettingsBodyTaglineMax).optional(),
   "bio": zod.string().max(updateSiteSettingsBodyBioMax).optional(),
   "heroSubtitle": zod.string().max(updateSiteSettingsBodyHeroSubtitleMax).optional(),
-  "accentColor": zod.string().max(updateSiteSettingsBodyAccentColorMax).optional()
+  "accentColor": zod.string().max(updateSiteSettingsBodyAccentColorMax).optional(),
+  "avatarUrl": zod.string().max(updateSiteSettingsBodyAvatarUrlMax).optional(),
+  "heroStats": zod.string().max(updateSiteSettingsBodyHeroStatsMax).optional(),
+  "moodBoard": zod.string().max(updateSiteSettingsBodyMoodBoardMax).optional(),
+  "trophies": zod.string().max(updateSiteSettingsBodyTrophiesMax).optional(),
+  "games": zod.string().max(updateSiteSettingsBodyGamesMax).optional(),
+  "journey": zod.string().max(updateSiteSettingsBodyJourneyMax).optional(),
+  "currentObsession": zod.string().max(updateSiteSettingsBodyCurrentObsessionMax).optional(),
+  "hobbies": zod.string().max(updateSiteSettingsBodyHobbiesMax).optional()
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
@@ -145,7 +177,15 @@ export const UpdateSiteSettingsResponse = zod.object({
   "tagline": zod.string(),
   "bio": zod.string(),
   "heroSubtitle": zod.string(),
-  "accentColor": zod.string()
+  "accentColor": zod.string(),
+  "avatarUrl": zod.string().optional(),
+  "heroStats": zod.string().optional(),
+  "moodBoard": zod.string().optional(),
+  "trophies": zod.string().optional(),
+  "games": zod.string().optional(),
+  "journey": zod.string().optional(),
+  "currentObsession": zod.string().optional(),
+  "hobbies": zod.string().optional()
 })
 
 

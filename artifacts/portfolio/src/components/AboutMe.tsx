@@ -1,17 +1,24 @@
 import { motion } from "framer-motion";
 import { useGetSiteSettings } from "@workspace/api-client-react";
-import { ArchDivider, CatDoodle } from "./Doodles";
+import { ArchDivider } from "./Doodles";
 
-const timelineEvents = [
-  { year: "2020", description: "Bought my first drawing tablet. Drew mostly cats.", emoji: "🐾" },
+interface JourneyItem { year: string; description: string; emoji: string; }
+interface Hobby { label: string; icon: string; }
+
+function safeParseJSON<T>(str: string | undefined, fallback: T): T {
+  try { return str ? JSON.parse(str) as T : fallback; } catch { return fallback; }
+}
+
+const DEFAULT_JOURNEY: JourneyItem[] = [
+  { year: "2020", description: "Bought my first drawing tablet.", emoji: "✏️" },
   { year: "2021", description: "Discovered digital painting and color theory.", emoji: "🎨" },
   { year: "2022", description: "Started posting art online, found an amazing community.", emoji: "✨" },
   { year: "2024", description: "Freelance commissions, fan art, and daily sketches.", emoji: "🌸" },
 ];
 
-const hobbies = [
+const DEFAULT_HOBBIES: Hobby[] = [
   { label: "Reading Fantasy", icon: "📖" },
-  { label: "Stationery Hoard", icon: "✏️" },
+  { label: "Stationery", icon: "✏️" },
   { label: "Roblox", icon: "🎮" },
   { label: "Baking", icon: "🍪" },
   { label: "Iced Matcha", icon: "🍵" },
@@ -20,92 +27,110 @@ const hobbies = [
 
 export default function AboutMe() {
   const { data: settings } = useGetSiteSettings();
-  const bio =
-    settings?.bio ||
-    "I'm a digital artist who loves exploring the intersection of fantasy and soft aesthetics. My work is heavily inspired by dreams, nature, and the games I play.\n\nI draw a lot of cats. Like, a lot. It's a lifestyle.";
+
+  const bio = settings?.bio || "I'm a digital artist who loves exploring the intersection of fantasy and soft aesthetics. My work is heavily inspired by dreams, nature, and the games I play.";
+  const journey = safeParseJSON<JourneyItem[]>(settings?.journey, DEFAULT_JOURNEY);
+  const hobbies = safeParseJSON<Hobby[]>(settings?.hobbies, DEFAULT_HOBBIES);
+  const currentObsession = settings?.currentObsession || "Mastering complex hands and dynamic lighting. Also currently deep in a worldbuilding rabbit hole.";
 
   return (
     <section id="about" className="w-full py-24 relative">
-      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[var(--app-accent-blue)]">
+      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[var(--app-accent-blue)] pointer-events-none">
         <ArchDivider />
-      </div>
-      <div className="absolute top-0 right-10 text-[var(--app-accent)] opacity-25 hidden md:block">
-        <CatDoodle />
       </div>
 
       <div className="grid md:grid-cols-2 gap-16 md:gap-24 relative z-10 max-w-5xl mx-auto px-4">
-        {/* Left: Bio + Timeline */}
+        {/* Left */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <h2 className="font-display text-4xl font-semibold text-[var(--ink)] mb-2">About Me</h2>
-          <p className="font-handwriting text-xl text-[var(--app-accent)] mb-6">professional cat enthusiast</p>
+          <div className="w-12 h-0.5 rounded-full mt-3 mb-7" style={{ background: "linear-gradient(90deg, var(--app-accent), var(--app-accent-pink))" }} />
 
           <div className="text-[var(--ink)]/80 text-lg leading-relaxed whitespace-pre-wrap font-sans">{bio}</div>
 
+          {/* Journey */}
           <div className="mt-14">
             <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-7">My Journey</h3>
             <div className="relative border-l border-[var(--glass-border)] ml-3 space-y-8 pb-4">
-              {timelineEvents.map((item, index) => (
-                <div key={index} className="relative pl-8">
-                  <div className="absolute w-3 h-3 bg-white border-2 border-[var(--app-accent)] rounded-full -left-[7px] top-1.5" />
+              {journey.map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="relative pl-8"
+                >
+                  <div className="absolute w-3 h-3 bg-white border-2 border-[var(--app-accent)] rounded-full -left-[7px] top-2" />
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-handwriting text-2xl text-[var(--app-accent)]">{item.year}</span>
-                    <span>{item.emoji}</span>
+                    <span className="text-base">{item.emoji}</span>
                   </div>
-                  <p className="text-[var(--ink)]/80 font-sans text-sm md:text-base">{item.description}</p>
-                </div>
+                  <p className="text-[var(--ink)]/75 font-sans text-sm md:text-base">{item.description}</p>
+                </motion.div>
               ))}
             </div>
           </div>
         </motion.div>
 
-        {/* Right: Panels */}
+        {/* Right */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           className="flex flex-col gap-6"
         >
           {/* Hobbies */}
           <div className="glass-panel p-7">
             <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-5">Hobbies & Loves</h3>
             <div className="flex flex-wrap gap-2.5">
-              {hobbies.map((h) => (
-                <span
-                  key={h.label}
-                  className="flex items-center gap-1.5 bg-white/70 text-[var(--ink-muted)] px-4 py-2 rounded-full text-sm font-medium border border-white shadow-sm hover:-translate-y-0.5 transition-transform cursor-default"
+              {hobbies.map((h, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: i * 0.06 }}
+                  whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                  className="flex items-center gap-1.5 bg-white/70 text-[var(--ink-muted)] px-4 py-2 rounded-full text-sm font-medium border border-white shadow-sm cursor-default"
                 >
                   <span>{h.icon}</span> {h.label}
-                </span>
+                </motion.span>
               ))}
             </div>
           </div>
 
-          {/* Current obsession */}
-          <div
+          {/* Current Obsession */}
+          <motion.div
+            whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
             className="glass-panel p-7"
-            style={{ background: "linear-gradient(135deg, rgba(255,232,244,0.5), rgba(237,232,255,0.5))" }}
+            style={{ background: "linear-gradient(135deg, rgba(255,232,244,0.55), rgba(237,232,255,0.55))" }}
           >
             <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-3">Current Obsession</h3>
-            <p className="text-[var(--ink)]/80 font-sans leading-relaxed">
-              Mastering complex hands and dynamic lighting — the hardest things to draw. Also watching cat videos for "reference".
-            </p>
-          </div>
+            <p className="text-[var(--ink)]/80 font-sans leading-relaxed">{currentObsession}</p>
+          </motion.div>
 
-          {/* Cat count fun fact */}
-          <div
-            className="glass-panel p-7 flex items-center gap-5"
-            style={{ background: "rgba(179,157,219,0.12)", borderColor: "rgba(179,157,219,0.3)" }}
-          >
-            <div className="text-4xl">🐾</div>
+          {/* Fun visual */}
+          <div className="glass-panel p-6 flex items-center gap-5"
+            style={{ background: "rgba(179,157,219,0.1)", borderColor: "rgba(179,157,219,0.25)" }}>
+            <div className="flex -space-x-1">
+              {["🌸","✨","🎨","🐉"].map((e, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3, ease: "easeInOut" }}
+                  className="w-9 h-9 rounded-full bg-white border border-white/80 shadow-sm flex items-center justify-center text-base"
+                >{e}</motion.div>
+              ))}
+            </div>
             <div>
-              <p className="font-display text-xl font-semibold text-[var(--ink)]">Cat drawings this year</p>
-              <p className="font-handwriting text-3xl text-[var(--app-accent)] mt-0.5">47 and counting</p>
+              <p className="font-display text-lg font-semibold text-[var(--ink)]">Always creating</p>
+              <p className="font-handwriting text-base text-[var(--ink-muted)]">one sketch at a time</p>
             </div>
           </div>
         </motion.div>

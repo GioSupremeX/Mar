@@ -45,6 +45,14 @@ export interface SiteSettings {
   bio: string;
   heroSubtitle: string;
   accentColor: string;
+  avatarUrl?: string;
+  heroStats?: string;
+  moodBoard?: string;
+  trophies?: string;
+  games?: string;
+  journey?: string;
+  currentObsession?: string;
+  hobbies?: string;
 }
 
 export interface SiteSettingsInput {
@@ -58,6 +66,22 @@ export interface SiteSettingsInput {
   heroSubtitle?: string;
   /** @maxLength 20 */
   accentColor?: string;
+  /** @maxLength 500 */
+  avatarUrl?: string;
+  /** @maxLength 2000 */
+  heroStats?: string;
+  /** @maxLength 4000 */
+  moodBoard?: string;
+  /** @maxLength 4000 */
+  trophies?: string;
+  /** @maxLength 4000 */
+  games?: string;
+  /** @maxLength 4000 */
+  journey?: string;
+  /** @maxLength 500 */
+  currentObsession?: string;
+  /** @maxLength 2000 */
+  hobbies?: string;
 }
 
 export interface GuestbookMessage {

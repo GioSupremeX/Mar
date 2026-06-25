@@ -390,6 +390,22 @@ components:
           type: string
         accentColor:
           type: string
+        avatarUrl:
+          type: string
+        heroStats:
+          type: string
+        moodBoard:
+          type: string
+        trophies:
+          type: string
+        games:
+          type: string
+        journey:
+          type: string
+        currentObsession:
+          type: string
+        hobbies:
+          type: string
 
     SiteSettingsInput:
       type: object
@@ -409,6 +425,30 @@ components:
         accentColor:
           type: string
           maxLength: 20
+        avatarUrl:
+          type: string
+          maxLength: 500
+        heroStats:
+          type: string
+          maxLength: 2000
+        moodBoard:
+          type: string
+          maxLength: 4000
+        trophies:
+          type: string
+          maxLength: 4000
+        games:
+          type: string
+          maxLength: 4000
+        journey:
+          type: string
+          maxLength: 4000
+        currentObsession:
+          type: string
+          maxLength: 500
+        hobbies:
+          type: string
+          maxLength: 2000
 
     GuestbookMessage:
       type: object
