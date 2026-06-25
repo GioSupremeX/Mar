@@ -1,54 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'wouter';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Menu, X } from 'lucide-react';
-import { useGetSiteSettings } from '@workspace/api-client-react';
+import { useState, useEffect } from "react";
+import { Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
+import { Settings, Menu, X } from "lucide-react";
+import { useGetSiteSettings } from "@workspace/api-client-react";
+import { SmallPaw } from "./Doodles";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
   const { data: settings } = useGetSiteSettings();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const artistName = settings?.artistName || "Creative Soul";
+  const artistName = settings?.artistName || "Art & Magic";
 
   const scrollTo = (id: string) => {
     setMobileMenuOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const navLinks = [
+    { label: "Gallery", id: "gallery" },
+    { label: "About", id: "about" },
+    { label: "Games", id: "games" },
+    { label: "Guestbook", id: "guestbook" },
+  ];
 
   return (
     <>
-      <header 
+      <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? 'py-4 glass-panel border-x-0 border-t-0 rounded-none bg-white/70 dark:bg-black/50 backdrop-blur-lg shadow-sm' : 'py-6 bg-transparent'
+          isScrolled
+            ? "py-3 glass-panel border-x-0 border-t-0 rounded-none shadow-sm"
+            : "py-5 bg-transparent"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-          <Link href="/" className="font-display italic text-2xl md:text-3xl tracking-wide font-semibold text-[var(--ink)]">
-            {artistName}
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="text-[var(--app-accent)] opacity-60 group-hover:opacity-100 transition-opacity -rotate-12">
+              <SmallPaw />
+            </span>
+            <span className="font-display italic text-2xl md:text-3xl font-semibold text-[var(--ink)] tracking-wide">
+              {artistName}
+            </span>
           </Link>
-          
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wider text-[var(--ink-muted)]">
-            <button onClick={() => scrollTo('gallery')} className="hover:text-[var(--app-accent)] transition-colors uppercase text-xs tracking-widest">Gallery</button>
-            <button onClick={() => scrollTo('about')} className="hover:text-[var(--app-accent)] transition-colors uppercase text-xs tracking-widest">About</button>
-            <button onClick={() => scrollTo('games')} className="hover:text-[var(--app-accent)] transition-colors uppercase text-xs tracking-widest">Games</button>
-            <button onClick={() => scrollTo('guestbook')} className="hover:text-[var(--app-accent)] transition-colors uppercase text-xs tracking-widest">Guestbook</button>
-            <Link href="/admin" className="ml-4 opacity-40 hover:opacity-100 transition-opacity">
-              <Settings size={16} />
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => scrollTo(link.id)}
+                className="text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors text-xs font-medium tracking-widest uppercase relative group"
+              >
+                {link.label}
+                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[var(--app-accent)] group-hover:w-full transition-all duration-300" />
+              </button>
+            ))}
+            <Link href="/admin" className="ml-2 opacity-30 hover:opacity-80 transition-opacity text-[var(--ink)]">
+              <Settings size={15} />
             </Link>
           </nav>
-          
-          <button 
-            className="md:hidden text-[var(--ink)]"
+
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden text-[var(--ink)] p-2"
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu size={24} />
@@ -56,27 +77,50 @@ export default function Navigation() {
         </div>
       </header>
 
+      {/* Mobile overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-[60] bg-[var(--bg)] flex flex-col justify-center items-center backdrop-blur-md"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex flex-col justify-center items-center"
+            style={{ background: "rgba(247,245,255,0.97)", backdropFilter: "blur(20px)" }}
           >
-            <button 
+            <button
               className="absolute top-6 right-6 text-[var(--ink)] p-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <X size={32} />
+              <X size={28} />
             </button>
-            <div className="flex flex-col items-center gap-8 text-2xl font-display">
-              <button onClick={() => scrollTo('gallery')} className="hover:text-[var(--app-accent)] transition-colors italic">Gallery</button>
-              <button onClick={() => scrollTo('about')} className="hover:text-[var(--app-accent)] transition-colors italic">About</button>
-              <button onClick={() => scrollTo('games')} className="hover:text-[var(--app-accent)] transition-colors italic">Games</button>
-              <button onClick={() => scrollTo('guestbook')} className="hover:text-[var(--app-accent)] transition-colors italic">Guestbook</button>
-              <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="mt-8 flex items-center gap-2 text-base font-sans text-[var(--ink-muted)] hover:text-[var(--app-accent)] transition-colors">
-                <Settings size={16} /> Admin
+
+            {/* Cat decoration */}
+            <div className="absolute top-20 left-8 text-[var(--app-accent)] opacity-20">
+              <SmallPaw />
+            </div>
+            <div className="absolute bottom-24 right-10 text-[var(--app-accent-pink)] opacity-20">
+              <SmallPaw />
+            </div>
+
+            <div className="flex flex-col items-center gap-10">
+              {navLinks.map((link) => (
+                <motion.button
+                  key={link.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => scrollTo(link.id)}
+                  className="font-display italic text-4xl text-[var(--ink)] hover:text-[var(--app-accent)] transition-colors"
+                >
+                  {link.label}
+                </motion.button>
+              ))}
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-6 flex items-center gap-2 text-sm font-sans text-[var(--ink-muted)] hover:text-[var(--app-accent)]"
+              >
+                <Settings size={14} /> Admin
               </Link>
             </div>
           </motion.div>

@@ -237,3 +237,35 @@
   50% { transform: translate(5%, 5%) scale(1.05); }
   100% { transform: translate(-2%, 8%) scale(0.95); }
 }
+
+/* Custom scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-accent) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--app-accent);
+  border-radius: 20px;
+  opacity: 0.5;
+}
+
+/* Cursor crosshair for art vibes */
+body {
+  cursor: default;
+}
+
+/* Section divider */
+.section-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-pink));
+  border-radius: 2px;
+  margin: 0 auto;
+}
+

@@ -1,37 +1,50 @@
-import React from 'react';
-import Navigation from '@/components/Navigation';
-import Hero from '@/components/Hero';
-import Gallery from '@/components/Gallery';
-import AboutMe from '@/components/AboutMe';
-import Games from '@/components/Games';
-import Achievements from '@/components/Achievements';
-import Guestbook from '@/components/Guestbook';
+import Navigation from "@/components/Navigation";
+import Hero from "@/components/Hero";
+import Gallery from "@/components/Gallery";
+import AboutMe from "@/components/AboutMe";
+import Games from "@/components/Games";
+import Achievements from "@/components/Achievements";
+import MoodBoard from "@/components/MoodBoard";
+import Guestbook from "@/components/Guestbook";
+import CatMascot from "@/components/CatMascot";
+import PawPrints from "@/components/PawPrints";
 
 export default function Home() {
   return (
-    <main className="relative min-h-[100dvh] bg-[var(--bg)] overflow-hidden font-sans">
+    <main className="relative min-h-[100dvh] bg-[var(--bg)] overflow-x-hidden font-sans">
+      {/* Background orbs */}
       <div className="bg-orbs-container">
         <div className="bg-orb bg-orb-1" />
         <div className="bg-orb bg-orb-2" />
         <div className="bg-orb bg-orb-3" />
       </div>
-      
+
+      {/* Decorative paw prints */}
+      <PawPrints />
+
       <Navigation />
-      
-      <div className="relative z-10 mx-auto max-w-7xl">
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
         <Hero />
         <Gallery />
+        <MoodBoard />
         <AboutMe />
         <Games />
         <Achievements />
         <Guestbook />
       </div>
-      
-      <footer className="relative z-10 py-12 mt-20 text-center border-t border-[var(--glass-border)]">
-        <p className="text-[var(--ink-muted)] text-sm font-sans tracking-wide">
-          © {new Date().getFullYear()} Creative Soul. Crafted with intention.
-        </p>
+
+      <footer className="relative z-10 py-10 mt-10 border-t border-[var(--glass-border)]">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--ink-muted)]">
+          <p className="font-sans tracking-wide">
+            © {new Date().getFullYear()} Art & Magic · Made with 🐾 and matcha
+          </p>
+          <p className="font-handwriting text-base opacity-60">crafted with love</p>
+        </div>
       </footer>
+
+      {/* Floating cat mascot */}
+      <CatMascot />
     </main>
   );
 }
