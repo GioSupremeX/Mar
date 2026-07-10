@@ -2,6 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 import { TextReveal, FadeIn } from "./TextReveal";
+import { SpotlightCard } from "./SpotlightCard";
 
 interface Game { title: string; description: string; image: string; accentColor: string; textColor: string; }
 
@@ -42,38 +43,40 @@ export default function Games() {
             whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
             className="glass-panel overflow-hidden flex flex-col group"
           >
-            {/* Image */}
-            <div className="h-48 overflow-hidden relative">
-              <div
-                className="absolute inset-0 z-10 mix-blend-multiply opacity-40"
-                style={{ background: game.accentColor }}
-              />
-              <motion.img
-                src={game.image}
-                alt={game.title}
-                className="w-full h-full object-cover"
-                whileHover={{ scale: 1.06 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement;
-                  el.style.display = "none";
-                  el.parentElement!.style.background = game.accentColor;
-                }}
-              />
-              <div className="absolute top-3 left-3 z-20 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs font-bold" style={{ color: game.textColor }}>
-                {index + 1}
+            <SpotlightCard className="flex flex-col h-full" spotlightColor={`${game.accentColor}20`}>
+              {/* Image */}
+              <div className="h-48 overflow-hidden relative">
+                <div
+                  className="absolute inset-0 z-10 mix-blend-multiply opacity-40"
+                  style={{ background: game.accentColor }}
+                />
+                <motion.img
+                  src={game.image}
+                  alt={game.title}
+                  className="w-full h-full object-cover"
+                  whileHover={{ scale: 1.06 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  onError={(e) => {
+                    const el = e.target as HTMLImageElement;
+                    el.style.display = "none";
+                    el.parentElement!.style.background = game.accentColor;
+                  }}
+                />
+                <div className="absolute top-3 left-3 z-20 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs font-bold" style={{ color: game.textColor }}>
+                  {index + 1}
+                </div>
               </div>
-            </div>
 
-            {/* Content */}
-            <div className="p-7 flex-1 flex flex-col" style={{ background: `${game.accentColor}55` }}>
-              <h3 className="font-display text-2xl font-semibold mb-3" style={{ color: game.textColor }}>
-                {game.title}
-              </h3>
-              <p className="font-sans text-sm leading-relaxed flex-1" style={{ color: game.textColor, opacity: 0.8 }}>
-                {game.description}
-              </p>
-            </div>
+              {/* Content */}
+              <div className="p-7 flex-1 flex flex-col" style={{ background: `${game.accentColor}55` }}>
+                <h3 className="font-display text-2xl font-semibold mb-3" style={{ color: game.textColor }}>
+                  {game.title}
+                </h3>
+                <p className="font-sans text-sm leading-relaxed flex-1" style={{ color: game.textColor, opacity: 0.8 }}>
+                  {game.description}
+                </p>
+              </div>
+            </SpotlightCard>
           </motion.div>
         ))}
       </div>

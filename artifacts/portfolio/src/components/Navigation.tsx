@@ -3,11 +3,13 @@ import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Settings, Menu, X } from "lucide-react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
+import { MagneticLink } from "./MagneticButton";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
   const { data: settings } = useGetSiteSettings();
 
   useEffect(() => {
@@ -16,6 +18,16 @@ export default function Navigation() {
       setIsScrolled(y > 30);
       const max = document.documentElement.scrollHeight - window.innerHeight;
       setScrollProgress(max > 0 ? (y / max) * 100 : 0);
+
+      // Determine active section
+      const sections = ["home", "gallery", "about", "games", "guestbook"];
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.getBoundingClientRect().top < window.innerHeight / 2) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -63,14 +75,21 @@ export default function Navigation() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
+              <MagneticLink
                 key={link.id}
+                strength={0.2}
                 onClick={() => scrollTo(link.id)}
-                className="text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors text-xs font-medium tracking-widest uppercase relative group"
+                className="text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors text-xs font-medium tracking-widest uppercase relative group cursor-pointer"
               >
                 {link.label}
+                <motion.span
+                  className="absolute -bottom-0.5 left-0 h-px bg-[var(--app-accent)]"
+                  initial={{ width: 0 }}
+                  animate={{ width: activeSection === link.id ? "100%" : 0 }}
+                  transition={{ duration: 0.3 }}
+                />
                 <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[var(--app-accent)] group-hover:w-full transition-all duration-300" />
-              </button>
+              </MagneticLink>
             ))}
             <Link href="/admin" className="ml-2 opacity-25 hover:opacity-80 transition-opacity text-[var(--ink)]">
               <Settings size={15} />

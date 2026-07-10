@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 import { TextReveal, FadeIn } from "./TextReveal";
 import { ArchDivider } from "./Doodles";
+import { GlowCard } from "./SpotlightCard";
 
 interface JourneyItem { year: string; description: string; emoji: string; }
 interface Hobby { label: string; icon: string; }
@@ -12,19 +13,19 @@ function safeParseJSON<T>(str: string | undefined, fallback: T): T {
 }
 
 const DEFAULT_JOURNEY: JourneyItem[] = [
-  { year: "2020", description: "Bought my first drawing tablet.", emoji: "\u270f\uFE0F" },
-  { year: "2021", description: "Discovered digital painting and color theory.", emoji: "\ud83c\udfa8" },
-  { year: "2022", description: "Started posting art online, found an amazing community.", emoji: "\u2728" },
-  { year: "2024", description: "Freelance commissions, fan art, and daily sketches.", emoji: "\ud83c\udf38" },
+  { year: "2020", description: "Bought my first drawing tablet.", emoji: "✏️" },
+  { year: "2021", description: "Discovered digital painting and color theory.", emoji: "🎨" },
+  { year: "2022", description: "Started posting art online, found an amazing community.", emoji: "✨" },
+  { year: "2024", description: "Freelance commissions, fan art, and daily sketches.", emoji: "🌸" },
 ];
 
 const DEFAULT_HOBBIES: Hobby[] = [
-  { label: "Reading Fantasy", icon: "\ud83d\udcd6" },
-  { label: "Stationery", icon: "\u270f\uFE0F" },
-  { label: "Roblox", icon: "\ud83c\udfae" },
-  { label: "Baking", icon: "\ud83c\udf6a" },
-  { label: "Iced Matcha", icon: "\ud83c\udf75" },
-  { label: "Cats", icon: "\ud83d\udc08" },
+  { label: "Reading Fantasy", icon: "📖" },
+  { label: "Stationery", icon: "✏️" },
+  { label: "Roblox", icon: "🎮" },
+  { label: "Baking", icon: "🍪" },
+  { label: "Iced Matcha", icon: "🍵" },
+  { label: "Cats", icon: "🐈" },
 ];
 
 export default function AboutMe() {
@@ -81,7 +82,7 @@ export default function AboutMe() {
         {/* Right */}
         <FadeIn direction="right" delay={0.15} className="flex flex-col gap-6">
           {/* Hobbies */}
-          <div className="glass-panel p-7">
+          <GlowCard className="glass-panel p-7" glowColor="rgba(179,157,219,0.15)">
             <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-5">
               Hobbies & Loves
             </h3>
@@ -99,23 +100,18 @@ export default function AboutMe() {
                 </motion.span>
               ))}
             </div>
-          </div>
+          </GlowCard>
 
           {/* Current Obsession */}
-          <motion.div
-            whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
-            className="glass-panel p-7"
-            style={{ background: "linear-gradient(135deg, rgba(255,232,244,0.55), rgba(237,232,255,0.55))" }}
-          >
+          <GlowCard className="glass-panel p-7" glowColor="rgba(244,167,195,0.2)">
             <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-3">Current Obsession</h3>
             <p className="text-[var(--ink)]/80 font-sans leading-relaxed">{currentObsession}</p>
-          </motion.div>
+          </GlowCard>
 
           {/* Fun visual */}
-          <div className="glass-panel p-6 flex items-center gap-5"
-            style={{ background: "rgba(179,157,219,0.1)", borderColor: "rgba(179,157,219,0.25)" }}>
+          <GlowCard className="glass-panel p-6 flex items-center gap-5" glowColor="rgba(168,200,232,0.15)">
             <div className="flex -space-x-1">
-              {["\ud83c\udf38","\u2728","\ud83c\udfa8","\ud83d\udc09"].map((e, i) => (
+              {["🌸","✨","🎨","🐉"].map((e, i) => (
                 <motion.div
                   key={i}
                   animate={{ y: [0, -4, 0] }}
@@ -128,7 +124,7 @@ export default function AboutMe() {
               <p className="font-display text-lg font-semibold text-[var(--ink)]">Always creating</p>
               <p className="font-handwriting text-base text-[var(--ink-muted)]">one sketch at a time</p>
             </div>
-          </div>
+          </GlowCard>
         </FadeIn>
       </div>
     </section>

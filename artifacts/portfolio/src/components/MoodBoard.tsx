@@ -2,6 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 import { TextReveal, FadeIn } from "./TextReveal";
+import { SpotlightCard } from "./SpotlightCard";
 
 interface MoodItem { icon: string; label: string; value: string; }
 
@@ -86,18 +87,22 @@ export default function MoodBoard() {
                 animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.07, ease: "easeOut" }}
                 whileHover={{ y: -4, transition: { duration: 0.2, ease: "easeOut" } }}
-                className="glass-panel p-5 flex flex-col gap-3 cursor-default"
-                style={{ background: `${ic.bg}AA` }}
+                className="cursor-default"
               >
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ color: ic.color, background: `${ic.bg}CC` }}>
-                  {ic.svg}
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold tracking-widest uppercase mb-0.5" style={{ color: ic.color, opacity: 0.7 }}>
-                    {mood.label}
-                  </p>
-                  <p className="font-handwriting text-xl text-[var(--ink)] leading-tight">{mood.value}</p>
-                </div>
+                <SpotlightCard
+                  className="glass-panel p-5 flex flex-col gap-3"
+                  spotlightColor={`${ic.bg}80`}
+                >
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ color: ic.color, background: `${ic.bg}CC` }}>
+                    {ic.svg}
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold tracking-widest uppercase mb-0.5" style={{ color: ic.color, opacity: 0.7 }}>
+                      {mood.label}
+                    </p>
+                    <p className="font-handwriting text-xl text-[var(--ink)] leading-tight">{mood.value}</p>
+                  </div>
+                </SpotlightCard>
               </motion.div>
             );
           })}

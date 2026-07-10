@@ -3,6 +3,8 @@ import { useGetSiteSettings } from "@workspace/api-client-react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { TextReveal, FadeIn } from "./TextReveal";
 import { Sparkles, StarCluster } from "./Doodles";
+import { MagneticButton } from "./MagneticButton";
+import { TextScramble } from "./TextScramble";
 
 interface Stat { value: string; label: string; }
 
@@ -98,15 +100,13 @@ export default function Hero() {
         )}
 
         <FadeIn delay={0.65} className="mt-12">
-          <motion.button
+          <MagneticButton
             onClick={scrollToGallery}
-            whileHover={{ y: -2, boxShadow: "0 14px 40px rgba(179,157,219,0.35)" }}
-            whileTap={{ scale: 0.97 }}
             className="rounded-full px-10 py-4 text-white font-sans font-medium text-lg focus:outline-none relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}
           >
             Explore My Art
-          </motion.button>
+          </MagneticButton>
         </FadeIn>
       </div>
 

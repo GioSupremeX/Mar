@@ -1,16 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const msgs = [
+  "hi there",
+  "welcome",
+  "enjoy",
+  "stay awhile",
+  "meow",
+  "nya~",
+  "purr",
+  "have fun",
+];
 
 export default function CatMascot() {
   const [showBubble, setShowBubble] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
-  const msgs = ["hi there", "welcome", "enjoy", "stay awhile"];
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleClick = () => {
     setMsgIndex((i) => (i + 1) % msgs.length);
     setShowBubble(true);
     setTimeout(() => setShowBubble(false), 2200);
   };
+
+  // Scroll-reactive: tilt slightly based on scroll direction
+  const scrollTilt = Math.max(-8, Math.min(8, (scrollY % 200) / 25 - 4));
 
   return (
     <div className="fixed bottom-6 right-6 z-50 select-none">
@@ -30,9 +52,16 @@ export default function CatMascot() {
 
       <motion.button
         onClick={handleClick}
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        animate={{
+          y: [0, -4, 0],
+          rotate: scrollTilt,
+        }}
+        transition={{
+          y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: 0.3 },
+        }}
         whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.9 }}
         className="cursor-pointer focus:outline-none opacity-70 hover:opacity-100 transition-opacity"
         aria-label="mascot"
       >

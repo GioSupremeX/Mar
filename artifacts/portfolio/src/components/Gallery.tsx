@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import { X } from "lucide-react";
 import { useListArtworks } from "@workspace/api-client-react";
 import { TextReveal, FadeIn, StaggerChildren, StaggerItem } from "./TextReveal";
+import { SpotlightCard } from "./SpotlightCard";
 
 const categories = ["All", "Sketches", "Digital Art", "Fan Art", "Personal Projects"];
 
@@ -61,9 +62,11 @@ export default function Gallery() {
 
         <FadeIn delay={0.3} className="mt-8 flex flex-wrap justify-center gap-3 max-w-2xl mx-auto px-4">
           {categories.map((cat) => (
-            <button
+            <motion.button
               key={cat}
               onClick={() => setFilter(cat)}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 filter === cat
                   ? "bg-[var(--ink)] text-white shadow-md"
@@ -71,7 +74,7 @@ export default function Gallery() {
               }`}
             >
               {cat}
-            </button>
+            </motion.button>
           ))}
         </FadeIn>
       </div>
@@ -89,28 +92,33 @@ export default function Gallery() {
           {filteredArtworks.map((art, i) => (
             <motion.div
               key={art.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.97 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: (i % 6) * 0.08, ease: "easeOut" }}
+              transition={{ duration: 0.7, delay: (i % 6) * 0.08, ease: "easeOut" }}
               className="break-inside-avoid"
             >
-              <TiltCard className="glass-panel overflow-hidden group cursor-pointer border-0 shadow-sm hover:shadow-xl transition-shadow duration-500">
-                <div className="relative overflow-hidden rounded-2xl" onClick={() => setSelectedImage({ url: getImageUrl(art.imageUrl, art.id), title: art.title, category: art.category })}>
-                  <img
-                    src={getImageUrl(art.imageUrl, art.id)}
-                    alt={art.title}
-                    className="w-full h-auto object-cover transform group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(art.title)}&background=EDE8FF&color=7B6FA3`;
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-[var(--ink)]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                    <h3 className="text-white font-display text-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300">{art.title}</h3>
-                    <p className="text-white/80 font-handwriting text-xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">{art.category}</p>
+              <TiltCard className="glass-panel overflow-hidden group cursor-pointer border-0 shadow-sm hover:shadow-xl transition-shadow duration-500 rounded-2xl">
+                <SpotlightCard
+                  className="rounded-2xl"
+                  spotlightColor="rgba(179,157,219,0.12)"
+                >
+                  <div className="relative overflow-hidden rounded-2xl" onClick={() => setSelectedImage({ url: getImageUrl(art.imageUrl, art.id), title: art.title, category: art.category })}>
+                    <img
+                      src={getImageUrl(art.imageUrl, art.id)}
+                      alt={art.title}
+                      className="w-full h-auto object-cover transform group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(art.title)}&background=EDE8FF&color=7B6FA3`;
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-[var(--ink)]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                      <h3 className="text-white font-display text-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300">{art.title}</h3>
+                      <p className="text-white/80 font-handwriting text-xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">{art.category}</p>
+                    </div>
                   </div>
-                </div>
+                </SpotlightCard>
               </TiltCard>
             </motion.div>
           ))}
@@ -129,17 +137,20 @@ export default function Gallery() {
           >
             <div className="absolute inset-0 bg-[var(--bg)]/70 backdrop-blur-2xl" />
 
-            <button
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
               className="absolute top-6 right-6 z-[110] p-3 text-[var(--ink)] hover:text-[var(--app-accent-pink)] transition-colors bg-white/60 rounded-full backdrop-blur-md border border-[var(--glass-border)]"
               onClick={() => setSelectedImage(null)}
             >
               <X size={22} />
-            </button>
+            </motion.button>
 
             <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.92, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 30, stiffness: 350 }}
               className="relative max-w-5xl max-h-[90vh] z-[110] flex flex-col items-center bg-white p-3 rounded-2xl shadow-2xl border border-[var(--glass-border)]"
               onClick={(e) => e.stopPropagation()}

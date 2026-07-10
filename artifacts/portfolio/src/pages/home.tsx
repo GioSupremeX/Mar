@@ -8,6 +8,7 @@ import MoodBoard from "@/components/MoodBoard";
 import Guestbook from "@/components/Guestbook";
 import CatMascot from "@/components/CatMascot";
 import PawPrints from "@/components/PawPrints";
+import ParticleField from "@/components/ParticleField";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 
 export default function Home() {
@@ -21,6 +22,11 @@ export default function Home() {
         <div className="bg-orb bg-orb-1" />
         <div className="bg-orb bg-orb-2" />
         <div className="bg-orb bg-orb-3" />
+      </div>
+
+      {/* Floating dust particles */}
+      <div className="fixed inset-0 pointer-events-none z-[5]">
+        <ParticleField />
       </div>
 
       {/* Subtle edge decoration */}

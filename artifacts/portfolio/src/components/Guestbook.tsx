@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TextReveal, FadeIn } from "./TextReveal";
+import { ConfettiContainer, useConfetti } from "./Confetti";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name required").max(50),
@@ -27,28 +28,75 @@ export default function Guestbook() {
   const createMessage = useCreateGuestbookMessage();
   const queryClient = useQueryClient();
   const [success, setSuccess] = useState(false);
+  const [challenge, setChallenge] = useState<{ q: string; a: string } | null>(null);
+  const [challengeAnswer, setChallengeAnswer] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const { pieces, burst, clear } = useConfetti();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "", message: "", emoji: "\u2726" },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    createMessage.mutate(
-      { data: values },
-      {
-        onSuccess: () => {
-          form.reset({ name: "", message: "", emoji: "\u2726" });
-          queryClient.invalidateQueries({ queryKey: getListGuestbookMessagesQueryKey() });
-          setSuccess(true);
-          setTimeout(() => setSuccess(false), 3000);
-        },
+  useEffect(() => {
+    fetchChallenge();
+  }, []);
+
+  async function fetchChallenge() {
+    try {
+      const res = await fetch("/api/guestbook/challenge");
+      const data = await res.json();
+      setChallenge({ q: data.challenge, a: String(data.expiresAt) });
+    } catch {
+      setChallenge({ q: "2 + 3", a: "5" });
+    }
+  }
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setErrorMsg("");
+    if (!challengeAnswer) {
+      setErrorMsg("Please solve the math challenge.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/guestbook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...values,
+          answer: challengeAnswer,
+          challenge: challenge?.q || "",
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setErrorMsg(data.error || "Failed to send message.");
+        return;
       }
-    );
+
+      form.reset({ name: "", message: "", emoji: "\u2726" });
+      setChallengeAnswer("");
+      setSuccess(true);
+      burst(50);
+      queryClient.invalidateQueries({ queryKey: getListGuestbookMessagesQueryKey() });
+      setTimeout(() => {
+        setSuccess(false);
+        clear();
+      }, 4000);
+
+      // Refresh challenge
+      fetchChallenge();
+    } catch {
+      setErrorMsg("Something went wrong. Try again.");
+    }
   }
 
   return (
     <section id="guestbook" className="w-full py-24 max-w-4xl mx-auto px-4">
+      <ConfettiContainer pieces={pieces} />
+
       <div className="text-center mb-14">
         <TextReveal as="div" className="text-[var(--ink-muted)] font-handwriting text-xl mb-1">
           say hi before you go
@@ -69,6 +117,16 @@ export default function Guestbook() {
               style={{ background: "rgba(179,157,219,0.2)" }}
             >
               <span className="font-sans font-medium text-[var(--ink)]">Message sent! \u2726</span>
+            </motion.div>
+          )}
+          {errorMsg && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-5 text-center py-3 px-4 rounded-xl text-sm"
+              style={{ background: "rgba(244,100,100,0.1)" }}
+            >
+              <span className="font-sans font-medium text-red-500">{errorMsg}</span>
             </motion.div>
           )}
 
@@ -130,14 +188,33 @@ export default function Guestbook() {
                   </FormItem>
                 )}
               />
-              <button
+
+              {/* Challenge */}
+              <div className="flex items-center gap-3">
+                <div className="bg-white/60 rounded-xl px-3 py-2 text-sm font-sans text-[var(--ink)] border border-[var(--glass-border)]">
+                  {challenge?.q || "2 + 3"}
+                </div>
+                <span className="text-[var(--ink-muted)] text-sm">=</span>
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="?"
+                  value={challengeAnswer}
+                  onChange={(e) => setChallengeAnswer(e.target.value)}
+                  className="bottom-border-input text-lg font-sans text-center w-16 text-[var(--ink)]"
+                />
+              </div>
+
+              <motion.button
                 type="submit"
                 disabled={createMessage.isPending}
-                className="w-full rounded-2xl py-4 text-white font-medium font-sans text-base transition-all duration-300 disabled:opacity-50 hover:-translate-y-0.5 hover:shadow-lg"
+                whileHover={{ y: -2, boxShadow: "0 14px 40px rgba(179,157,219,0.3)" }}
+                whileTap={{ scale: 0.97 }}
+                className="w-full rounded-2xl py-4 text-white font-medium font-sans text-base transition-all duration-300 disabled:opacity-50"
                 style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}
               >
                 {createMessage.isPending ? "Sending..." : "Send Message"}
-              </button>
+              </motion.button>
             </form>
           </Form>
         </FadeIn>
