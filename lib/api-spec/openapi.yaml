@@ -49,6 +49,32 @@ paths:
         "401":
           description: Wrong password
 
+  /admin/change-password:
+    post:
+      operationId: adminChangePassword
+      tags: [admin]
+      summary: Change admin password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminChangePasswordInput"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        "400":
+          description: Invalid input
+        "401":
+          description: Wrong current password
+
   /artworks:
     get:
       operationId: listArtworks
@@ -329,6 +355,15 @@ components:
       required: [password]
       properties:
         password:
+          type: string
+
+    AdminChangePasswordInput:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
           type: string
 
     AdminLoginResponse:

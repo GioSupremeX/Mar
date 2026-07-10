@@ -282,3 +282,23 @@ html {
   background: rgba(179, 157, 219, 0.3);
   color: var(--ink);
 }
+
+/* Shimmer text gradient */
+.shimmer-text {
+  background: linear-gradient(90deg, var(--ink) 0%, var(--app-accent) 25%, var(--app-accent-pink) 50%, var(--app-accent) 75%, var(--ink) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Parallax orb layers */
+.parallax-orb {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}

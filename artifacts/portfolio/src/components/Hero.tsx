@@ -62,10 +62,14 @@ export default function Hero() {
           <div className="flex items-center gap-2.5 px-4 py-2 mb-7 rounded-full self-center md:self-start border"
             style={{ background: "rgba(244,184,208,0.15)", borderColor: "rgba(244,184,208,0.4)" }}
           >
-            <span className="relative flex h-2 w-2 shrink-0">
+            <motion.span
+              className="relative flex h-2 w-2 shrink-0"
+              animate={{ scale: [1, 1.35, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--app-accent-pink)] opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--app-accent-pink)]" />
-            </span>
+            </motion.span>
             <span className="text-xs font-medium tracking-wider uppercase text-[var(--ink-muted)]">Currently drawing</span>
             <span className="font-handwriting text-base text-[var(--ink)]">{settings?.currentlyDrawing || "Starfall Dragon ✦"}</span>
           </div>
@@ -73,7 +77,7 @@ export default function Hero() {
 
         <TextReveal as="h1" delay={0.2}>
           <span
-            className="font-display font-semibold text-[var(--ink)] tracking-tight leading-none"
+            className="font-display font-semibold tracking-tight leading-none shimmer-text"
             style={{ fontSize: "clamp(48px, 6.5vw, 88px)" }}
           >
             {artistName}

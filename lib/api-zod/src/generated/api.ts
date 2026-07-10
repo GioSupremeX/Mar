@@ -29,6 +29,19 @@ export const AdminLoginResponse = zod.object({
 
 
 /**
+ * @summary Change admin password
+ */
+export const AdminChangePasswordBody = zod.object({
+  "currentPassword": zod.string(),
+  "newPassword": zod.string()
+})
+
+export const AdminChangePasswordResponse = zod.object({
+  "success": zod.boolean().optional()
+})
+
+
+/**
  * @summary List all artworks
  */
 export const ListArtworksResponseItem = zod.object({

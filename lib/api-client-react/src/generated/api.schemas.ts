@@ -13,6 +13,11 @@ export interface AdminLoginInput {
   password: string;
 }
 
+export interface AdminChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface AdminLoginResponse {
   token: string;
 }
@@ -144,4 +149,8 @@ export interface UploadUrlResponse {
 export interface ErrorEnvelope {
   error: string;
 }
+
+export type AdminChangePassword200 = {
+  success?: boolean;
+};
 

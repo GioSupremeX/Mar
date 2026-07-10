@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGetSiteSettings } from "@workspace/api-client-react";
 
 const msgs = [
   "hi there",
@@ -13,15 +14,15 @@ const msgs = [
 ];
 
 export default function CatMascot() {
+  const { data: settings } = useGetSiteSettings();
   const [showBubble, setShowBubble] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+  const [hearts, setHearts] = useState<{id: number, x: number}[]>([]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -29,6 +30,12 @@ export default function CatMascot() {
     setMsgIndex((i) => (i + 1) % msgs.length);
     setShowBubble(true);
     setTimeout(() => setShowBubble(false), 2200);
+  };
+
+  const handleHover = () => {
+    const newHearts = Array.from({ length: 4 }, (_, i) => ({ id: Date.now() + i, x: (Math.random() - 0.5) * 40 }));
+    setHearts((prev) => [...prev, ...newHearts]);
+    setTimeout(() => setHearts((prev) => prev.filter((h) => !newHearts.find((n) => n.id === h.id))), 1200);
   };
 
   // Scroll-reactive: tilt slightly based on scroll direction
@@ -52,6 +59,7 @@ export default function CatMascot() {
 
       <motion.button
         onClick={handleClick}
+        onMouseEnter={handleHover}
         animate={{
           y: [0, -4, 0],
           rotate: scrollTilt,
@@ -62,10 +70,24 @@ export default function CatMascot() {
         }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.9 }}
-        className="cursor-pointer focus:outline-none opacity-70 hover:opacity-100 transition-opacity"
+        className="cursor-pointer focus:outline-none opacity-70 hover:opacity-100 transition-opacity relative"
         aria-label="mascot"
       >
         <CatSVG />
+        <AnimatePresence>
+          {hearts.map((h) => (
+            <motion.span
+              key={h.id}
+              initial={{ opacity: 1, y: 0, x: 0, scale: 0.5 }}
+              animate={{ opacity: 0, y: -40, x: h.x, scale: 1.2 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="absolute top-0 left-1/2 text-lg pointer-events-none"
+            >
+              💕
+            </motion.span>
+          ))}
+        </AnimatePresence>
       </motion.button>
     </div>
   );

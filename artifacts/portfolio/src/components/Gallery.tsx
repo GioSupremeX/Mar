@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Link2 } from "lucide-react";
 import { useListArtworks } from "@workspace/api-client-react";
 import { TextReveal, FadeIn, StaggerChildren, StaggerItem } from "./TextReveal";
 import { SpotlightCard } from "./SpotlightCard";
@@ -175,9 +175,15 @@ export default function Gallery() {
                 alt={selectedImage.title}
                 className="max-w-full max-h-[80vh] object-contain rounded-xl"
               />
-              <div className="w-full p-5 text-center">
+              <div className="w-full p-5 text-center flex flex-col items-center gap-2">
                 <h3 className="font-display text-2xl text-[var(--ink)]">{selectedImage.title}</h3>
-                <p className="font-sans text-sm text-[var(--ink-muted)] mt-1 tracking-wide uppercase">{selectedImage.category}</p>
+                <p className="font-sans text-sm text-[var(--ink-muted)] tracking-wide uppercase">{selectedImage.category}</p>
+                <button
+                  onClick={() => { navigator.clipboard.writeText(window.location.href + "#gallery"); }}
+                  className="mt-2 flex items-center gap-1.5 text-xs text-[var(--ink-muted)] hover:text-[var(--app-accent)] transition-colors px-3 py-1.5 rounded-full border border-[var(--glass-border)] hover:border-[var(--app-accent)] bg-white/50"
+                >
+                  <Link2 size={12} /> Copy link
+                </button>
               </div>
             </motion.div>
           </motion.div>

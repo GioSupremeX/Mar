@@ -9,6 +9,7 @@ import Guestbook from "@/components/Guestbook";
 import CatMascot from "@/components/CatMascot";
 import PawPrints from "@/components/PawPrints";
 import ParticleField from "@/components/ParticleField";
+import ParallaxOrbs from "@/components/ParallaxOrbs";
 import { useGetSiteSettings, type SiteSettings } from "@workspace/api-client-react";
 
 export default function Home() {
@@ -19,12 +20,8 @@ export default function Home() {
 
   return (
     <main className="relative min-h-[100dvh] bg-[var(--bg)] overflow-x-hidden font-sans">
-      {/* Background orbs */}
-      <div className="bg-orbs-container">
-        <div className="bg-orb bg-orb-1" />
-        <div className="bg-orb bg-orb-2" />
-        <div className="bg-orb bg-orb-3" />
-      </div>
+      {/* Parallax background orbs */}
+      <ParallaxOrbs />
 
       {/* Floating dust particles */}
       <div className="fixed inset-0 pointer-events-none z-[5]">
@@ -51,7 +48,7 @@ export default function Home() {
           <p className="font-sans tracking-wide">
             &copy; {new Date().getFullYear()} {artistName}
           </p>
-          <p className="font-sans tracking-wide opacity-50">all rights reserved</p>
+          <p className="font-sans tracking-wide opacity-50">made by Giorgosxaral</p>
         </div>
       </footer>
 

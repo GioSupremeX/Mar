@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useUpload } from "@workspace/object-storage-web";
 
-type Tab = "artworks" | "settings" | "content" | "guestbook";
+type Tab = "artworks" | "settings" | "content" | "guestbook" | "security";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -33,6 +33,7 @@ export default function AdminDashboard() {
     { id: "settings", label: "Site Settings", icon: "⚙️" },
     { id: "content", label: "Content", icon: "📝" },
     { id: "guestbook", label: "Guestbook", icon: "📖" },
+    { id: "security", label: "Security", icon: "🔒" },
   ];
 
   return (
@@ -65,6 +66,7 @@ export default function AdminDashboard() {
         {activeTab === "settings" && <SettingsPanel token={token} />}
         {activeTab === "content" && <ContentPanel token={token} />}
         {activeTab === "guestbook" && <GuestbookPanel token={token} />}
+        {activeTab === "security" && <SecurityPanel token={token} />}
       </main>
     </div>
   );
@@ -545,6 +547,60 @@ function ListEditor<T extends object>({ title, description, items, setItems, new
         ))}
         {items.length === 0 && <p className="text-sm text-[var(--ink-muted)] text-center py-4">No items yet. Click Add to create one.</p>}
       </div>
+    </div>
+  );
+}
+
+/* ─── Security Panel ─── */
+function SecurityPanel({ token }: { token: string }) {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [status, setStatus] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus(null);
+    if (next.length < 6) { setStatus({ type: "err", msg: "New password must be at least 6 characters" }); return; }
+    if (next !== confirm) { setStatus({ type: "err", msg: "Passwords do not match" }); return; }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ currentPassword: current, newPassword: next }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus({ type: "ok", msg: "Password changed successfully. Use the new password next time you log in." });
+        setCurrent(""); setNext(""); setConfirm("");
+      } else {
+        setStatus({ type: "err", msg: data.error || "Failed to change password" });
+      }
+    } catch {
+      setStatus({ type: "err", msg: "Network error" });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="max-w-xl mx-auto">
+      <div className="mb-8"><h2 className="font-display text-3xl text-[var(--ink)]">Security</h2><p className="text-sm text-[var(--ink-muted)] mt-0.5">Change your admin password</p></div>
+      <form onSubmit={save} className="glass-panel p-8 space-y-5" style={{ background: "rgba(255,255,255,0.65)" }}>
+        {status && (
+          <div className={`py-2.5 px-4 rounded-xl text-sm ${status.type === "ok" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
+            {status.msg}
+          </div>
+        )}
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Current Password</label><Input type="password" value={current} onChange={e => setCurrent(e.target.value)} required className="bg-white" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">New Password</label><Input type="password" value={next} onChange={e => setNext(e.target.value)} required className="bg-white" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Confirm New Password</label><Input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required className="bg-white" /></div>
+        <button type="submit" disabled={loading} className="text-white px-8 py-3 rounded-full text-sm font-medium hover:opacity-90 hover:-translate-y-0.5 hover:shadow-md transition-all disabled:opacity-50"
+          style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}>
+          {loading ? "Changing..." : "Change Password"}
+        </button>
+      </form>
     </div>
   );
 }

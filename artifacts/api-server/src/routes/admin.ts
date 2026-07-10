@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import bcrypt from "bcryptjs";
 import { verifyAdminPassword, signAdminToken } from "../lib/auth";
 
 const router: IRouter = Router();
@@ -62,6 +63,30 @@ router.post("/admin/login", async (req, res): Promise<void> => {
 
   loginAttempts.delete(ip);
   res.json({ token: signAdminToken() });
+});
+
+/* Change admin password — requires current password + rate limit */
+router.post("/admin/change-password", async (req, res): Promise<void> => {
+  const { currentPassword, newPassword } = req.body ?? {};
+  if (!currentPassword || !newPassword || typeof currentPassword !== "string" || typeof newPassword !== "string") {
+    res.status(400).json({ error: "Current and new password required" });
+    return;
+  }
+  if (newPassword.length < 6) {
+    res.status(400).json({ error: "New password must be at least 6 characters" });
+    return;
+  }
+  const valid = await verifyAdminPassword(currentPassword);
+  if (!valid) {
+    res.status(401).json({ error: "Current password is incorrect" });
+    return;
+  }
+  // Hash the new password and set it as ADMIN_PASSWORD_HASH
+  const hash = await bcrypt.hash(newPassword, 10);
+  process.env.ADMIN_PASSWORD_HASH = hash;
+  // Clear plain text override if any
+  delete process.env.ADMIN_PASSWORD;
+  res.json({ success: true });
 });
 
 export default router;
