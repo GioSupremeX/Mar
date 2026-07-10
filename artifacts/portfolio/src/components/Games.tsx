@@ -1,5 +1,7 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
+import { TextReveal, FadeIn } from "./TextReveal";
 
 interface Game { title: string; description: string; image: string; accentColor: string; textColor: string; }
 
@@ -16,27 +18,27 @@ const DEFAULT_GAMES: Game[] = [
 export default function Games() {
   const { data: settings } = useGetSiteSettings();
   const games = safeParseJSON<Game[]>(settings?.games, DEFAULT_GAMES);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section id="games" className="w-full py-24 relative">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-14 relative z-10"
-      >
-        <p className="font-handwriting text-xl text-[var(--ink-muted)] mb-1">where I find inspiration</p>
-        <h2 className="font-display text-4xl font-semibold text-[var(--ink)]">Favorite Games</h2>
-      </motion.div>
+    <section id="games" className="w-full py-24 relative" ref={ref}>
+      <div className="text-center mb-14 relative z-10">
+        <TextReveal as="div" className="text-[var(--ink-muted)] font-handwriting text-xl mb-1">
+          where I find inspiration
+        </TextReveal>
+        <TextReveal as="h2" className="font-display text-4xl font-semibold text-[var(--ink)]">
+          Favorite Games
+        </TextReveal>
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto relative z-10 px-4">
         {games.map((game, index) => (
           <motion.div
             key={`${game.title}-${index}`}
             initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-30px" }}
-            transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
             whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
             className="glass-panel overflow-hidden flex flex-col group"
           >
@@ -58,7 +60,6 @@ export default function Games() {
                   el.parentElement!.style.background = game.accentColor;
                 }}
               />
-              {/* Game number badge */}
               <div className="absolute top-3 left-3 z-20 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs font-bold" style={{ color: game.textColor }}>
                 {index + 1}
               </div>

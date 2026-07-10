@@ -1,5 +1,7 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
+import { TextReveal, FadeIn } from "./TextReveal";
 
 interface Trophy { icon: string; title: string; desc: string; rarity: string; }
 
@@ -8,14 +10,14 @@ function safeParseJSON<T>(str: string | undefined, fallback: T): T {
 }
 
 const DEFAULT_TROPHIES: Trophy[] = [
-  { icon: "🎨", title: "100+ Drawings", desc: "Sketchbook filled", rarity: "gold" },
-  { icon: "💻", title: "First Digital", desc: "Level up!", rarity: "silver" },
-  { icon: "🐉", title: "Dragon Tamer", desc: "Rare collection", rarity: "gold" },
-  { icon: "🌸", title: "Fan Art Feature", desc: "Community love", rarity: "silver" },
-  { icon: "🏆", title: "First Commission", desc: "Real money!", rarity: "gold" },
-  { icon: "⭐", title: "Night Owl", desc: "3am art sessions", rarity: "silver" },
-  { icon: "✨", title: "Glow Up", desc: "Style found", rarity: "special" },
-  { icon: "🎮", title: "Gamer Artist", desc: "Fan art master", rarity: "special" },
+  { icon: "\ud83c\udfa8", title: "100+ Drawings", desc: "Sketchbook filled", rarity: "gold" },
+  { icon: "\ud83d\udcbb", title: "First Digital", desc: "Level up!", rarity: "silver" },
+  { icon: "\ud83d\udc09", title: "Dragon Tamer", desc: "Rare collection", rarity: "gold" },
+  { icon: "\ud83c\udf38", title: "Fan Art Feature", desc: "Community love", rarity: "silver" },
+  { icon: "\ud83c\udfc6", title: "First Commission", desc: "Real money!", rarity: "gold" },
+  { icon: "\u2b50", title: "Night Owl", desc: "3am art sessions", rarity: "silver" },
+  { icon: "\u2728", title: "Glow Up", desc: "Style found", rarity: "special" },
+  { icon: "\ud83c\udfae", title: "Gamer Artist", desc: "Fan art master", rarity: "special" },
 ];
 
 const rarityStyle: Record<string, { bg: string; border: string; dot: string; label: string }> = {
@@ -27,18 +29,19 @@ const rarityStyle: Record<string, { bg: string; border: string; dot: string; lab
 export default function Achievements() {
   const { data: settings } = useGetSiteSettings();
   const trophies = safeParseJSON<Trophy[]>(settings?.trophies, DEFAULT_TROPHIES);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section className="w-full py-16 max-w-5xl mx-auto px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-12"
-      >
-        <p className="font-handwriting text-xl text-[var(--ink-muted)] mb-1">unlocked over time</p>
-        <h2 className="font-display text-4xl font-semibold text-[var(--ink)]">Trophy Case</h2>
-      </motion.div>
+    <section className="w-full py-16 max-w-5xl mx-auto px-4" ref={ref}>
+      <div className="text-center mb-12">
+        <TextReveal as="div" className="text-[var(--ink-muted)] font-handwriting text-xl mb-1">
+          unlocked over time
+        </TextReveal>
+        <TextReveal as="h2" className="font-display text-4xl font-semibold text-[var(--ink)]">
+          Trophy Case
+        </TextReveal>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {trophies.map((item, index) => {
@@ -47,9 +50,8 @@ export default function Achievements() {
             <motion.div
               key={`${item.title}-${index}`}
               initial={{ opacity: 0, y: 20, scale: 0.94 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.5, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.06, ease: "easeOut" }}
               whileHover={{ y: -5, transition: { duration: 0.2, ease: "easeOut" } }}
               className="glass-panel flex flex-col items-center p-5 text-center cursor-default"
               style={{ background: style.bg, borderColor: style.border }}

@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CatMascot() {
   const [showBubble, setShowBubble] = useState(false);
-  const [meowIndex, setMeowIndex] = useState(0);
-  const meows = ["ₘₑₒw ♡", "purr~", "*nuzzles*", "nya! ♡", "zzz..."];
+  const [msgIndex, setMsgIndex] = useState(0);
+  const msgs = ["hi there", "welcome", "enjoy", "stay awhile"];
 
   const handleClick = () => {
-    setMeowIndex((i) => (i + 1) % meows.length);
+    setMsgIndex((i) => (i + 1) % msgs.length);
     setShowBubble(true);
-    setTimeout(() => setShowBubble(false), 2000);
+    setTimeout(() => setShowBubble(false), 2200);
   };
 
   return (
@@ -17,23 +17,24 @@ export default function CatMascot() {
       <AnimatePresence>
         {showBubble && (
           <motion.div
-            initial={{ opacity: 0, y: 5, scale: 0.8 }}
+            initial={{ opacity: 0, y: 5, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -5, scale: 0.8 }}
-            className="absolute -top-12 -left-16 bg-white/90 backdrop-blur-sm border border-[var(--glass-border)] px-3 py-1.5 rounded-2xl rounded-br-none shadow-lg whitespace-nowrap"
+            exit={{ opacity: 0, y: -5, scale: 0.85 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="absolute -top-10 -left-14 bg-white/90 backdrop-blur-md border border-[var(--glass-border)] px-3 py-1 rounded-2xl rounded-br-none shadow-lg whitespace-nowrap"
           >
-            <span className="font-handwriting text-lg text-[var(--ink)]">{meows[meowIndex]}</span>
+            <span className="font-sans text-xs font-medium tracking-wide text-[var(--ink)]">{msgs[msgIndex]}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
       <motion.button
         onClick={handleClick}
-        animate={{ y: [0, -5, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-        whileHover={{ scale: 1.1 }}
-        className="cursor-pointer focus:outline-none"
-        aria-label="Cat mascot"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        whileHover={{ scale: 1.08 }}
+        className="cursor-pointer focus:outline-none opacity-70 hover:opacity-100 transition-opacity"
+        aria-label="mascot"
       >
         <CatSVG />
       </motion.button>
@@ -43,47 +44,23 @@ export default function CatMascot() {
 
 function CatSVG() {
   return (
-    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Body */}
-      <ellipse cx="32" cy="42" rx="18" ry="16" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1.2"/>
-      {/* Head */}
-      <ellipse cx="32" cy="26" rx="14" ry="13" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1.2"/>
-      {/* Left ear outer */}
-      <polygon points="18,16 14,6 24,13" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1.2" strokeLinejoin="round"/>
-      {/* Left ear inner */}
-      <polygon points="19,14 16,8 23,12" fill="#F4B8D0" opacity="0.7"/>
-      {/* Right ear outer */}
-      <polygon points="46,16 50,6 40,13" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1.2" strokeLinejoin="round"/>
-      {/* Right ear inner */}
-      <polygon points="45,14 48,8 41,12" fill="#F4B8D0" opacity="0.7"/>
-      {/* Eyes */}
-      <ellipse cx="27" cy="26" rx="2.5" ry="2.5" fill="#2A1F4A"/>
-      <ellipse cx="37" cy="26" rx="2.5" ry="2.5" fill="#2A1F4A"/>
-      {/* Eye shine */}
-      <circle cx="28" cy="25" r="0.8" fill="white"/>
-      <circle cx="38" cy="25" r="0.8" fill="white"/>
-      {/* Nose */}
-      <ellipse cx="32" cy="30" rx="1.5" ry="1" fill="#F4B8D0"/>
-      {/* Mouth */}
-      <path d="M29 32 Q32 34 35 32" stroke="#E8C8D8" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-      {/* Whiskers left */}
-      <line x1="16" y1="30" x2="25" y2="31" stroke="#E8C8D8" strokeWidth="0.8" strokeLinecap="round"/>
-      <line x1="16" y1="32" x2="25" y2="32" stroke="#E8C8D8" strokeWidth="0.8" strokeLinecap="round"/>
-      {/* Whiskers right */}
-      <line x1="48" y1="30" x2="39" y2="31" stroke="#E8C8D8" strokeWidth="0.8" strokeLinecap="round"/>
-      <line x1="48" y1="32" x2="39" y2="32" stroke="#E8C8D8" strokeWidth="0.8" strokeLinecap="round"/>
-      {/* Tail */}
-      <path d="M50 50 Q58 44 56 36 Q54 30 50 34" stroke="#E8C8D8" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-      {/* Paws */}
-      <ellipse cx="24" cy="55" rx="5" ry="3.5" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1"/>
-      <ellipse cx="40" cy="55" rx="5" ry="3.5" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1"/>
-      {/* Blush */}
-      <ellipse cx="22" cy="30" rx="4" ry="2.5" fill="#F4B8D0" opacity="0.3"/>
-      <ellipse cx="42" cy="30" rx="4" ry="2.5" fill="#F4B8D0" opacity="0.3"/>
-      {/* Collar */}
-      <path d="M18 38 Q32 42 46 38" stroke="#B39DDB" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-      <circle cx="32" cy="40" r="2" fill="#B39DDB"/>
-      <circle cx="32" cy="40" r="1" fill="#FFD700" opacity="0.8"/>
+    <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="32" cy="42" rx="16" ry="14" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1"/>
+      <ellipse cx="32" cy="26" rx="12" ry="11" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1"/>
+      <polygon points="20,16 16,8 26,14" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1" strokeLinejoin="round"/>
+      <polygon points="21,14 18,10 25,13" fill="#F4B8D0" opacity="0.5"/>
+      <polygon points="44,16 48,8 38,14" fill="#FFF5F8" stroke="#E8C8D8" strokeWidth="1" strokeLinejoin="round"/>
+      <polygon points="43,14 46,10 39,13" fill="#F4B8D0" opacity="0.5"/>
+      <ellipse cx="27" cy="26" rx="2" ry="2.5" fill="#2A1F4A"/>
+      <ellipse cx="37" cy="26" rx="2" ry="2.5" fill="#2A1F4A"/>
+      <circle cx="28" cy="25" r="0.7" fill="white"/>
+      <circle cx="38" cy="25" r="0.7" fill="white"/>
+      <ellipse cx="32" cy="30" rx="1.2" ry="0.9" fill="#F4B8D0"/>
+      <path d="M29 32 Q32 34 35 32" stroke="#E8C8D8" strokeWidth="1" strokeLinecap="round" fill="none"/>
+      <ellipse cx="22" cy="30" rx="3.5" ry="2" fill="#F4B8D0" opacity="0.2"/>
+      <ellipse cx="42" cy="30" rx="3.5" ry="2" fill="#F4B8D0" opacity="0.2"/>
+      <path d="M18 38 Q32 42 46 38" stroke="#B39DDB" strokeWidth="2" strokeLinecap="round" fill="none"/>
+      <circle cx="32" cy="40" r="1.5" fill="#B39DDB"/>
     </svg>
   );
 }

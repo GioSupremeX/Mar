@@ -8,8 +8,12 @@ import MoodBoard from "@/components/MoodBoard";
 import Guestbook from "@/components/Guestbook";
 import CatMascot from "@/components/CatMascot";
 import PawPrints from "@/components/PawPrints";
+import { useGetSiteSettings } from "@workspace/api-client-react";
 
 export default function Home() {
+  const { data: settings } = useGetSiteSettings();
+  const artistName = settings?.artistName || "Art & Magic";
+
   return (
     <main className="relative min-h-[100dvh] bg-[var(--bg)] overflow-x-hidden font-sans">
       {/* Background orbs */}
@@ -19,7 +23,7 @@ export default function Home() {
         <div className="bg-orb bg-orb-3" />
       </div>
 
-      {/* Decorative paw prints */}
+      {/* Subtle edge decoration */}
       <PawPrints />
 
       <Navigation />
@@ -34,16 +38,16 @@ export default function Home() {
         <Guestbook />
       </div>
 
-      <footer className="relative z-10 py-10 mt-10 border-t border-[var(--glass-border)]">
+      <footer className="relative z-10 py-12 mt-16 border-t border-[var(--glass-border)]">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--ink-muted)]">
           <p className="font-sans tracking-wide">
-            © {new Date().getFullYear()} Art & Magic · Made with 🐾 and matcha
+            &copy; {new Date().getFullYear()} {artistName}
           </p>
-          <p className="font-handwriting text-base opacity-60">crafted with love</p>
+          <p className="font-sans tracking-wide opacity-50">made with intention</p>
         </div>
       </footer>
 
-      {/* Floating cat mascot */}
+      {/* Floating mascot */}
       <CatMascot />
     </main>
   );

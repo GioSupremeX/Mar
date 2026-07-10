@@ -1,5 +1,7 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
+import { TextReveal, FadeIn } from "./TextReveal";
 
 interface MoodItem { icon: string; label: string; value: string; }
 
@@ -56,37 +58,23 @@ const FALLBACK_ICON = {
   svg: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.97 },
-  show: (i: number) => ({
-    opacity: 1, y: 0, scale: 1,
-    transition: { duration: 0.5, delay: i * 0.07, ease: "easeOut" as const },
-  }),
-};
-
 export default function MoodBoard() {
   const { data: settings } = useGetSiteSettings();
   const moods = safeParseJSON<MoodItem[]>(settings?.moodBoard, DEFAULT_MOODS);
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-60px" });
 
   return (
-    <section className="w-full py-20 relative">
+    <section className="w-full py-20 relative" ref={containerRef}>
       <div className="max-w-5xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <p className="font-handwriting text-xl text-[var(--ink-muted)] mb-1">a peek inside my world</p>
-          <h2 className="font-display italic text-4xl text-[var(--ink)]">
+        <div className="text-center mb-12">
+          <TextReveal as="div" className="text-[var(--ink-muted)] font-handwriting text-xl mb-1">
+            a peek inside my world
+          </TextReveal>
+          <TextReveal as="h2" className="font-display italic text-4xl text-[var(--ink)]">
             right now
-            <span className="inline-block ml-3 text-[var(--app-accent)]">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 1l2.2 6.6H19l-5.6 4.1 2.1 6.6L10 14.2l-5.5 4.1 2.1-6.6L1 7.6h6.8L10 1z"/>
-              </svg>
-            </span>
-          </h2>
-        </motion.div>
+          </TextReveal>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {moods.map((mood, i) => {
@@ -94,11 +82,9 @@ export default function MoodBoard() {
             return (
               <motion.div
                 key={i}
-                custom={i}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-40px" }}
+                initial={{ opacity: 0, y: 24, scale: 0.97 }}
+                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.07, ease: "easeOut" }}
                 whileHover={{ y: -4, transition: { duration: 0.2, ease: "easeOut" } }}
                 className="glass-panel p-5 flex flex-col gap-3 cursor-default"
                 style={{ background: `${ic.bg}AA` }}

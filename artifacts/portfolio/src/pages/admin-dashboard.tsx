@@ -233,16 +233,16 @@ function SettingsPanel({ token }: { token: string }) {
       <div className="mb-8"><h2 className="font-display text-3xl text-[var(--ink)]">Site Settings</h2><p className="text-sm text-[var(--ink-muted)] mt-0.5">What visitors see</p></div>
       {saved && <div className="mb-5 glass-panel py-3 px-5 text-green-700 text-sm" style={{ background: "rgba(144,200,144,0.2)" }}>✓ Saved!</div>}
       <form onSubmit={save} className="glass-panel p-8 space-y-6" style={{ background: "rgba(255,255,255,0.65)" }}>
-        <div><label className="lbl">Artist Name</label><Input value={form.artistName} onChange={e => setForm({ ...form, artistName: e.target.value })} className="bg-white" /></div>
-        <div><label className="lbl">Tagline</label><Input value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} className="bg-white" /></div>
-        <div><label className="lbl">Hero Subtitle</label><Textarea value={form.heroSubtitle} onChange={e => setForm({ ...form, heroSubtitle: e.target.value })} className="bg-white h-20 resize-none" /></div>
-        <div><label className="lbl">Bio</label><Textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} className="bg-white h-32 resize-none" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Artist Name</label><Input value={form.artistName} onChange={e => setForm({ ...form, artistName: e.target.value })} className="bg-white" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Tagline</label><Input value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} className="bg-white" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Hero Subtitle</label><Textarea value={form.heroSubtitle} onChange={e => setForm({ ...form, heroSubtitle: e.target.value })} className="bg-white h-20 resize-none" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Bio</label><Textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} className="bg-white h-32 resize-none" /></div>
         <ImageUploader value={form.avatarUrl} onChange={url => setForm({ ...form, avatarUrl: url })} label="Profile Picture" />
 
         {/* Hero Stats */}
         <div>
           <div className="flex justify-between items-center mb-3">
-            <label className="lbl mb-0">Hero Stats</label>
+            <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider">Hero Stats</label>
             <button type="button" onClick={addStat} className="text-xs text-[var(--app-accent)] hover:underline flex items-center gap-1"><Plus size={12} /> Add stat</button>
           </div>
           <div className="space-y-2">
@@ -445,7 +445,7 @@ function ContentPanel({ token }: { token: string }) {
               )}
             />
             <div>
-              <label className="lbl">Current Obsession text</label>
+              <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Current Obsession text</label>
               <Textarea value={currentObsession} onChange={e => setCurrentObsession(e.target.value)} className="bg-white resize-none h-24" placeholder="What are you obsessed with right now?" />
             </div>
           </div>

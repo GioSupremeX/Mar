@@ -46,6 +46,7 @@ export default function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               className="bottom-border-input text-center text-xl font-sans text-[var(--ink)] placeholder:text-[var(--ink-muted)]/40 px-4 py-3 h-auto"
               autoFocus
+              autoComplete="current-password"
             />
             {error && <p className="text-red-500 text-sm mt-2 font-sans">Wrong password</p>}
           </div>

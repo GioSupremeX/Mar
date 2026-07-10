@@ -3,15 +3,20 @@ import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Settings, Menu, X } from "lucide-react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
-import { SmallPaw } from "./Doodles";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: settings } = useGetSiteSettings();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 30);
+    const handleScroll = () => {
+      const y = window.scrollY;
+      setIsScrolled(y > 30);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(max > 0 ? (y / max) * 100 : 0);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -32,6 +37,14 @@ export default function Navigation() {
 
   return (
     <>
+      {/* Scroll progress */}
+      <div className="fixed top-0 left-0 right-0 z-[60] h-[2px] bg-transparent">
+        <div
+          className="h-full transition-all duration-150"
+          style={{ width: `${scrollProgress}%`, background: "linear-gradient(90deg, var(--app-accent), var(--app-accent-pink))" }}
+        />
+      </div>
+
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
@@ -42,10 +55,7 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-[var(--app-accent)] opacity-60 group-hover:opacity-100 transition-opacity -rotate-12">
-              <SmallPaw />
-            </span>
-            <span className="font-display italic text-2xl md:text-3xl font-semibold text-[var(--ink)] tracking-wide">
+            <span className="font-display italic text-2xl md:text-3xl font-semibold text-[var(--ink)] tracking-wide group-hover:opacity-80 transition-opacity">
               {artistName}
             </span>
           </Link>
@@ -62,7 +72,7 @@ export default function Navigation() {
                 <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[var(--app-accent)] group-hover:w-full transition-all duration-300" />
               </button>
             ))}
-            <Link href="/admin" className="ml-2 opacity-30 hover:opacity-80 transition-opacity text-[var(--ink)]">
+            <Link href="/admin" className="ml-2 opacity-25 hover:opacity-80 transition-opacity text-[var(--ink)]">
               <Settings size={15} />
             </Link>
           </nav>
@@ -94,21 +104,14 @@ export default function Navigation() {
               <X size={28} />
             </button>
 
-            {/* Cat decoration */}
-            <div className="absolute top-20 left-8 text-[var(--app-accent)] opacity-20">
-              <SmallPaw />
-            </div>
-            <div className="absolute bottom-24 right-10 text-[var(--app-accent-pink)] opacity-20">
-              <SmallPaw />
-            </div>
-
             <div className="flex flex-col items-center gap-10">
-              {navLinks.map((link) => (
+              {navLinks.map((link, i) => (
                 <motion.button
                   key={link.id}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
+                  transition={{ delay: i * 0.08 }}
                   onClick={() => scrollTo(link.id)}
                   className="font-display italic text-4xl text-[var(--ink)] hover:text-[var(--app-accent)] transition-colors"
                 >

@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { TextReveal, FadeIn } from "./TextReveal";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name required").max(50),
@@ -19,7 +20,7 @@ const formSchema = z.object({
   emoji: z.string().optional(),
 });
 
-const emojis = ["🐾", "✨", "🌸", "🎨", "🐈", "🌙", "🦋", "💜"];
+const emojis = ["\u2726", "\u2728", "\u270f\uFE0F", "\ud83d\udc09", "\ud83c\udf38", "\ud83c\udfa8", "\u2b50", "\ud83c\udfae"];
 
 export default function Guestbook() {
   const { data: messages, isLoading } = useListGuestbookMessages();
@@ -29,7 +30,7 @@ export default function Guestbook() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", message: "", emoji: "🐾" },
+    defaultValues: { name: "", message: "", emoji: "\u2726" },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -37,7 +38,7 @@ export default function Guestbook() {
       { data: values },
       {
         onSuccess: () => {
-          form.reset({ name: "", message: "", emoji: "🐾" });
+          form.reset({ name: "", message: "", emoji: "\u2726" });
           queryClient.invalidateQueries({ queryKey: getListGuestbookMessagesQueryKey() });
           setSuccess(true);
           setTimeout(() => setSuccess(false), 3000);
@@ -48,29 +49,27 @@ export default function Guestbook() {
 
   return (
     <section id="guestbook" className="w-full py-24 max-w-4xl mx-auto px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-14"
-      >
-        <p className="font-handwriting text-xl text-[var(--ink-muted)] mb-1">say hi before you go 🐾</p>
-        <h2 className="font-display text-4xl font-semibold text-[var(--ink)]">Guestbook</h2>
-      </motion.div>
+      <div className="text-center mb-14">
+        <TextReveal as="div" className="text-[var(--ink-muted)] font-handwriting text-xl mb-1">
+          say hi before you go
+        </TextReveal>
+        <TextReveal as="h2" className="font-display text-4xl font-semibold text-[var(--ink)]">
+          Guestbook
+        </TextReveal>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-10 md:gap-16">
         {/* Form */}
-        <motion.div
-          initial={{ opacity: 0, x: -16 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="glass-panel p-8 h-fit"
-          style={{ background: "rgba(255,255,255,0.55)" }}
-        >
+        <FadeIn direction="left" className="glass-panel p-8 h-fit" style={{ background: "rgba(255,255,255,0.55)" }}>
           {success && (
-            <div className="mb-5 text-center glass-panel py-3 px-4" style={{ background: "rgba(179,157,219,0.2)" }}>
-              <span className="font-handwriting text-xl text-[var(--ink)]">Left a paw print! 🐾✨</span>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-5 text-center py-3 px-4 rounded-xl text-sm"
+              style={{ background: "rgba(179,157,219,0.2)" }}
+            >
+              <span className="font-sans font-medium text-[var(--ink)]">Message sent! \u2726</span>
+            </motion.div>
           )}
 
           <Form {...form}>
@@ -137,14 +136,14 @@ export default function Guestbook() {
                 className="w-full rounded-2xl py-4 text-white font-medium font-sans text-base transition-all duration-300 disabled:opacity-50 hover:-translate-y-0.5 hover:shadow-lg"
                 style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}
               >
-                {createMessage.isPending ? "Signing..." : "Leave a Paw Print 🐾"}
+                {createMessage.isPending ? "Sending..." : "Send Message"}
               </button>
             </form>
           </Form>
-        </motion.div>
+        </FadeIn>
 
         {/* Messages */}
-        <div className="relative">
+        <FadeIn direction="right" delay={0.15} className="relative">
           <div
             className="absolute inset-0 opacity-10 pointer-events-none rounded-xl"
             style={{
@@ -172,8 +171,8 @@ export default function Guestbook() {
                     {msg.emoji} {msg.message}
                   </p>
                   <div className="flex items-baseline gap-2">
-                    <span className="font-display font-semibold text-[var(--ink)] text-lg">— {msg.name}</span>
-                    <span className="font-handwriting text-[var(--ink-muted)] text-base">
+                    <span className="font-display font-semibold text-[var(--ink)] text-lg">\u2014 {msg.name}</span>
+                    <span className="font-sans text-[var(--ink-muted)] text-sm">
                       {new Date(msg.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                   </div>
@@ -181,12 +180,12 @@ export default function Guestbook() {
               ))
             ) : (
               <div className="text-center mt-12">
-                <p className="text-5xl mb-4">🐾</p>
-                <p className="font-handwriting text-2xl text-[var(--ink-muted)]">Be the first to sign!</p>
+                <p className="text-4xl mb-4">\u270f\uFE0F</p>
+                <p className="font-handwriting text-2xl text-[var(--ink-muted)]">Be the first to write!</p>
               </div>
             )}
           </div>
-        </div>
+        </FadeIn>
       </div>
     </section>
   );

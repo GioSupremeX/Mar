@@ -52,14 +52,13 @@
 }
 
 :root {
-  --app-font-sans: 'DM Sans', sans-serif;
+  --app-font-sans: 'DM Sans', system-ui, sans-serif;
   --app-font-display: 'Cormorant Garamond', serif;
   --app-font-serif: 'Cormorant Garamond', serif;
   --app-font-handwriting: 'Caveat', cursive;
-  
+
   --radius: 1rem;
 
-  /* Custom Color Palette */
   --bg: #F7F5FF;
   --bg-2: #EDE8FF;
   --glass: rgba(255, 255, 255, 0.55);
@@ -71,39 +70,6 @@
   --app-accent-blue: #A8C8E8;
   --gold: #E8D4A8;
 
-  /* Tailwind HSL Mapping - Approximations for components */
-  --background: 252 100% 98%; /* #F7F5FF */
-  --foreground: 255 41% 20%; /* #2A1F4A */
-  --border: 253 100% 86%; /* #rgba(200,185,255) */
-  --input: 253 100% 86%;
-  --ring: 261 46% 73%; /* #B39DDB */
-
-  --card: 0 0% 100%;
-  --card-foreground: 255 41% 20%;
-  --card-border: 253 100% 86%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 255 41% 20%;
-  --popover-border: 253 100% 86%;
-
-  --primary: 261 46% 73%; /* #B39DDB */
-  --primary-foreground: 0 0% 100%;
-  
-  --secondary: 338 73% 81%; /* #F4A7C3 */
-  --secondary-foreground: 255 41% 20%;
-
-  --muted: 252 100% 98%;
-  --muted-foreground: 254 22% 54%; /* #7B6FA3 */
-
-  --accent: 210 56% 78%; /* #A8C8E8 */
-  --accent-foreground: 255 41% 20%;
-
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-}
-
-.dark {
-  /* Using light mode as default since no dark mode specified, fallback if activated */
   --background: 252 100% 98%;
   --foreground: 255 41% 20%;
   --border: 253 100% 86%;
@@ -120,7 +86,38 @@
 
   --primary: 261 46% 73%;
   --primary-foreground: 0 0% 100%;
-  
+
+  --secondary: 338 73% 81%;
+  --secondary-foreground: 255 41% 20%;
+
+  --muted: 252 100% 98%;
+  --muted-foreground: 254 22% 54%;
+
+  --accent: 210 56% 78%;
+  --accent-foreground: 255 41% 20%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+}
+
+.dark {
+  --background: 252 100% 98%;
+  --foreground: 255 41% 20%;
+  --border: 253 100% 86%;
+  --input: 253 100% 86%;
+  --ring: 261 46% 73%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 255 41% 20%;
+  --card-border: 253 100% 86%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 255 41% 20%;
+  --popover-border: 253 100% 86%;
+
+  --primary: 261 46% 73%;
+  --primary-foreground: 0 0% 100%;
+
   --secondary: 338 73% 81%;
   --secondary-foreground: 255 41% 20%;
 
@@ -144,12 +141,12 @@
     background-color: var(--bg);
     color: var(--ink);
   }
-  
+
   h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--app-font-display);
     color: var(--ink);
   }
-  
+
   .font-handwriting {
     font-family: var(--app-font-handwriting);
   }
@@ -244,7 +241,7 @@
   scrollbar-color: var(--app-accent) transparent;
 }
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
@@ -252,12 +249,18 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: var(--app-accent);
   border-radius: 20px;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-/* Cursor crosshair for art vibes */
-body {
-  cursor: default;
+/* Subtle noise texture */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
 /* Section divider */
@@ -269,3 +272,13 @@ body {
   margin: 0 auto;
 }
 
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(179, 157, 219, 0.3);
+  color: var(--ink);
+}
