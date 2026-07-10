@@ -82,6 +82,12 @@ const DEFAULTS: Record<string, string> = {
   journey: defaultJourney,
   currentObsession: "Mastering complex hands and dynamic lighting. Also currently deep in a worldbuilding rabbit hole.",
   hobbies: defaultHobbies,
+  currentlyDrawing: "Starfall Dragon ✦",
+  showMoodBoard: "true",
+  showTrophies: "true",
+  showGames: "true",
+  showJourney: "true",
+  showHobbies: "true",
 };
 
 const ALLOWED_KEYS = Object.keys(DEFAULTS);

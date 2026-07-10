@@ -67,7 +67,7 @@ export default function Hero() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--app-accent-pink)]" />
             </span>
             <span className="text-xs font-medium tracking-wider uppercase text-[var(--ink-muted)]">Currently drawing</span>
-            <span className="font-handwriting text-base text-[var(--ink)]">Starfall Dragon ✦</span>
+            <span className="font-handwriting text-base text-[var(--ink)]">{settings?.currentlyDrawing || "Starfall Dragon ✦"}</span>
           </div>
         </FadeIn>
 
@@ -107,6 +107,21 @@ export default function Hero() {
           >
             Explore My Art
           </MagneticButton>
+        </FadeIn>
+
+        {/* Scroll hint */}
+        <FadeIn delay={0.85} className="mt-16">
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-1 text-[var(--ink-muted)]/40 cursor-pointer"
+            onClick={scrollToGallery}
+          >
+            <span className="text-[10px] tracking-widest uppercase font-medium">Scroll</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </motion.div>
         </FadeIn>
       </div>
 

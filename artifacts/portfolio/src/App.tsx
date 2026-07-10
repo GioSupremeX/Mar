@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +7,11 @@ import Home from "@/pages/home";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import CursorTrail from "@/components/CursorTrail";
+import CursorGlow from "@/components/CursorGlow";
+import Preloader from "@/components/Preloader";
+import BackToTop from "@/components/BackToTop";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,7 +22,19 @@ const queryClient = new QueryClient({
   },
 });
 
+/* Page title updater */
+function usePageTitle() {
+  const [location] = useLocation();
+  useEffect(() => {
+    const base = "Mar · Artist Portfolio";
+    if (location === "/admin") document.title = "Admin Login";
+    else if (location === "/admin/dashboard") document.title = "Dashboard";
+    else document.title = base;
+  }, [location]);
+}
+
 function Router() {
+  usePageTitle();
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -34,7 +51,13 @@ function App() {
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <CursorTrail />
-          <Router />
+          <CursorGlow />
+          <Preloader>
+            <SmoothScrollProvider>
+              <Router />
+            </SmoothScrollProvider>
+          </Preloader>
+          <BackToTop />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

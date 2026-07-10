@@ -53,6 +53,12 @@ export interface SiteSettings {
   journey?: string;
   currentObsession?: string;
   hobbies?: string;
+  currentlyDrawing?: string;
+  showMoodBoard?: string;
+  showTrophies?: string;
+  showGames?: string;
+  showJourney?: string;
+  showHobbies?: string;
 }
 
 export interface SiteSettingsInput {
@@ -82,6 +88,18 @@ export interface SiteSettingsInput {
   currentObsession?: string;
   /** @maxLength 2000 */
   hobbies?: string;
+  /** @maxLength 80 */
+  currentlyDrawing?: string;
+  /** @maxLength 10 */
+  showMoodBoard?: string;
+  /** @maxLength 10 */
+  showTrophies?: string;
+  /** @maxLength 10 */
+  showGames?: string;
+  /** @maxLength 10 */
+  showJourney?: string;
+  /** @maxLength 10 */
+  showHobbies?: string;
 }
 
 export interface GuestbookMessage {

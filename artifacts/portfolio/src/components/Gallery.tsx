@@ -41,6 +41,7 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
 export default function Gallery() {
   const { data: artworks = [], isLoading } = useListArtworks();
   const [filter, setFilter] = useState("All");
+  const [showAll, setShowAll] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{url: string, title: string, category: string} | null>(null);
 
   const filteredArtworks = artworks.filter(art => filter === "All" || art.category === filter);
@@ -88,41 +89,55 @@ export default function Gallery() {
           </div>
         </div>
       ) : (
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 relative z-10 px-4">
-          {filteredArtworks.map((art, i) => (
-            <motion.div
-              key={art.id}
-              initial={{ opacity: 0, y: 30, scale: 0.97 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.7, delay: (i % 6) * 0.08, ease: "easeOut" }}
-              className="break-inside-avoid"
-            >
-              <TiltCard className="glass-panel overflow-hidden group cursor-pointer border-0 shadow-sm hover:shadow-xl transition-shadow duration-500 rounded-2xl">
-                <SpotlightCard
-                  className="rounded-2xl"
-                  spotlightColor="rgba(179,157,219,0.12)"
-                >
-                  <div className="relative overflow-hidden rounded-2xl" onClick={() => setSelectedImage({ url: getImageUrl(art.imageUrl, art.id), title: art.title, category: art.category })}>
-                    <img
-                      src={getImageUrl(art.imageUrl, art.id)}
-                      alt={art.title}
-                      className="w-full h-auto object-cover transform group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-                      loading="lazy"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(art.title)}&background=EDE8FF&color=7B6FA3`;
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-[var(--ink)]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                      <h3 className="text-white font-display text-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300">{art.title}</h3>
-                      <p className="text-white/80 font-handwriting text-xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">{art.category}</p>
+        <>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 relative z-10 px-4">
+            {(showAll ? filteredArtworks : filteredArtworks.slice(0, 6)).map((art, i) => (
+              <motion.div
+                key={art.id}
+                initial={{ opacity: 0, y: 30, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.7, delay: (i % 6) * 0.08, ease: "easeOut" }}
+                className="break-inside-avoid"
+              >
+                <TiltCard className="glass-panel overflow-hidden group cursor-pointer border-0 shadow-sm hover:shadow-xl transition-shadow duration-500 rounded-2xl">
+                  <SpotlightCard
+                    className="rounded-2xl"
+                    spotlightColor="rgba(179,157,219,0.12)"
+                  >
+                    <div className="relative overflow-hidden rounded-2xl" onClick={() => setSelectedImage({ url: getImageUrl(art.imageUrl, art.id), title: art.title, category: art.category })}>
+                      <img
+                        src={getImageUrl(art.imageUrl, art.id)}
+                        alt={art.title}
+                        className="w-full h-auto object-cover transform group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(art.title)}&background=EDE8FF&color=7B6FA3`;
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-[var(--ink)]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h3 className="text-white font-display text-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300">{art.title}</h3>
+                        <p className="text-white/80 font-handwriting text-xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">{art.category}</p>
+                      </div>
                     </div>
-                  </div>
-                </SpotlightCard>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
+                  </SpotlightCard>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+          {filteredArtworks.length > 6 && (
+            <div className="text-center mt-10">
+              <motion.button
+                onClick={() => setShowAll(!showAll)}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="px-8 py-3 rounded-full text-sm font-medium border border-[var(--glass-border)] bg-white/50 text-[var(--ink-muted)] hover:bg-white hover:text-[var(--ink)] hover:border-[var(--app-accent)] transition-all duration-300"
+              >
+                {showAll ? "Show Less" : `See All (${filteredArtworks.length})`}
+              </motion.button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Lightbox */}

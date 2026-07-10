@@ -54,53 +54,57 @@ export default function AboutMe() {
           <div className="text-[var(--ink)]/80 text-lg leading-relaxed whitespace-pre-wrap font-sans">{bio}</div>
 
           {/* Journey */}
-          <div className="mt-14">
-            <TextReveal as="h3" className="font-display text-2xl font-semibold text-[var(--ink)] mb-7">
-              My Journey
-            </TextReveal>
-            <div className="relative border-l border-[var(--glass-border)] ml-3 space-y-8 pb-4">
-              {journey.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative pl-8"
-                >
-                  <div className="absolute w-3 h-3 bg-white border-2 border-[var(--app-accent)] rounded-full -left-[7px] top-2" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-handwriting text-2xl text-[var(--app-accent)]">{item.year}</span>
-                    <span className="text-base">{item.emoji}</span>
-                  </div>
-                  <p className="text-[var(--ink)]/75 font-sans text-sm md:text-base">{item.description}</p>
-                </motion.div>
-              ))}
+          {settings?.showJourney !== "false" && (
+            <div className="mt-14">
+              <TextReveal as="h3" className="font-display text-2xl font-semibold text-[var(--ink)] mb-7">
+                My Journey
+              </TextReveal>
+              <div className="relative border-l border-[var(--glass-border)] ml-3 space-y-8 pb-4">
+                {journey.map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="relative pl-8"
+                  >
+                    <div className="absolute w-3 h-3 bg-white border-2 border-[var(--app-accent)] rounded-full -left-[7px] top-2" />
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-handwriting text-2xl text-[var(--app-accent)]">{item.year}</span>
+                      <span className="text-base">{item.emoji}</span>
+                    </div>
+                    <p className="text-[var(--ink)]/75 font-sans text-sm md:text-base">{item.description}</p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </FadeIn>
 
         {/* Right */}
         <FadeIn direction="right" delay={0.15} className="flex flex-col gap-6">
           {/* Hobbies */}
-          <GlowCard className="glass-panel p-7" glowColor="rgba(179,157,219,0.15)">
-            <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-5">
-              Hobbies & Loves
-            </h3>
-            <div className="flex flex-wrap gap-2.5">
-              {hobbies.map((h, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.3, delay: i * 0.06 }}
-                  whileHover={{ y: -2, transition: { duration: 0.15 } }}
-                  className="flex items-center gap-1.5 bg-white/70 text-[var(--ink-muted)] px-4 py-2 rounded-full text-sm font-medium border border-white shadow-sm cursor-default"
-                >
-                  <span>{h.icon}</span> {h.label}
-                </motion.span>
-              ))}
-            </div>
-          </GlowCard>
+          {settings?.showHobbies !== "false" && (
+            <GlowCard className="glass-panel p-7" glowColor="rgba(179,157,219,0.15)">
+              <h3 className="font-display text-2xl font-semibold text-[var(--ink)] mb-5">
+                Hobbies & Loves
+              </h3>
+              <div className="flex flex-wrap gap-2.5">
+                {hobbies.map((h, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ duration: 0.3, delay: i * 0.06 }}
+                    whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                    className="flex items-center gap-1.5 bg-white/70 text-[var(--ink-muted)] px-4 py-2 rounded-full text-sm font-medium border border-white shadow-sm cursor-default"
+                  >
+                    <span>{h.icon}</span> {h.label}
+                  </motion.span>
+                ))}
+              </div>
+            </GlowCard>
+          )}
 
           {/* Current Obsession */}
           <GlowCard className="glass-panel p-7" glowColor="rgba(244,167,195,0.2)">

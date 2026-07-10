@@ -121,7 +121,13 @@ export const GetSiteSettingsResponse = zod.object({
   "games": zod.string().optional(),
   "journey": zod.string().optional(),
   "currentObsession": zod.string().optional(),
-  "hobbies": zod.string().optional()
+  "hobbies": zod.string().optional(),
+  "currentlyDrawing": zod.string().optional(),
+  "showMoodBoard": zod.string().optional(),
+  "showTrophies": zod.string().optional(),
+  "showGames": zod.string().optional(),
+  "showJourney": zod.string().optional(),
+  "showHobbies": zod.string().optional()
 })
 
 
@@ -154,6 +160,18 @@ export const updateSiteSettingsBodyCurrentObsessionMax = 500;
 
 export const updateSiteSettingsBodyHobbiesMax = 2000;
 
+export const updateSiteSettingsBodyCurrentlyDrawingMax = 80;
+
+export const updateSiteSettingsBodyShowMoodBoardMax = 10;
+
+export const updateSiteSettingsBodyShowTrophiesMax = 10;
+
+export const updateSiteSettingsBodyShowGamesMax = 10;
+
+export const updateSiteSettingsBodyShowJourneyMax = 10;
+
+export const updateSiteSettingsBodyShowHobbiesMax = 10;
+
 
 
 export const UpdateSiteSettingsBody = zod.object({
@@ -169,7 +187,13 @@ export const UpdateSiteSettingsBody = zod.object({
   "games": zod.string().max(updateSiteSettingsBodyGamesMax).optional(),
   "journey": zod.string().max(updateSiteSettingsBodyJourneyMax).optional(),
   "currentObsession": zod.string().max(updateSiteSettingsBodyCurrentObsessionMax).optional(),
-  "hobbies": zod.string().max(updateSiteSettingsBodyHobbiesMax).optional()
+  "hobbies": zod.string().max(updateSiteSettingsBodyHobbiesMax).optional(),
+  "currentlyDrawing": zod.string().max(updateSiteSettingsBodyCurrentlyDrawingMax).optional(),
+  "showMoodBoard": zod.string().max(updateSiteSettingsBodyShowMoodBoardMax).optional(),
+  "showTrophies": zod.string().max(updateSiteSettingsBodyShowTrophiesMax).optional(),
+  "showGames": zod.string().max(updateSiteSettingsBodyShowGamesMax).optional(),
+  "showJourney": zod.string().max(updateSiteSettingsBodyShowJourneyMax).optional(),
+  "showHobbies": zod.string().max(updateSiteSettingsBodyShowHobbiesMax).optional()
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
@@ -185,7 +209,13 @@ export const UpdateSiteSettingsResponse = zod.object({
   "games": zod.string().optional(),
   "journey": zod.string().optional(),
   "currentObsession": zod.string().optional(),
-  "hobbies": zod.string().optional()
+  "hobbies": zod.string().optional(),
+  "currentlyDrawing": zod.string().optional(),
+  "showMoodBoard": zod.string().optional(),
+  "showTrophies": zod.string().optional(),
+  "showGames": zod.string().optional(),
+  "showJourney": zod.string().optional(),
+  "showHobbies": zod.string().optional()
 })
 
 

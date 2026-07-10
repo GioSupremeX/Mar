@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: "artworks", label: "Artworks", icon: "🎨" },
     { id: "settings", label: "Site Settings", icon: "⚙️" },
-    { id: "content", label: "Page Content", icon: "📝" },
+    { id: "content", label: "Content", icon: "📝" },
     { id: "guestbook", label: "Guestbook", icon: "📖" },
   ];
 
@@ -206,20 +206,47 @@ function SettingsPanel({ token }: { token: string }) {
   const { data: settings } = useGetSiteSettings();
   const update = useUpdateSiteSettings({ request: { headers: { Authorization: `Bearer ${token}` } } });
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({ artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "" });
+  const [form, setForm] = useState({ artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "", currentlyDrawing: "" });
   const [heroStats, setHeroStats] = useState<{ value: string; label: string }[]>([]);
+  const [toggles, setToggles] = useState({
+    showMoodBoard: true, showTrophies: true, showGames: true, showJourney: true, showHobbies: true,
+  });
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (settings) {
-      setForm({ artistName: settings.artistName || "", tagline: settings.tagline || "", heroSubtitle: settings.heroSubtitle || "", bio: settings.bio || "", avatarUrl: settings.avatarUrl || "" });
+      setForm({
+        artistName: settings.artistName || "",
+        tagline: settings.tagline || "",
+        heroSubtitle: settings.heroSubtitle || "",
+        bio: settings.bio || "",
+        avatarUrl: settings.avatarUrl || "",
+        currentlyDrawing: settings.currentlyDrawing || "",
+      });
       try { setHeroStats(JSON.parse(settings.heroStats || "[]")); } catch { setHeroStats([{ value: "100+", label: "artworks" }, { value: "3", label: "fandoms" }, { value: "2 yrs", label: "drawing" }]); }
+      setToggles({
+        showMoodBoard: settings.showMoodBoard !== "false",
+        showTrophies: settings.showTrophies !== "false",
+        showGames: settings.showGames !== "false",
+        showJourney: settings.showJourney !== "false",
+        showHobbies: settings.showHobbies !== "false",
+      });
     }
   }, [settings]);
 
   const save = (e: React.FormEvent) => {
     e.preventDefault();
-    update.mutate({ data: { ...form, heroStats: JSON.stringify(heroStats) } }, {
+    update.mutate({
+      data: {
+        ...form,
+        heroStats: JSON.stringify(heroStats),
+        showMoodBoard: String(toggles.showMoodBoard),
+        showTrophies: String(toggles.showTrophies),
+        showGames: String(toggles.showGames),
+        showJourney: String(toggles.showJourney),
+        showHobbies: String(toggles.showHobbies),
+      },
+    }, {
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetSiteSettingsQueryKey() }); setSaved(true); setTimeout(() => setSaved(false), 3000); },
     });
   };
@@ -237,7 +264,32 @@ function SettingsPanel({ token }: { token: string }) {
         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Tagline</label><Input value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} className="bg-white" /></div>
         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Hero Subtitle</label><Textarea value={form.heroSubtitle} onChange={e => setForm({ ...form, heroSubtitle: e.target.value })} className="bg-white h-20 resize-none" /></div>
         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Bio</label><Textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} className="bg-white h-32 resize-none" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Currently Drawing</label><Input value={form.currentlyDrawing} onChange={e => setForm({ ...form, currentlyDrawing: e.target.value })} placeholder="e.g. Starfall Dragon ✦" className="bg-white" /></div>
         <ImageUploader value={form.avatarUrl} onChange={url => setForm({ ...form, avatarUrl: url })} label="Profile Picture" />
+
+        {/* Section Toggles */}
+        <div>
+          <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-3">Visible Sections</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              { key: "showMoodBoard" as const, label: "Right Now" },
+              { key: "showTrophies" as const, label: "Trophy Case" },
+              { key: "showGames" as const, label: "Fav Games" },
+              { key: "showJourney" as const, label: "Journey" },
+              { key: "showHobbies" as const, label: "Hobbies" },
+            ].map((t) => (
+              <label key={t.key} className="flex items-center gap-2.5 p-3 rounded-xl bg-white/60 border border-[var(--glass-border)] cursor-pointer hover:bg-white/80 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={toggles[t.key]}
+                  onChange={(e) => setToggles({ ...toggles, [t.key]: e.target.checked })}
+                  className="w-4 h-4 accent-[var(--app-accent)] rounded"
+                />
+                <span className="text-sm text-[var(--ink)]">{t.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
 
         {/* Hero Stats */}
         <div>

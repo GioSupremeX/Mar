@@ -9,11 +9,13 @@ import Guestbook from "@/components/Guestbook";
 import CatMascot from "@/components/CatMascot";
 import PawPrints from "@/components/PawPrints";
 import ParticleField from "@/components/ParticleField";
-import { useGetSiteSettings } from "@workspace/api-client-react";
+import { useGetSiteSettings, type SiteSettings } from "@workspace/api-client-react";
 
 export default function Home() {
   const { data: settings } = useGetSiteSettings();
   const artistName = settings?.artistName || "Art & Magic";
+
+  const isOn = (key: keyof SiteSettings) => (settings as Record<string, string> | undefined)?.[key] !== "false";
 
   return (
     <main className="relative min-h-[100dvh] bg-[var(--bg)] overflow-x-hidden font-sans">
@@ -37,10 +39,10 @@ export default function Home() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
         <Hero />
         <Gallery />
-        <MoodBoard />
+        {isOn("showMoodBoard") && <MoodBoard />}
         <AboutMe />
-        <Games />
-        <Achievements />
+        {isOn("showGames") && <Games />}
+        {isOn("showTrophies") && <Achievements />}
         <Guestbook />
       </div>
 
@@ -49,7 +51,7 @@ export default function Home() {
           <p className="font-sans tracking-wide">
             &copy; {new Date().getFullYear()} {artistName}
           </p>
-          <p className="font-sans tracking-wide opacity-50">made with intention</p>
+          <p className="font-sans tracking-wide opacity-50">all rights reserved</p>
         </div>
       </footer>
 

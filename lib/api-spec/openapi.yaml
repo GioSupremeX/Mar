@@ -406,6 +406,18 @@ components:
           type: string
         hobbies:
           type: string
+        currentlyDrawing:
+          type: string
+        showMoodBoard:
+          type: string
+        showTrophies:
+          type: string
+        showGames:
+          type: string
+        showJourney:
+          type: string
+        showHobbies:
+          type: string
 
     SiteSettingsInput:
       type: object
@@ -449,6 +461,24 @@ components:
         hobbies:
           type: string
           maxLength: 2000
+        currentlyDrawing:
+          type: string
+          maxLength: 80
+        showMoodBoard:
+          type: string
+          maxLength: 10
+        showTrophies:
+          type: string
+          maxLength: 10
+        showGames:
+          type: string
+          maxLength: 10
+        showJourney:
+          type: string
+          maxLength: 10
+        showHobbies:
+          type: string
+          maxLength: 10
 
     GuestbookMessage:
       type: object
