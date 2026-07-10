@@ -140,7 +140,10 @@ export const GetSiteSettingsResponse = zod.object({
   "showTrophies": zod.string().optional(),
   "showGames": zod.string().optional(),
   "showJourney": zod.string().optional(),
-  "showHobbies": zod.string().optional()
+  "showHobbies": zod.string().optional(),
+  "showGuestbook": zod.string().optional(),
+  "guestbookCooldownSeconds": zod.string().optional(),
+  "adminPasswordHash": zod.string().optional()
 })
 
 
@@ -185,6 +188,12 @@ export const updateSiteSettingsBodyShowJourneyMax = 10;
 
 export const updateSiteSettingsBodyShowHobbiesMax = 10;
 
+export const updateSiteSettingsBodyShowGuestbookMax = 10;
+
+export const updateSiteSettingsBodyGuestbookCooldownSecondsMax = 10;
+
+export const updateSiteSettingsBodyAdminPasswordHashMax = 500;
+
 
 
 export const UpdateSiteSettingsBody = zod.object({
@@ -206,7 +215,10 @@ export const UpdateSiteSettingsBody = zod.object({
   "showTrophies": zod.string().max(updateSiteSettingsBodyShowTrophiesMax).optional(),
   "showGames": zod.string().max(updateSiteSettingsBodyShowGamesMax).optional(),
   "showJourney": zod.string().max(updateSiteSettingsBodyShowJourneyMax).optional(),
-  "showHobbies": zod.string().max(updateSiteSettingsBodyShowHobbiesMax).optional()
+  "showHobbies": zod.string().max(updateSiteSettingsBodyShowHobbiesMax).optional(),
+  "showGuestbook": zod.string().max(updateSiteSettingsBodyShowGuestbookMax).optional(),
+  "guestbookCooldownSeconds": zod.string().max(updateSiteSettingsBodyGuestbookCooldownSecondsMax).optional(),
+  "adminPasswordHash": zod.string().max(updateSiteSettingsBodyAdminPasswordHashMax).optional()
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
@@ -228,7 +240,10 @@ export const UpdateSiteSettingsResponse = zod.object({
   "showTrophies": zod.string().optional(),
   "showGames": zod.string().optional(),
   "showJourney": zod.string().optional(),
-  "showHobbies": zod.string().optional()
+  "showHobbies": zod.string().optional(),
+  "showGuestbook": zod.string().optional(),
+  "guestbookCooldownSeconds": zod.string().optional(),
+  "adminPasswordHash": zod.string().optional()
 })
 
 

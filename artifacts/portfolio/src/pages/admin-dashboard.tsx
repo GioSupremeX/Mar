@@ -211,8 +211,9 @@ function SettingsPanel({ token }: { token: string }) {
   const [form, setForm] = useState({ artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "", currentlyDrawing: "" });
   const [heroStats, setHeroStats] = useState<{ value: string; label: string }[]>([]);
   const [toggles, setToggles] = useState({
-    showMoodBoard: true, showTrophies: true, showGames: true, showJourney: true, showHobbies: true,
+    showMoodBoard: true, showTrophies: true, showGames: true, showJourney: true, showHobbies: true, showGuestbook: true,
   });
+  const [guestbookCooldown, setGuestbookCooldown] = useState(60);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -232,7 +233,9 @@ function SettingsPanel({ token }: { token: string }) {
         showGames: settings.showGames !== "false",
         showJourney: settings.showJourney !== "false",
         showHobbies: settings.showHobbies !== "false",
+        showGuestbook: settings.showGuestbook !== "false",
       });
+      setGuestbookCooldown(parseInt(settings.guestbookCooldownSeconds || "60", 10) || 60);
     }
   }, [settings]);
 
@@ -247,6 +250,8 @@ function SettingsPanel({ token }: { token: string }) {
         showGames: String(toggles.showGames),
         showJourney: String(toggles.showJourney),
         showHobbies: String(toggles.showHobbies),
+        showGuestbook: String(toggles.showGuestbook),
+        guestbookCooldownSeconds: String(guestbookCooldown),
       },
     }, {
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetSiteSettingsQueryKey() }); setSaved(true); setTimeout(() => setSaved(false), 3000); },
@@ -279,6 +284,7 @@ function SettingsPanel({ token }: { token: string }) {
               { key: "showGames" as const, label: "Fav Games" },
               { key: "showJourney" as const, label: "Journey" },
               { key: "showHobbies" as const, label: "Hobbies" },
+              { key: "showGuestbook" as const, label: "Guestbook" },
             ].map((t) => (
               <label key={t.key} className="flex items-center gap-2.5 p-3 rounded-xl bg-white/60 border border-[var(--glass-border)] cursor-pointer hover:bg-white/80 transition-colors">
                 <input
@@ -290,6 +296,16 @@ function SettingsPanel({ token }: { token: string }) {
                 <span className="text-sm text-[var(--ink)]">{t.label}</span>
               </label>
             ))}
+          </div>
+        </div>
+
+        {/* Guestbook Cooldown */}
+        <div>
+          <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Guestbook Cooldown</label>
+          <p className="text-xs text-[var(--ink-muted)] mb-2">Seconds someone must wait between posting multiple messages. Minimum 5 seconds.</p>
+          <div className="flex items-center gap-3">
+            <Input type="number" min={5} max={3600} value={guestbookCooldown} onChange={e => setGuestbookCooldown(Math.max(5, Math.min(3600, parseInt(e.target.value) || 60)))} className="bg-white w-28" />
+            <span className="text-sm text-[var(--ink-muted)]">seconds</span>
           </div>
         </div>
 

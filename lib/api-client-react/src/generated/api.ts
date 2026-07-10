@@ -26,6 +26,8 @@ import type {
   AdminLoginResponse,
   Artwork,
   ArtworkInput,
+  CreateGuestbookMessage201,
+  CreateGuestbookMessage429,
   ErrorEnvelope,
   GuestbookMessage,
   GuestbookMessageInput,
@@ -793,9 +795,9 @@ export const getCreateGuestbookMessageUrl = () => {
 /**
  * @summary Leave a guestbook message
  */
-export const createGuestbookMessage = async (guestbookMessageInput: GuestbookMessageInput, options?: RequestInit): Promise<GuestbookMessage> => {
+export const createGuestbookMessage = async (guestbookMessageInput: GuestbookMessageInput, options?: RequestInit): Promise<CreateGuestbookMessage201> => {
 
-  return customFetch<GuestbookMessage>(getCreateGuestbookMessageUrl(),
+  return customFetch<CreateGuestbookMessage201>(getCreateGuestbookMessageUrl(),
   {
     ...options,
     method: 'POST',
@@ -808,7 +810,7 @@ export const createGuestbookMessage = async (guestbookMessageInput: GuestbookMes
 
 
 
-export const getCreateGuestbookMessageMutationOptions = <TError = ErrorType<void>,
+export const getCreateGuestbookMessageMutationOptions = <TError = ErrorType<void | CreateGuestbookMessage429>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createGuestbookMessage>>, TError,{data: BodyType<GuestbookMessageInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createGuestbookMessage>>, TError,{data: BodyType<GuestbookMessageInput>}, TContext> => {
 
@@ -837,12 +839,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CreateGuestbookMessageMutationResult = NonNullable<Awaited<ReturnType<typeof createGuestbookMessage>>>
     export type CreateGuestbookMessageMutationBody = BodyType<GuestbookMessageInput>
-    export type CreateGuestbookMessageMutationError = ErrorType<void>
+    export type CreateGuestbookMessageMutationError = ErrorType<void | CreateGuestbookMessage429>
 
     /**
  * @summary Leave a guestbook message
  */
-export const useCreateGuestbookMessage = <TError = ErrorType<void>,
+export const useCreateGuestbookMessage = <TError = ErrorType<void | CreateGuestbookMessage429>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createGuestbookMessage>>, TError,{data: BodyType<GuestbookMessageInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof createGuestbookMessage>>,

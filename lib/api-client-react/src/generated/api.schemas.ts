@@ -64,6 +64,9 @@ export interface SiteSettings {
   showGames?: string;
   showJourney?: string;
   showHobbies?: string;
+  showGuestbook?: string;
+  guestbookCooldownSeconds?: string;
+  adminPasswordHash?: string;
 }
 
 export interface SiteSettingsInput {
@@ -105,6 +108,12 @@ export interface SiteSettingsInput {
   showJourney?: string;
   /** @maxLength 10 */
   showHobbies?: string;
+  /** @maxLength 10 */
+  showGuestbook?: string;
+  /** @maxLength 10 */
+  guestbookCooldownSeconds?: string;
+  /** @maxLength 500 */
+  adminPasswordHash?: string;
 }
 
 export interface GuestbookMessage {
@@ -152,5 +161,14 @@ export interface ErrorEnvelope {
 
 export type AdminChangePassword200 = {
   success?: boolean;
+};
+
+export type CreateGuestbookMessage201 = GuestbookMessage & {
+  cooldownSeconds?: number;
+};
+
+export type CreateGuestbookMessage429 = {
+  error?: string;
+  cooldownSeconds?: number;
 };
 

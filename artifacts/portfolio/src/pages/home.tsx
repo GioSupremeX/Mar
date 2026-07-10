@@ -40,7 +40,7 @@ export default function Home() {
         <AboutMe />
         {isOn("showGames") && <Games />}
         {isOn("showTrophies") && <Achievements />}
-        <Guestbook />
+        {isOn("showGuestbook") && <Guestbook />}
       </div>
 
       <footer className="relative z-10 py-12 mt-16 border-t border-[var(--glass-border)]">

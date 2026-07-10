@@ -88,6 +88,9 @@ const DEFAULTS: Record<string, string> = {
   showGames: "true",
   showJourney: "true",
   showHobbies: "true",
+  showGuestbook: "true",
+  guestbookCooldownSeconds: "60",
+  adminPasswordHash: "",
 };
 
 const ALLOWED_KEYS = Object.keys(DEFAULTS);

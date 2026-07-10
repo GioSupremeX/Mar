@@ -227,9 +227,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuestbookMessage"
+                allOf:
+                  - $ref: "#/components/schemas/GuestbookMessage"
+                  - type: object
+                    properties:
+                      cooldownSeconds:
+                        type: integer
         "400":
           description: Invalid input
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  cooldownSeconds:
+                    type: integer
 
   /storage/uploads/request-url:
     post:
@@ -453,6 +469,12 @@ components:
           type: string
         showHobbies:
           type: string
+        showGuestbook:
+          type: string
+        guestbookCooldownSeconds:
+          type: string
+        adminPasswordHash:
+          type: string
 
     SiteSettingsInput:
       type: object
@@ -514,6 +536,15 @@ components:
         showHobbies:
           type: string
           maxLength: 10
+        showGuestbook:
+          type: string
+          maxLength: 10
+        guestbookCooldownSeconds:
+          type: string
+          maxLength: 10
+        adminPasswordHash:
+          type: string
+          maxLength: 500
 
     GuestbookMessage:
       type: object

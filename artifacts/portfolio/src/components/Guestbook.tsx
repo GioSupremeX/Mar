@@ -31,6 +31,8 @@ export default function Guestbook() {
   const [challenge, setChallenge] = useState<{ q: string; a: string } | null>(null);
   const [challengeAnswer, setChallengeAnswer] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [cooldownLeft, setCooldownLeft] = useState(0);
+  const [postCooldownSec, setPostCooldownSec] = useState(0);
   const { pieces, burst, clear } = useConfetti();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,6 +43,12 @@ export default function Guestbook() {
   useEffect(() => {
     fetchChallenge();
   }, []);
+
+  useEffect(() => {
+    if (cooldownLeft <= 0) return;
+    const timer = setInterval(() => setCooldownLeft(c => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [cooldownLeft]);
 
   async function fetchChallenge() {
     try {
@@ -72,10 +80,18 @@ export default function Guestbook() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        if (res.status === 429 && data.cooldownSeconds) {
+          setCooldownLeft(data.cooldownSeconds);
+          setPostCooldownSec(data.cooldownSeconds);
+        }
         setErrorMsg(data.error || "Failed to send message.");
         return;
       }
 
+      const data = await res.json();
+      const cooldown = data.cooldownSeconds || 60;
+      setPostCooldownSec(cooldown);
+      setCooldownLeft(cooldown);
       form.reset({ name: "", message: "", emoji: "\u2726" });
       setChallengeAnswer("");
       setSuccess(true);
@@ -205,15 +221,20 @@ export default function Guestbook() {
                 />
               </div>
 
+              {cooldownLeft > 0 && (
+                <div className="text-center text-sm text-[var(--ink-muted)] font-sans">
+                  Please wait <span className="font-semibold text-[var(--app-accent)] tabular-nums">{cooldownLeft}s</span> before posting again
+                </div>
+              )}
               <motion.button
                 type="submit"
-                disabled={createMessage.isPending}
-                whileHover={{ y: -2, boxShadow: "0 14px 40px rgba(179,157,219,0.3)" }}
-                whileTap={{ scale: 0.97 }}
+                disabled={createMessage.isPending || cooldownLeft > 0}
+                whileHover={cooldownLeft > 0 ? {} : { y: -2, boxShadow: "0 14px 40px rgba(179,157,219,0.3)" }}
+                whileTap={cooldownLeft > 0 ? {} : { scale: 0.97 }}
                 className="w-full rounded-2xl py-4 text-white font-medium font-sans text-base transition-all duration-300 disabled:opacity-50"
                 style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}
               >
-                {createMessage.isPending ? "Sending..." : "Send Message"}
+                {cooldownLeft > 0 ? `Wait ${cooldownLeft}s` : (createMessage.isPending ? "Sending..." : "Send Message")}
               </motion.button>
             </form>
           </Form>

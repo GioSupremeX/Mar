@@ -1,14 +1,18 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import type { Request, Response, NextFunction } from "express";
+import { db, siteSettings } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? process.env.SESSION_SECRET ?? "dev-secret-change-me";
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ?? "";
+const ADMIN_PASSWORD_HASH_ENV = process.env.ADMIN_PASSWORD_HASH ?? "";
 const ADMIN_PASSWORD_PLAIN = process.env.ADMIN_PASSWORD ?? "admin123";
 
 export async function verifyAdminPassword(password: string): Promise<boolean> {
-  if (ADMIN_PASSWORD_HASH) {
-    return bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, "adminPasswordHash"));
+  const hash = rows[0]?.value ?? ADMIN_PASSWORD_HASH_ENV;
+  if (hash) {
+    return bcrypt.compare(password, hash);
   }
   return password === ADMIN_PASSWORD_PLAIN;
 }

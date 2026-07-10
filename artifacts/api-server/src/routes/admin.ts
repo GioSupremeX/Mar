@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
-import { verifyAdminPassword, signAdminToken } from "../lib/auth";
+import { db, siteSettings } from "@workspace/db";
+import { verifyAdminPassword, signAdminToken, requireAdmin } from "../lib/auth";
 
 const router: IRouter = Router();
 
@@ -65,8 +66,8 @@ router.post("/admin/login", async (req, res): Promise<void> => {
   res.json({ token: signAdminToken() });
 });
 
-/* Change admin password — requires current password + rate limit */
-router.post("/admin/change-password", async (req, res): Promise<void> => {
+/* Change admin password — requires current password + bearer auth */
+router.post("/admin/change-password", requireAdmin, async (req, res): Promise<void> => {
   const { currentPassword, newPassword } = req.body ?? {};
   if (!currentPassword || !newPassword || typeof currentPassword !== "string" || typeof newPassword !== "string") {
     res.status(400).json({ error: "Current and new password required" });
@@ -81,11 +82,11 @@ router.post("/admin/change-password", async (req, res): Promise<void> => {
     res.status(401).json({ error: "Current password is incorrect" });
     return;
   }
-  // Hash the new password and set it as ADMIN_PASSWORD_HASH
   const hash = await bcrypt.hash(newPassword, 10);
-  process.env.ADMIN_PASSWORD_HASH = hash;
-  // Clear plain text override if any
-  delete process.env.ADMIN_PASSWORD;
+  await db
+    .insert(siteSettings)
+    .values({ key: "adminPasswordHash", value: hash })
+    .onConflictDoUpdate({ target: siteSettings.key, set: { value: hash } });
   res.json({ success: true });
 });
 

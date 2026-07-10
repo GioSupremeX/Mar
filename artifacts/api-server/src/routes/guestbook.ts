@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { desc, eq } from "drizzle-orm";
-import { db, guestbookMessages } from "@workspace/db";
+import { db, guestbookMessages, siteSettings } from "@workspace/db";
 import { CreateGuestbookMessageBody, ListGuestbookMessagesResponse, ListGuestbookMessagesResponseItem } from "@workspace/api-zod";
 import { requireAdmin } from "../lib/auth";
 
@@ -20,7 +20,13 @@ interface PostAttemptState {
 }
 const postAttempts = new Map<string, PostAttemptState>();
 const POST_LIMIT = 5;
-const POST_WINDOW_MS = 60 * 1000; // 1 minute
+
+async function getCooldownMs(): Promise<number> {
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, "guestbookCooldownSeconds"));
+  const val = rows[0]?.value ?? process.env.GUESTBOOK_COOLDOWN_SECONDS ?? "60";
+  const num = parseInt(val, 10);
+  return (isNaN(num) || num < 5 ? 60 : num) * 1000;
+}
 
 function getClientIp(req: any): string {
   return req.headers["x-forwarded-for"]?.split(",")[0]?.trim()
@@ -57,12 +63,14 @@ router.post("/guestbook", async (req, res): Promise<void> => {
 
   const ip = getClientIp(req);
   const now = Date.now();
+  const cooldownMs = await getCooldownMs();
   const state = postAttempts.get(ip) ?? { count: 0, lastPostAt: 0 };
-  if (now - state.lastPostAt > POST_WINDOW_MS) {
+  if (now - state.lastPostAt > cooldownMs) {
     state.count = 0;
   }
   if (state.count >= POST_LIMIT) {
-    res.status(429).json({ error: "Too many messages. Slow down." });
+    const remainingSec = Math.ceil((state.lastPostAt + cooldownMs - now) / 1000);
+    res.status(429).json({ error: `Too many messages. Please wait ${remainingSec}s before posting again.`, cooldownSeconds: remainingSec });
     return;
   }
 
@@ -79,7 +87,10 @@ router.post("/guestbook", async (req, res): Promise<void> => {
   state.count++;
   state.lastPostAt = now;
   postAttempts.set(ip, state);
-  res.status(201).json(ListGuestbookMessagesResponseItem.parse(message));
+  res.status(201).json({
+    ...ListGuestbookMessagesResponseItem.parse(message),
+    cooldownSeconds: Math.ceil(cooldownMs / 1000),
+  });
 });
 
 router.delete("/guestbook/:id", requireAdmin, async (req, res): Promise<void> => {
