@@ -44,6 +44,11 @@ export default function Gallery() {
   const [showAll, setShowAll] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{url: string, title: string, category: string} | null>(null);
 
+  const getImageUrl = (url: string, id: number) => {
+    if (url && !url.includes("placeholder.co")) return url;
+    return `/images/art-${(id % 8) + 1}.png`;
+  };
+
   const filteredArtworks = artworks.filter(art => filter === "All" || art.category === filter);
 
   const currentIndex = selectedImage
@@ -74,11 +79,6 @@ export default function Gallery() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedImage, goNext, goPrev]);
-
-  const getImageUrl = (url: string, id: number) => {
-    if (url && !url.includes("placeholder.co")) return url;
-    return `/images/art-${(id % 8) + 1}.png`;
-  };
 
   return (
     <section id="gallery" className="w-full py-24 relative">
