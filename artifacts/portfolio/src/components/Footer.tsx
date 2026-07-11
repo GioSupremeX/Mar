@@ -36,7 +36,7 @@ export default function Footer({ artistName, settings }: FooterProps) {
             ))}
           </div>
         )}
-        <p className="font-sans tracking-wide opacity-50">made by Giorgosxaral</p>
+        <p className="font-sans tracking-wide opacity-50">{s?.creditsText || "made by Giorgosxaral"}</p>
       </div>
     </footer>
   );

@@ -557,6 +557,9 @@ components:
         socialDeviantArt:
           type: string
           maxLength: 300
+        creditsText:
+          type: string
+          maxLength: 120
 
     GuestbookMessage:
       type: object

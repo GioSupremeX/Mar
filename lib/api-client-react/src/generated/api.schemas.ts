@@ -122,6 +122,8 @@ export interface SiteSettingsInput {
   socialTikTok?: string;
   /** @maxLength 300 */
   socialDeviantArt?: string;
+  /** @maxLength 120 */
+  creditsText?: string;
 }
 
 export interface GuestbookMessage {

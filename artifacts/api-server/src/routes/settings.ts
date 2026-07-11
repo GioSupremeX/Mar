@@ -95,6 +95,7 @@ const DEFAULTS: Record<string, string> = {
   socialTwitter: "https://twitter.com",
   socialTikTok: "https://tiktok.com",
   socialDeviantArt: "https://deviantart.com",
+  creditsText: "made by Giorgosxaral",
 };
 
 const ALLOWED_KEYS = Object.keys(DEFAULTS);

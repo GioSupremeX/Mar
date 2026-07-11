@@ -210,7 +210,7 @@ function SettingsPanel({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "", currentlyDrawing: "",
-    socialInstagram: "", socialTwitter: "", socialTikTok: "", socialDeviantArt: "",
+    socialInstagram: "", socialTwitter: "", socialTikTok: "", socialDeviantArt: "", creditsText: "",
   });
   const [heroStats, setHeroStats] = useState<{ value: string; label: string }[]>([]);
   const [toggles, setToggles] = useState({
@@ -232,6 +232,7 @@ function SettingsPanel({ token }: { token: string }) {
         socialTwitter: (settings as any).socialTwitter || "",
         socialTikTok: (settings as any).socialTikTok || "",
         socialDeviantArt: (settings as any).socialDeviantArt || "",
+        creditsText: (settings as any).creditsText || "",
       });
       try { setHeroStats(JSON.parse(settings.heroStats || "[]")); } catch { setHeroStats([{ value: "100+", label: "artworks" }, { value: "3", label: "fandoms" }, { value: "2 yrs", label: "drawing" }]); }
       setToggles({
@@ -263,6 +264,7 @@ function SettingsPanel({ token }: { token: string }) {
         socialTwitter: form.socialTwitter,
         socialTikTok: form.socialTikTok,
         socialDeviantArt: form.socialDeviantArt,
+        creditsText: form.creditsText,
       },
     }, {
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetSiteSettingsQueryKey() }); setSaved(true); setTimeout(() => setSaved(false), 3000); },
@@ -337,6 +339,13 @@ function SettingsPanel({ token }: { token: string }) {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Footer Credits */}
+        <div>
+          <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Footer Credits</label>
+          <p className="text-xs text-[var(--ink-muted)] mb-2">Text shown in the bottom-right of the footer. Leave empty to show default.</p>
+          <Input value={form.creditsText} onChange={e => setForm({ ...form, creditsText: e.target.value })} placeholder="made by Giorgosxaral" className="bg-white" />
         </div>
 
         {/* Hero Stats */}

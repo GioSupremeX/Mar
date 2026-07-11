@@ -202,6 +202,8 @@ export const updateSiteSettingsBodySocialTikTokMax = 300;
 
 export const updateSiteSettingsBodySocialDeviantArtMax = 300;
 
+export const updateSiteSettingsBodyCreditsTextMax = 120;
+
 
 
 export const UpdateSiteSettingsBody = zod.object({
@@ -230,7 +232,8 @@ export const UpdateSiteSettingsBody = zod.object({
   "socialInstagram": zod.string().max(updateSiteSettingsBodySocialInstagramMax).optional(),
   "socialTwitter": zod.string().max(updateSiteSettingsBodySocialTwitterMax).optional(),
   "socialTikTok": zod.string().max(updateSiteSettingsBodySocialTikTokMax).optional(),
-  "socialDeviantArt": zod.string().max(updateSiteSettingsBodySocialDeviantArtMax).optional()
+  "socialDeviantArt": zod.string().max(updateSiteSettingsBodySocialDeviantArtMax).optional(),
+  "creditsText": zod.string().max(updateSiteSettingsBodyCreditsTextMax).optional()
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
