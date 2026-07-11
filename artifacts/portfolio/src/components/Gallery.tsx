@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { X, Link2 } from "lucide-react";
+import { X, Link2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useListArtworks } from "@workspace/api-client-react";
 import { TextReveal, FadeIn, StaggerChildren, StaggerItem } from "./TextReveal";
 import { SpotlightCard } from "./SpotlightCard";
@@ -45,6 +45,35 @@ export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<{url: string, title: string, category: string} | null>(null);
 
   const filteredArtworks = artworks.filter(art => filter === "All" || art.category === filter);
+
+  const currentIndex = selectedImage
+    ? filteredArtworks.findIndex(a => getImageUrl(a.imageUrl, a.id) === selectedImage.url)
+    : -1;
+
+  const goNext = useCallback(() => {
+    if (currentIndex >= 0 && currentIndex < filteredArtworks.length - 1) {
+      const next = filteredArtworks[currentIndex + 1];
+      setSelectedImage({ url: getImageUrl(next.imageUrl, next.id), title: next.title, category: next.category });
+    }
+  }, [currentIndex, filteredArtworks]);
+
+  const goPrev = useCallback(() => {
+    if (currentIndex > 0) {
+      const prev = filteredArtworks[currentIndex - 1];
+      setSelectedImage({ url: getImageUrl(prev.imageUrl, prev.id), title: prev.title, category: prev.category });
+    }
+  }, [currentIndex, filteredArtworks]);
+
+  useEffect(() => {
+    if (!selectedImage) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedImage(null);
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedImage, goNext, goPrev]);
 
   const getImageUrl = (url: string, id: number) => {
     if (url && !url.includes("placeholder.co")) return url;
@@ -162,6 +191,30 @@ export default function Gallery() {
               <X size={22} />
             </motion.button>
 
+            {/* Prev */}
+            {currentIndex > 0 && (
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="absolute left-4 sm:left-8 z-[110] p-3 text-[var(--ink)] hover:text-[var(--app-accent)] transition-colors bg-white/60 rounded-full backdrop-blur-md border border-[var(--glass-border)] hidden sm:block"
+                onClick={(e) => { e.stopPropagation(); goPrev(); }}
+              >
+                <ChevronLeft size={24} />
+              </motion.button>
+            )}
+
+            {/* Next */}
+            {currentIndex >= 0 && currentIndex < filteredArtworks.length - 1 && (
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="absolute right-4 sm:right-8 z-[110] p-3 text-[var(--ink)] hover:text-[var(--app-accent)] transition-colors bg-white/60 rounded-full backdrop-blur-md border border-[var(--glass-border)] hidden sm:block"
+                onClick={(e) => { e.stopPropagation(); goNext(); }}
+              >
+                <ChevronRight size={24} />
+              </motion.button>
+            )}
+
             <motion.div
               initial={{ scale: 0.92, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -178,6 +231,9 @@ export default function Gallery() {
               <div className="w-full p-5 text-center flex flex-col items-center gap-2">
                 <h3 className="font-display text-2xl text-[var(--ink)]">{selectedImage.title}</h3>
                 <p className="font-sans text-sm text-[var(--ink-muted)] tracking-wide uppercase">{selectedImage.category}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-[var(--ink-muted)]">{currentIndex + 1} / {filteredArtworks.length}</span>
+                </div>
                 <button
                   onClick={() => { navigator.clipboard.writeText(window.location.href + "#gallery"); }}
                   className="mt-2 flex items-center gap-1.5 text-xs text-[var(--ink-muted)] hover:text-[var(--app-accent)] transition-colors px-3 py-1.5 rounded-full border border-[var(--glass-border)] hover:border-[var(--app-accent)] bg-white/50"

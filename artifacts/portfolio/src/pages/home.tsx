@@ -48,6 +48,24 @@ export default function Home() {
           <p className="font-sans tracking-wide">
             &copy; {new Date().getFullYear()} {artistName}
           </p>
+          <div className="flex items-center gap-5">
+            {[
+              { label: "Instagram", href: "https://instagram.com" },
+              { label: "Twitter / X", href: "https://twitter.com" },
+              { label: "TikTok", href: "https://tiktok.com" },
+              { label: "DeviantArt", href: "https://deviantart.com" },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans tracking-wide hover:text-[var(--app-accent)] transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
           <p className="font-sans tracking-wide opacity-50">made by Giorgosxaral</p>
         </div>
       </footer>

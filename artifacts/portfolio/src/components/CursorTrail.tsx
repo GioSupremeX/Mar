@@ -1,14 +1,19 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const COLORS = ["#C4A8FF", "#F4B8D0", "#E8D4A8", "#A8D4F0"];
 const SHAPES = ["✦", "⋆", "·", "●"];
 
-let nextId = 0;
+function isTouchDevice() {
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
 
 export default function CursorTrail() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    if (isTouchDevice()) return;
+    setEnabled(true);
     const container = containerRef.current;
     if (!container) return;
 
@@ -19,7 +24,6 @@ export default function CursorTrail() {
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
       const dist = Math.hypot(e.clientX - lastX, e.clientY - lastY);
-      // Only spawn when moving fast enough, fewer particles overall
       if (now - lastTime < 80 || dist < 30 || Math.random() > 0.25) return;
       lastX = e.clientX;
       lastY = e.clientY;
@@ -54,6 +58,8 @@ export default function CursorTrail() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  if (!enabled) return null;
+
   return (
     <>
       <style>{`
@@ -63,7 +69,7 @@ export default function CursorTrail() {
           100% { opacity: 0; transform: translate(-50%, calc(-50% - 20px)) rotate(calc(var(--rot, 0deg) + 40deg)) scale(0.2); }
         }
       `}</style>
-      <div ref={containerRef} className="fixed inset-0 pointer-events-none z-[9999]" />
+      <div ref={containerRef} className="fixed inset-0 pointer-events-none z-[9999] hidden md:block" />
     </>
   );
 }

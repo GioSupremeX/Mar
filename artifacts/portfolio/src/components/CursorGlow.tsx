@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
 import { motion, useSpring } from "framer-motion";
 
+function isTouchDevice() {
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
+
 export default function CursorGlow() {
   const [mouse, setMouse] = useState({ x: -100, y: -100 });
+  const [enabled, setEnabled] = useState(false);
   const springX = useSpring(-100, { stiffness: 80, damping: 20 });
   const springY = useSpring(-100, { stiffness: 80, damping: 20 });
 
   useEffect(() => {
+    if (isTouchDevice()) return;
+    setEnabled(true);
     const onMove = (e: MouseEvent) => {
       setMouse({ x: e.clientX, y: e.clientY });
       springX.set(e.clientX);
@@ -16,9 +23,11 @@ export default function CursorGlow() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [springX, springY]);
 
+  if (!enabled) return null;
+
   return (
     <motion.div
-      className="fixed inset-0 pointer-events-none z-[4]"
+      className="fixed inset-0 pointer-events-none z-[4] hidden md:block"
       style={{ x: springX, y: springY }}
     >
       <div
