@@ -10,6 +10,7 @@ import CatMascot from "@/components/CatMascot";
 import PawPrints from "@/components/PawPrints";
 import ParticleField from "@/components/ParticleField";
 import ParallaxOrbs from "@/components/ParallaxOrbs";
+import Footer from "@/components/Footer";
 import { useGetSiteSettings, type SiteSettings } from "@workspace/api-client-react";
 
 export default function Home() {
@@ -43,32 +44,8 @@ export default function Home() {
         {isOn("showGuestbook") && <Guestbook />}
       </div>
 
-      <footer className="relative z-10 py-12 mt-16 border-t border-[var(--glass-border)]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--ink-muted)]">
-          <p className="font-sans tracking-wide">
-            &copy; {new Date().getFullYear()} {artistName}
-          </p>
-          <div className="flex items-center gap-5">
-            {[
-              { label: "Instagram", href: "https://instagram.com" },
-              { label: "Twitter / X", href: "https://twitter.com" },
-              { label: "TikTok", href: "https://tiktok.com" },
-              { label: "DeviantArt", href: "https://deviantart.com" },
-            ].map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-sans tracking-wide hover:text-[var(--app-accent)] transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-          <p className="font-sans tracking-wide opacity-50">made by Giorgosxaral</p>
-        </div>
-      </footer>
+      <Footer artistName={artistName} settings={settings} />
+
 
       {/* Floating mascot */}
       <CatMascot />

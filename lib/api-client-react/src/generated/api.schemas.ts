@@ -114,6 +114,14 @@ export interface SiteSettingsInput {
   guestbookCooldownSeconds?: string;
   /** @maxLength 500 */
   adminPasswordHash?: string;
+  /** @maxLength 300 */
+  socialInstagram?: string;
+  /** @maxLength 300 */
+  socialTwitter?: string;
+  /** @maxLength 300 */
+  socialTikTok?: string;
+  /** @maxLength 300 */
+  socialDeviantArt?: string;
 }
 
 export interface GuestbookMessage {

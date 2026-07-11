@@ -11,6 +11,7 @@ import CursorGlow from "@/components/CursorGlow";
 import Preloader from "@/components/Preloader";
 import BackToTop from "@/components/BackToTop";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import DarkModeProvider from "@/components/DarkModeProvider";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient({
@@ -49,17 +50,19 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <CursorTrail />
-          <CursorGlow />
-          <Preloader>
-            <SmoothScrollProvider>
-              <Router />
-            </SmoothScrollProvider>
-          </Preloader>
-          <BackToTop />
-        </WouterRouter>
-        <Toaster />
+        <DarkModeProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <CursorTrail />
+            <CursorGlow />
+            <Preloader>
+              <SmoothScrollProvider>
+                <Router />
+              </SmoothScrollProvider>
+            </Preloader>
+            <BackToTop />
+          </WouterRouter>
+          <Toaster />
+        </DarkModeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

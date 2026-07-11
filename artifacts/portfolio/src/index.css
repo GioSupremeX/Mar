@@ -111,19 +111,35 @@
 }
 
 .dark {
-  --background: 252 100% 98%;
-  --foreground: 255 41% 20%;
-  --border: 253 100% 86%;
-  --input: 253 100% 86%;
+  --app-font-sans: 'DM Sans', system-ui, sans-serif;
+  --app-font-display: 'Cormorant Garamond', serif;
+  --app-font-serif: 'Cormorant Garamond', serif;
+  --app-font-handwriting: 'Caveat', cursive;
+
+  --bg: #0F0D1A;
+  --bg-2: #1A1730;
+  --glass: rgba(30, 25, 55, 0.65);
+  --glass-border: rgba(120, 100, 180, 0.25);
+  --ink: #E8E0F7;
+  --ink-muted: #9A8FC7;
+  --app-accent: #B39DDB;
+  --app-accent-pink: #F4A7C3;
+  --app-accent-blue: #A8C8E8;
+  --gold: #E8D4A8;
+
+  --background: 255 30% 8%;
+  --foreground: 252 50% 93%;
+  --border: 255 30% 22%;
+  --input: 255 30% 22%;
   --ring: 261 46% 73%;
 
-  --card: 0 0% 100%;
-  --card-foreground: 255 41% 20%;
-  --card-border: 253 100% 86%;
+  --card: 255 25% 12%;
+  --card-foreground: 252 50% 93%;
+  --card-border: 255 30% 22%;
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 255 41% 20%;
-  --popover-border: 253 100% 86%;
+  --popover: 255 25% 12%;
+  --popover-foreground: 252 50% 93%;
+  --popover-border: 255 30% 22%;
 
   --primary: 261 46% 73%;
   --primary-foreground: 0 0% 100%;
@@ -131,8 +147,8 @@
   --secondary: 338 73% 81%;
   --secondary-foreground: 255 41% 20%;
 
-  --muted: 252 100% 98%;
-  --muted-foreground: 254 22% 54%;
+  --muted: 255 30% 12%;
+  --muted-foreground: 254 22% 65%;
 
   --accent: 210 56% 78%;
   --accent-foreground: 255 41% 20%;

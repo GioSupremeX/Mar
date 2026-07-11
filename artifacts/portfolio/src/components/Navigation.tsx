@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, Menu, X } from "lucide-react";
+import { Settings, Menu, X, Moon, Sun } from "lucide-react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
+import { useDarkMode } from "./DarkModeProvider";
 import { MagneticLink } from "./MagneticButton";
 
 export default function Navigation() {
@@ -11,6 +12,7 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const { data: settings } = useGetSiteSettings();
+  const { theme, toggle } = useDarkMode();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -91,7 +93,15 @@ export default function Navigation() {
                 <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[var(--app-accent)] group-hover:w-full transition-all duration-300" />
               </MagneticLink>
             ))}
-            <Link href="/admin" className="ml-2 opacity-25 hover:opacity-80 transition-opacity text-[var(--ink)]">
+            <button
+              onClick={toggle}
+              className="p-2 rounded-full hover:bg-[var(--glass-border)]/20 transition-colors text-[var(--ink-muted)]"
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
+            >
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <Link href="/admin" className="ml-1 opacity-25 hover:opacity-80 transition-opacity text-[var(--ink)]">
               <Settings size={15} />
             </Link>
           </nav>
@@ -113,8 +123,8 @@ export default function Navigation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex flex-col justify-center items-center"
-            style={{ background: "rgba(247,245,255,0.97)", backdropFilter: "blur(20px)" }}
+            className="fixed inset-0 z-[60] flex flex-col justify-center items-center bg-[var(--bg)]/97"
+            style={{ backdropFilter: "blur(20px)" }}
           >
             <button
               className="absolute top-6 right-6 text-[var(--ink)] p-2"
@@ -137,10 +147,17 @@ export default function Navigation() {
                   {link.label}
                 </motion.button>
               ))}
+              <button
+                onClick={() => { toggle(); }}
+                className="mt-4 flex items-center gap-2 text-sm font-sans text-[var(--ink-muted)] hover:text-[var(--app-accent)]"
+              >
+                {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+                {theme === "dark" ? "Light mode" : "Dark mode"}
+              </button>
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="mt-6 flex items-center gap-2 text-sm font-sans text-[var(--ink-muted)] hover:text-[var(--app-accent)]"
+                className="mt-4 flex items-center gap-2 text-sm font-sans text-[var(--ink-muted)] hover:text-[var(--app-accent)]"
               >
                 <Settings size={14} /> Admin
               </Link>

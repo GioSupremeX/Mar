@@ -545,6 +545,18 @@ components:
         adminPasswordHash:
           type: string
           maxLength: 500
+        socialInstagram:
+          type: string
+          maxLength: 300
+        socialTwitter:
+          type: string
+          maxLength: 300
+        socialTikTok:
+          type: string
+          maxLength: 300
+        socialDeviantArt:
+          type: string
+          maxLength: 300
 
     GuestbookMessage:
       type: object

@@ -227,6 +227,7 @@ export default function Gallery() {
                 src={selectedImage.url}
                 alt={selectedImage.title}
                 className="max-w-full max-h-[80vh] object-contain rounded-xl"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/art-1.png"; }}
               />
               <div className="w-full p-5 text-center flex flex-col items-center gap-2">
                 <h3 className="font-display text-2xl text-[var(--ink)]">{selectedImage.title}</h3>

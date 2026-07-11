@@ -194,6 +194,14 @@ export const updateSiteSettingsBodyGuestbookCooldownSecondsMax = 10;
 
 export const updateSiteSettingsBodyAdminPasswordHashMax = 500;
 
+export const updateSiteSettingsBodySocialInstagramMax = 300;
+
+export const updateSiteSettingsBodySocialTwitterMax = 300;
+
+export const updateSiteSettingsBodySocialTikTokMax = 300;
+
+export const updateSiteSettingsBodySocialDeviantArtMax = 300;
+
 
 
 export const UpdateSiteSettingsBody = zod.object({
@@ -218,7 +226,11 @@ export const UpdateSiteSettingsBody = zod.object({
   "showHobbies": zod.string().max(updateSiteSettingsBodyShowHobbiesMax).optional(),
   "showGuestbook": zod.string().max(updateSiteSettingsBodyShowGuestbookMax).optional(),
   "guestbookCooldownSeconds": zod.string().max(updateSiteSettingsBodyGuestbookCooldownSecondsMax).optional(),
-  "adminPasswordHash": zod.string().max(updateSiteSettingsBodyAdminPasswordHashMax).optional()
+  "adminPasswordHash": zod.string().max(updateSiteSettingsBodyAdminPasswordHashMax).optional(),
+  "socialInstagram": zod.string().max(updateSiteSettingsBodySocialInstagramMax).optional(),
+  "socialTwitter": zod.string().max(updateSiteSettingsBodySocialTwitterMax).optional(),
+  "socialTikTok": zod.string().max(updateSiteSettingsBodySocialTikTokMax).optional(),
+  "socialDeviantArt": zod.string().max(updateSiteSettingsBodySocialDeviantArtMax).optional()
 })
 
 export const UpdateSiteSettingsResponse = zod.object({

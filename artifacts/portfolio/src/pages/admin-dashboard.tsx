@@ -103,7 +103,7 @@ function ImageUploader({ value, onChange, label = "Image" }: { value: string; on
           {isUploading ? (
             <><div className="w-8 h-8 rounded-full border-3 border-[var(--app-accent)]/30 border-t-[var(--app-accent)] animate-spin" /><p className="text-xs text-[var(--ink-muted)]">{Math.round(progress)}%</p></>
           ) : (
-            <><Upload size={20} className="text-[var(--ink-muted)]" /><p className="text-xs text-[var(--ink-muted)]">Drop or click to upload</p></>
+            <><Upload size={20} className="text-[var(--ink-muted)]" /><p className="text-xs text-[var(--ink-muted)]">Drop or click to upload</p><p className="text-[10px] text-[var(--ink-muted)]/60">Tip: use an external image URL to save storage space</p></>
           )}
         </div>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
@@ -208,7 +208,10 @@ function SettingsPanel({ token }: { token: string }) {
   const { data: settings } = useGetSiteSettings();
   const update = useUpdateSiteSettings({ request: { headers: { Authorization: `Bearer ${token}` } } });
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({ artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "", currentlyDrawing: "" });
+  const [form, setForm] = useState({
+    artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "", currentlyDrawing: "",
+    socialInstagram: "", socialTwitter: "", socialTikTok: "", socialDeviantArt: "",
+  });
   const [heroStats, setHeroStats] = useState<{ value: string; label: string }[]>([]);
   const [toggles, setToggles] = useState({
     showMoodBoard: true, showTrophies: true, showGames: true, showJourney: true, showHobbies: true, showGuestbook: true,
@@ -225,6 +228,10 @@ function SettingsPanel({ token }: { token: string }) {
         bio: settings.bio || "",
         avatarUrl: settings.avatarUrl || "",
         currentlyDrawing: settings.currentlyDrawing || "",
+        socialInstagram: (settings as any).socialInstagram || "",
+        socialTwitter: (settings as any).socialTwitter || "",
+        socialTikTok: (settings as any).socialTikTok || "",
+        socialDeviantArt: (settings as any).socialDeviantArt || "",
       });
       try { setHeroStats(JSON.parse(settings.heroStats || "[]")); } catch { setHeroStats([{ value: "100+", label: "artworks" }, { value: "3", label: "fandoms" }, { value: "2 yrs", label: "drawing" }]); }
       setToggles({
@@ -252,6 +259,10 @@ function SettingsPanel({ token }: { token: string }) {
         showHobbies: String(toggles.showHobbies),
         showGuestbook: String(toggles.showGuestbook),
         guestbookCooldownSeconds: String(guestbookCooldown),
+        socialInstagram: form.socialInstagram,
+        socialTwitter: form.socialTwitter,
+        socialTikTok: form.socialTikTok,
+        socialDeviantArt: form.socialDeviantArt,
       },
     }, {
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetSiteSettingsQueryKey() }); setSaved(true); setTimeout(() => setSaved(false), 3000); },
@@ -306,6 +317,25 @@ function SettingsPanel({ token }: { token: string }) {
           <div className="flex items-center gap-3">
             <Input type="number" min={5} max={3600} value={guestbookCooldown} onChange={e => setGuestbookCooldown(Math.max(5, Math.min(3600, parseInt(e.target.value) || 60)))} className="bg-white w-28" />
             <span className="text-sm text-[var(--ink-muted)]">seconds</span>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        <div>
+          <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-3">Social Links</label>
+          <p className="text-xs text-[var(--ink-muted)] mb-3">Leave empty to hide a link from the footer.</p>
+          <div className="space-y-3">
+            {[
+              { key: "socialInstagram" as const, label: "Instagram" },
+              { key: "socialTwitter" as const, label: "Twitter / X" },
+              { key: "socialTikTok" as const, label: "TikTok" },
+              { key: "socialDeviantArt" as const, label: "DeviantArt" },
+            ].map((s) => (
+              <div key={s.key} className="flex gap-2 items-center">
+                <span className="text-xs text-[var(--ink-muted)] w-24 shrink-0">{s.label}</span>
+                <Input value={form[s.key]} onChange={e => setForm({ ...form, [s.key]: e.target.value })} placeholder="https://..." className="bg-white flex-1" />
+              </div>
+            ))}
           </div>
         </div>
 
