@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 const COLORS = ["#C4A8FF", "#F4B8D0", "#E8D4A8", "#A8D4F0"];
-const SHAPES = ["\u2726", "\u22c6", "\u00b7", "\u25cf"];
+const SHAPES = ["✦", "⋆", "·", "●"];
 
 let nextId = 0;
 

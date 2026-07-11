@@ -21,7 +21,7 @@ const formSchema = z.object({
   emoji: z.string().optional(),
 });
 
-const emojis = ["\u2726", "\u2728", "\u270f\uFE0F", "\ud83d\udc09", "\ud83c\udf38", "\ud83c\udfa8", "\u2b50", "\ud83c\udfae"];
+const emojis = ["✦", "✨", "✏️", "🐉", "🌸", "🎨", "⭐", "🎮"];
 
 export default function Guestbook() {
   const { data: messages, isLoading } = useListGuestbookMessages();
@@ -37,7 +37,7 @@ export default function Guestbook() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", message: "", emoji: "\u2726" },
+    defaultValues: { name: "", message: "", emoji: "✦" },
   });
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export default function Guestbook() {
       const cooldown = data.cooldownSeconds || 60;
       setPostCooldownSec(cooldown);
       setCooldownLeft(cooldown);
-      form.reset({ name: "", message: "", emoji: "\u2726" });
+      form.reset({ name: "", message: "", emoji: "✦" });
       setChallengeAnswer("");
       setSuccess(true);
       burst(50);
@@ -132,7 +132,7 @@ export default function Guestbook() {
               className="mb-5 text-center py-3 px-4 rounded-xl text-sm"
               style={{ background: "rgba(179,157,219,0.2)" }}
             >
-              <span className="font-sans font-medium text-[var(--ink)]">Message sent! \u2726</span>
+              <span className="font-sans font-medium text-[var(--ink)]">Message sent! ✦</span>
             </motion.div>
           )}
           {errorMsg && (
@@ -269,7 +269,7 @@ export default function Guestbook() {
                     {msg.emoji} {msg.message}
                   </p>
                   <div className="flex items-baseline gap-2">
-                    <span className="font-display font-semibold text-[var(--ink)] text-lg">\u2014 {msg.name}</span>
+                    <span className="font-display font-semibold text-[var(--ink)] text-lg">— {msg.name}</span>
                     <span className="font-sans text-[var(--ink-muted)] text-sm">
                       {new Date(msg.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
@@ -278,7 +278,7 @@ export default function Guestbook() {
               ))
             ) : (
               <div className="text-center mt-12">
-                <p className="text-4xl mb-4">\u270f\uFE0F</p>
+                <p className="text-4xl mb-4">✏️</p>
                 <p className="font-handwriting text-2xl text-[var(--ink-muted)]">Be the first to write!</p>
               </div>
             )}
