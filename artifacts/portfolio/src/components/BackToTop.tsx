@@ -21,7 +21,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ type: "spring", damping: 20, stiffness: 300 }}
           onClick={scrollUp}
-          className="fixed bottom-6 left-6 z-[90] w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-[var(--glass-border)] shadow-lg flex items-center justify-center text-[var(--ink-muted)] hover:text-[var(--ink)] hover:border-[var(--app-accent)] hover:shadow-xl transition-all duration-300 cursor-pointer md:left-auto md:right-6"
+          className="fixed bottom-5 left-4 z-40 w-11 h-11 rounded-full surface-strong backdrop-blur-md border border-[var(--glass-border)] shadow-lg flex items-center justify-center text-[var(--ink-muted)] hover:text-[var(--ink)] hover:border-[var(--app-accent)] hover:shadow-xl transition-all duration-300 cursor-pointer md:bottom-6 md:left-auto md:right-24"
           aria-label="Back to top"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

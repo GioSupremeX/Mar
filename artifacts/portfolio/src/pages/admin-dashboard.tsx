@@ -49,7 +49,7 @@ export default function AdminDashboard() {
         <nav className="flex-1 flex flex-col gap-1">
           {tabs.map((t) => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              className={`text-left px-4 py-2.5 rounded-xl text-sm transition-all duration-200 flex items-center gap-2.5 ${activeTab === t.id ? "bg-[var(--app-accent)]/15 text-[var(--ink)] font-medium" : "text-[var(--ink-muted)] hover:bg-white/60 hover:text-[var(--ink)]"}`}
+              className={`text-left px-4 py-2.5 rounded-xl text-sm transition-all duration-200 flex items-center gap-2.5 ${activeTab === t.id ? "bg-[var(--app-accent)]/15 text-[var(--ink)] font-medium" : "text-[var(--ink-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--ink)]"}`}
             >
               <span>{t.icon}</span> {t.label}
             </button>
@@ -94,7 +94,7 @@ function ImageUploader({ value, onChange, label = "Image" }: { value: string; on
     <div className="space-y-3">
       <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider">{label}</label>
       <div
-        className={`relative border-2 border-dashed rounded-2xl cursor-pointer transition-colors ${isUploading ? "border-[var(--app-accent)] bg-[var(--app-accent)]/5" : "border-[var(--glass-border)] hover:border-[var(--app-accent)] bg-white/40 hover:bg-white/60"}`}
+        className={`relative border-2 border-dashed rounded-2xl cursor-pointer transition-colors ${isUploading ? "border-[var(--app-accent)] bg-[var(--app-accent)]/5" : "border-[var(--glass-border)] hover:border-[var(--app-accent)] bg-[var(--surface-muted)] hover:bg-[var(--surface)]"}`}
         onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => !isUploading && fileRef.current?.click()}
@@ -112,10 +112,10 @@ function ImageUploader({ value, onChange, label = "Image" }: { value: string; on
         <div className="relative w-full h-28 rounded-xl overflow-hidden border border-[var(--glass-border)] bg-[var(--bg-2)]">
           <img src={preview} alt="Preview" className="w-full h-full object-cover" />
           <button type="button" onClick={() => { setPreview(""); onChange(""); if (fileRef.current) fileRef.current.value = ""; }}
-            className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm"><X size={13} /></button>
+            className="absolute top-2 right-2 surface-strong hover:bg-[var(--surface-strong)] rounded-full p-1 shadow-sm"><X size={13} /></button>
         </div>
       )}
-      <Input value={value} onChange={(e) => { onChange(e.target.value); setPreview(e.target.value); }} placeholder="or paste URL" className="bg-white text-sm" />
+      <Input value={value} onChange={(e) => { onChange(e.target.value); setPreview(e.target.value); }} placeholder="or paste URL" className="text-sm" />
       {err && <p className="text-xs text-red-500">{err}</p>}
     </div>
   );
@@ -158,26 +158,26 @@ function ArtworksPanel({ token }: { token: string }) {
       </div>
 
       {(isAdding || editingId) && (
-        <div className="glass-panel p-7 mb-8" style={{ background: "rgba(255,255,255,0.7)" }}>
+        <div className="glass-panel surface-panel p-7 mb-8">
           <h3 className="font-display text-xl mb-5 text-[var(--ink)]">{editingId ? "Edit Artwork" : "New Artwork"}</h3>
           <form onSubmit={save} className="space-y-5">
             <div><label className="block text-xs font-medium text-[var(--ink-muted)] mb-1.5 uppercase tracking-wider">Title</label>
-              <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required className="bg-white" /></div>
+              <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required /></div>
             <div><label className="block text-xs font-medium text-[var(--ink-muted)] mb-1.5 uppercase tracking-wider">Category</label>
-              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full h-10 px-3 rounded-xl border border-input bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--app-accent)]/30">
+              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full h-10 px-3 rounded-xl border border-input text-sm focus:outline-none focus:ring-2 focus:ring-[var(--app-accent)]/30">
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
             <ImageUploader value={form.imageUrl} onChange={url => setForm({ ...form, imageUrl: url })} label="Artwork Image" />
             <div><label className="block text-xs font-medium text-[var(--ink-muted)] mb-1.5 uppercase tracking-wider">Description</label>
-              <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="bg-white resize-none h-20" /></div>
+              <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="resize-none h-20" /></div>
             <div className="flex gap-3 pt-2">
               <button type="submit" className="text-white px-7 py-2.5 rounded-full text-sm font-medium hover:opacity-90" style={{ background: "var(--app-accent)" }}>Save</button>
-              <button type="button" onClick={() => { setIsAdding(false); setEditingId(null); }} className="text-[var(--ink-muted)] px-5 py-2.5 rounded-full text-sm hover:bg-black/5">Cancel</button>
+              <button type="button" onClick={() => { setIsAdding(false); setEditingId(null); }} className="text-[var(--ink-muted)] px-5 py-2.5 rounded-full text-sm hover:bg-[var(--surface-strong)]">Cancel</button>
             </div>
           </form>
         </div>
       )}
 
-      <div className="glass-panel overflow-hidden" style={{ background: "rgba(255,255,255,0.6)" }}>
+      <div className="glass-panel surface-panel overflow-hidden">
         {isLoading ? <div className="p-10 text-center text-[var(--ink-muted)]">Loading...</div>
           : artworks?.length === 0 ? <div className="p-10 text-center"><p className="text-4xl mb-2">🎨</p><p className="text-[var(--ink-muted)] font-handwriting text-xl">No artworks yet.</p></div>
           : <table className="w-full text-left text-sm">
@@ -186,12 +186,12 @@ function ArtworksPanel({ token }: { token: string }) {
               </thead>
               <tbody>
                 {artworks?.map(art => (
-                  <tr key={art.id} className="border-b border-[var(--glass-border)]/40 last:border-0 hover:bg-white/30 transition-colors">
+                  <tr key={art.id} className="border-b border-[var(--glass-border)]/40 last:border-0 hover:bg-[var(--surface-muted)] transition-colors">
                     <td className="p-4"><div className="w-10 h-10 rounded-lg bg-[var(--bg-2)] overflow-hidden"><img src={art.imageUrl && !art.imageUrl.includes("placeholder") ? art.imageUrl : `/images/art-${(art.id % 8) + 1}.png`} alt="" className="w-full h-full object-cover" /></div></td>
                     <td className="p-4 font-medium text-[var(--ink)]">{art.title}</td>
                     <td className="p-4 text-[var(--ink-muted)] hidden md:table-cell">{art.category}</td>
                     <td className="p-4 text-right">
-                      <button onClick={() => openEdit(art)} className="p-2 text-[var(--ink-muted)] hover:text-[var(--app-accent)] rounded-lg hover:bg-black/5 transition-colors"><Edit size={14} /></button>
+                       <button onClick={() => openEdit(art)} className="p-2 text-[var(--ink-muted)] hover:text-[var(--app-accent)] rounded-lg hover:bg-[var(--surface-strong)] transition-colors"><Edit size={14} /></button>
                       <button onClick={() => { if (confirm("Delete?")) deleteArtwork.mutate({ id: art.id }, { onSuccess: () => queryClient.invalidateQueries({ queryKey: getListArtworksQueryKey() }) }); }} className="p-2 text-[var(--ink-muted)] hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"><Trash2 size={14} /></button>
                     </td>
                   </tr>
@@ -210,7 +210,11 @@ function SettingsPanel({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     artistName: "", tagline: "", heroSubtitle: "", bio: "", avatarUrl: "", currentlyDrawing: "",
-    socialInstagram: "", socialTwitter: "", socialTikTok: "", socialDeviantArt: "", creditsText: "",
+     socialInstagram: "", socialInstagramLabel: "Instagram",
+     socialTwitter: "", socialTwitterLabel: "Twitter / X",
+     socialTikTok: "", socialTikTokLabel: "TikTok",
+     socialYouTube: "", socialYouTubeLabel: "YouTube",
+     socialDeviantArt: "", socialDeviantArtLabel: "DeviantArt",
   });
   const [heroStats, setHeroStats] = useState<{ value: string; label: string }[]>([]);
   const [toggles, setToggles] = useState({
@@ -229,10 +233,15 @@ function SettingsPanel({ token }: { token: string }) {
         avatarUrl: settings.avatarUrl || "",
         currentlyDrawing: settings.currentlyDrawing || "",
         socialInstagram: (settings as any).socialInstagram || "",
+        socialInstagramLabel: (settings as any).socialInstagramLabel || "Instagram",
         socialTwitter: (settings as any).socialTwitter || "",
+        socialTwitterLabel: (settings as any).socialTwitterLabel || "Twitter / X",
         socialTikTok: (settings as any).socialTikTok || "",
+        socialTikTokLabel: (settings as any).socialTikTokLabel || "TikTok",
+        socialYouTube: (settings as any).socialYouTube || "",
+        socialYouTubeLabel: (settings as any).socialYouTubeLabel || "YouTube",
         socialDeviantArt: (settings as any).socialDeviantArt || "",
-        creditsText: (settings as any).creditsText || "",
+        socialDeviantArtLabel: (settings as any).socialDeviantArtLabel || "DeviantArt",
       });
       try { setHeroStats(JSON.parse(settings.heroStats || "[]")); } catch { setHeroStats([{ value: "100+", label: "artworks" }, { value: "3", label: "fandoms" }, { value: "2 yrs", label: "drawing" }]); }
       setToggles({
@@ -261,10 +270,15 @@ function SettingsPanel({ token }: { token: string }) {
         showGuestbook: String(toggles.showGuestbook),
         guestbookCooldownSeconds: String(guestbookCooldown),
         socialInstagram: form.socialInstagram,
+        socialInstagramLabel: form.socialInstagramLabel,
         socialTwitter: form.socialTwitter,
+        socialTwitterLabel: form.socialTwitterLabel,
         socialTikTok: form.socialTikTok,
+        socialTikTokLabel: form.socialTikTokLabel,
+        socialYouTube: form.socialYouTube,
+        socialYouTubeLabel: form.socialYouTubeLabel,
         socialDeviantArt: form.socialDeviantArt,
-        creditsText: form.creditsText,
+        socialDeviantArtLabel: form.socialDeviantArtLabel,
       },
     }, {
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetSiteSettingsQueryKey() }); setSaved(true); setTimeout(() => setSaved(false), 3000); },
@@ -279,12 +293,12 @@ function SettingsPanel({ token }: { token: string }) {
     <div className="max-w-2xl mx-auto">
       <div className="mb-8"><h2 className="font-display text-3xl text-[var(--ink)]">Site Settings</h2><p className="text-sm text-[var(--ink-muted)] mt-0.5">What visitors see</p></div>
       {saved && <div className="mb-5 glass-panel py-3 px-5 text-green-700 text-sm" style={{ background: "rgba(144,200,144,0.2)" }}>✓ Saved!</div>}
-      <form onSubmit={save} className="glass-panel p-8 space-y-6" style={{ background: "rgba(255,255,255,0.65)" }}>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Artist Name</label><Input value={form.artistName} onChange={e => setForm({ ...form, artistName: e.target.value })} className="bg-white" /></div>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Tagline</label><Input value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} className="bg-white" /></div>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Hero Subtitle</label><Textarea value={form.heroSubtitle} onChange={e => setForm({ ...form, heroSubtitle: e.target.value })} className="bg-white h-20 resize-none" /></div>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Bio</label><Textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} className="bg-white h-32 resize-none" /></div>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Currently Drawing</label><Input value={form.currentlyDrawing} onChange={e => setForm({ ...form, currentlyDrawing: e.target.value })} placeholder="e.g. Starfall Dragon ✦" className="bg-white" /></div>
+      <form onSubmit={save} className="glass-panel surface-panel p-8 space-y-6">
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Artist Name</label><Input value={form.artistName} onChange={e => setForm({ ...form, artistName: e.target.value })} /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Tagline</label><Input value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Hero Subtitle</label><Textarea value={form.heroSubtitle} onChange={e => setForm({ ...form, heroSubtitle: e.target.value })} className="h-20 resize-none" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Bio</label><Textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} className="h-32 resize-none" /></div>
+        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Currently Drawing</label><Input value={form.currentlyDrawing} onChange={e => setForm({ ...form, currentlyDrawing: e.target.value })} placeholder="e.g. Starfall Dragon ✦" /></div>
         <ImageUploader value={form.avatarUrl} onChange={url => setForm({ ...form, avatarUrl: url })} label="Profile Picture" />
 
         {/* Section Toggles */}
@@ -299,7 +313,7 @@ function SettingsPanel({ token }: { token: string }) {
               { key: "showHobbies" as const, label: "Hobbies" },
               { key: "showGuestbook" as const, label: "Guestbook" },
             ].map((t) => (
-              <label key={t.key} className="flex items-center gap-2.5 p-3 rounded-xl bg-white/60 border border-[var(--glass-border)] cursor-pointer hover:bg-white/80 transition-colors">
+              <label key={t.key} className="flex items-center gap-2.5 p-3 rounded-xl bg-[var(--surface-muted)] border border-[var(--glass-border)] cursor-pointer hover:bg-[var(--surface)] transition-colors">
                 <input
                   type="checkbox"
                   checked={toggles[t.key]}
@@ -317,7 +331,7 @@ function SettingsPanel({ token }: { token: string }) {
           <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Guestbook Cooldown</label>
           <p className="text-xs text-[var(--ink-muted)] mb-2">Seconds someone must wait between posting multiple messages. Minimum 5 seconds.</p>
           <div className="flex items-center gap-3">
-            <Input type="number" min={5} max={3600} value={guestbookCooldown} onChange={e => setGuestbookCooldown(Math.max(5, Math.min(3600, parseInt(e.target.value) || 60)))} className="bg-white w-28" />
+             <Input type="number" min={5} max={3600} value={guestbookCooldown} onChange={e => setGuestbookCooldown(Math.max(5, Math.min(3600, parseInt(e.target.value) || 60)))} className="w-28" />
             <span className="text-sm text-[var(--ink-muted)]">seconds</span>
           </div>
         </div>
@@ -331,21 +345,21 @@ function SettingsPanel({ token }: { token: string }) {
               { key: "socialInstagram" as const, label: "Instagram" },
               { key: "socialTwitter" as const, label: "Twitter / X" },
               { key: "socialTikTok" as const, label: "TikTok" },
+              { key: "socialYouTube" as const, label: "YouTube" },
               { key: "socialDeviantArt" as const, label: "DeviantArt" },
             ].map((s) => (
               <div key={s.key} className="flex gap-2 items-center">
-                <span className="text-xs text-[var(--ink-muted)] w-24 shrink-0">{s.label}</span>
-                <Input value={form[s.key]} onChange={e => setForm({ ...form, [s.key]: e.target.value })} placeholder="https://..." className="bg-white flex-1" />
+                <Input
+                  value={form[`${s.key}Label` as keyof typeof form]}
+                  onChange={e => setForm({ ...form, [`${s.key}Label`]: e.target.value })}
+                  placeholder="Display name"
+                  className="w-32 shrink-0"
+                  aria-label={`${s.label} display name`}
+                />
+                <Input value={form[s.key]} onChange={e => setForm({ ...form, [s.key]: e.target.value })} placeholder="https://..." className="flex-1" aria-label={`${s.label} URL`} />
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Footer Credits */}
-        <div>
-          <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Footer Credits</label>
-          <p className="text-xs text-[var(--ink-muted)] mb-2">Text shown in the bottom-right of the footer. Leave empty to show default.</p>
-          <Input value={form.creditsText} onChange={e => setForm({ ...form, creditsText: e.target.value })} placeholder="made by Giorgosxaral" className="bg-white" />
         </div>
 
         {/* Hero Stats */}
@@ -357,8 +371,8 @@ function SettingsPanel({ token }: { token: string }) {
           <div className="space-y-2">
             {heroStats.map((s, i) => (
               <div key={i} className="flex gap-2 items-center">
-                <Input value={s.value} onChange={e => updateStat(i, "value", e.target.value)} placeholder="100+" className="bg-white w-28" />
-                <Input value={s.label} onChange={e => updateStat(i, "label", e.target.value)} placeholder="artworks" className="bg-white flex-1" />
+                 <Input value={s.value} onChange={e => updateStat(i, "value", e.target.value)} placeholder="100+" className="w-28" />
+                 <Input value={s.label} onChange={e => updateStat(i, "label", e.target.value)} placeholder="artworks" className="flex-1" />
                 <button type="button" onClick={() => removeStat(i)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><X size={13} /></button>
               </div>
             ))}
@@ -442,13 +456,13 @@ function ContentPanel({ token }: { token: string }) {
       <div className="flex gap-2 mb-6 flex-wrap">
         {sections.map((s) => (
           <button key={s.id} onClick={() => setSection(s.id)}
-            className={`px-4 py-1.5 rounded-full text-sm transition-all ${section === s.id ? "bg-[var(--ink)] text-white" : "bg-white/60 text-[var(--ink-muted)] hover:bg-white border border-[var(--glass-border)]"}`}>
+            className={`px-4 py-1.5 rounded-full text-sm transition-all ${section === s.id ? "bg-[var(--ink)] text-[var(--bg)]" : "bg-[var(--surface-muted)] text-[var(--ink-muted)] hover:bg-[var(--surface)] border border-[var(--glass-border)]"}`}>
             {s.label}
           </button>
         ))}
       </div>
 
-      <div className="glass-panel p-7 space-y-4" style={{ background: "rgba(255,255,255,0.65)" }}>
+      <div className="glass-panel surface-panel p-7 space-y-4">
 
         {/* Mood Board */}
         {section === "mood" && (
@@ -460,11 +474,11 @@ function ContentPanel({ token }: { token: string }) {
             newItem={{ icon: "star", label: "", value: "" }}
             renderItem={(item, i, update) => (
               <div className="flex gap-2 items-start flex-wrap">
-                <select value={item.icon} onChange={e => update({ ...item, icon: e.target.value })} className="h-9 px-2 rounded-lg border border-input bg-white text-sm w-28">
+                <select value={item.icon} onChange={e => update({ ...item, icon: e.target.value })} className="h-9 px-2 rounded-lg border border-input text-sm w-28">
                   {ICONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
                 </select>
-                <Input value={item.label} onChange={e => update({ ...item, label: e.target.value })} placeholder="Label" className="bg-white w-32" />
-                <Input value={item.value} onChange={e => update({ ...item, value: e.target.value })} placeholder="Value" className="bg-white flex-1 min-w-[120px]" />
+                <Input value={item.label} onChange={e => update({ ...item, label: e.target.value })} placeholder="Label" className="w-32" />
+                <Input value={item.value} onChange={e => update({ ...item, value: e.target.value })} placeholder="Value" className="flex-1 min-w-[120px]" />
               </div>
             )}
           />
@@ -480,10 +494,10 @@ function ContentPanel({ token }: { token: string }) {
             newItem={{ icon: "⭐", title: "", desc: "", rarity: "silver" }}
             renderItem={(item, _i, update) => (
               <div className="flex gap-2 items-start flex-wrap">
-                <Input value={item.icon} onChange={e => update({ ...item, icon: e.target.value })} placeholder="🎨" className="bg-white w-16 text-center text-xl" />
-                <Input value={item.title} onChange={e => update({ ...item, title: e.target.value })} placeholder="Title" className="bg-white flex-1 min-w-[120px]" />
-                <Input value={item.desc} onChange={e => update({ ...item, desc: e.target.value })} placeholder="Subtitle" className="bg-white flex-1 min-w-[120px]" />
-                <select value={item.rarity} onChange={e => update({ ...item, rarity: e.target.value })} className="h-9 px-2 rounded-lg border border-input bg-white text-sm w-28">
+                <Input value={item.icon} onChange={e => update({ ...item, icon: e.target.value })} placeholder="🎨" className="w-16 text-center text-xl" />
+                <Input value={item.title} onChange={e => update({ ...item, title: e.target.value })} placeholder="Title" className="flex-1 min-w-[120px]" />
+                <Input value={item.desc} onChange={e => update({ ...item, desc: e.target.value })} placeholder="Subtitle" className="flex-1 min-w-[120px]" />
+                <select value={item.rarity} onChange={e => update({ ...item, rarity: e.target.value })} className="h-9 px-2 rounded-lg border border-input text-sm w-28">
                   {RARITIES.map(r => <option key={r} value={r}>{r}</option>)}
                 </select>
               </div>
@@ -501,17 +515,17 @@ function ContentPanel({ token }: { token: string }) {
             </div>
             <div className="space-y-5">
               {games.map((g, i) => (
-                <div key={i} className="p-4 bg-white/60 rounded-2xl border border-[var(--glass-border)] space-y-3">
+                <div key={i} className="p-4 bg-[var(--surface-muted)] rounded-2xl border border-[var(--glass-border)] space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-[var(--ink)]">Game {i + 1}</span>
                     <button onClick={() => setGames(games.filter((_, idx) => idx !== i))} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={13} /></button>
                   </div>
-                  <Input value={g.title} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, title: e.target.value } : g2))} placeholder="Game title" className="bg-white" />
-                  <Textarea value={g.description} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, description: e.target.value } : g2))} placeholder="Description" className="bg-white resize-none h-16" />
+                   <Input value={g.title} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, title: e.target.value } : g2))} placeholder="Game title" />
+                   <Textarea value={g.description} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, description: e.target.value } : g2))} placeholder="Description" className="resize-none h-16" />
                   <ImageUploader value={g.image} onChange={url => setGames(games.map((g2, idx) => idx === i ? { ...g2, image: url } : g2))} label="Game Banner Image" />
                   <div className="flex gap-3">
-                    <div className="flex-1"><label className="text-[10px] text-[var(--ink-muted)] uppercase tracking-wider">Card bg color</label><Input type="color" value={g.accentColor} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, accentColor: e.target.value } : g2))} className="bg-white h-9 p-1 w-full" /></div>
-                    <div className="flex-1"><label className="text-[10px] text-[var(--ink-muted)] uppercase tracking-wider">Text color</label><Input type="color" value={g.textColor} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, textColor: e.target.value } : g2))} className="bg-white h-9 p-1 w-full" /></div>
+                     <div className="flex-1"><label className="text-[10px] text-[var(--ink-muted)] uppercase tracking-wider">Card bg color</label><Input type="color" value={g.accentColor} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, accentColor: e.target.value } : g2))} className="h-9 p-1 w-full" /></div>
+                     <div className="flex-1"><label className="text-[10px] text-[var(--ink-muted)] uppercase tracking-wider">Text color</label><Input type="color" value={g.textColor} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, textColor: e.target.value } : g2))} className="h-9 p-1 w-full" /></div>
                   </div>
                 </div>
               ))}
@@ -529,9 +543,9 @@ function ContentPanel({ token }: { token: string }) {
             newItem={{ year: "", description: "", emoji: "✨" }}
             renderItem={(item, _i, update) => (
               <div className="flex gap-2 items-start flex-wrap">
-                <Input value={item.year} onChange={e => update({ ...item, year: e.target.value })} placeholder="2024" className="bg-white w-20" />
-                <Input value={item.emoji} onChange={e => update({ ...item, emoji: e.target.value })} placeholder="✨" className="bg-white w-14 text-center text-xl" />
-                <Input value={item.description} onChange={e => update({ ...item, description: e.target.value })} placeholder="What happened?" className="bg-white flex-1 min-w-[160px]" />
+                 <Input value={item.year} onChange={e => update({ ...item, year: e.target.value })} placeholder="2024" className="w-20" />
+                 <Input value={item.emoji} onChange={e => update({ ...item, emoji: e.target.value })} placeholder="✨" className="w-14 text-center text-xl" />
+                 <Input value={item.description} onChange={e => update({ ...item, description: e.target.value })} placeholder="What happened?" className="flex-1 min-w-[160px]" />
               </div>
             )}
           />
@@ -548,14 +562,14 @@ function ContentPanel({ token }: { token: string }) {
               newItem={{ label: "", icon: "✨" }}
               renderItem={(item, _i, update) => (
                 <div className="flex gap-2">
-                  <Input value={item.icon} onChange={e => update({ ...item, icon: e.target.value })} placeholder="📖" className="bg-white w-14 text-center text-xl" />
-                  <Input value={item.label} onChange={e => update({ ...item, label: e.target.value })} placeholder="Reading Fantasy" className="bg-white flex-1" />
+                   <Input value={item.icon} onChange={e => update({ ...item, icon: e.target.value })} placeholder="📖" className="w-14 text-center text-xl" />
+                   <Input value={item.label} onChange={e => update({ ...item, label: e.target.value })} placeholder="Reading Fantasy" className="flex-1" />
                 </div>
               )}
             />
             <div>
               <label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Current Obsession text</label>
-              <Textarea value={currentObsession} onChange={e => setCurrentObsession(e.target.value)} className="bg-white resize-none h-24" placeholder="What are you obsessed with right now?" />
+               <Textarea value={currentObsession} onChange={e => setCurrentObsession(e.target.value)} className="resize-none h-24" placeholder="What are you obsessed with right now?" />
             </div>
           </div>
         )}
@@ -591,7 +605,7 @@ function ListEditor<T extends object>({ title, description, items, setItems, new
       </div>
       <div className="space-y-2">
         {items.map((item, i) => (
-          <div key={i} className="flex gap-2 items-start p-3 bg-white/60 rounded-xl border border-[var(--glass-border)]">
+           <div key={i} className="flex gap-2 items-start p-3 bg-[var(--surface-muted)] rounded-xl border border-[var(--glass-border)]">
             <div className="flex flex-col gap-0.5 shrink-0 pt-1">
               <button type="button" onClick={() => move(i, -1)} className="p-0.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-20" disabled={i === 0}><ChevronUp size={14} /></button>
               <button type="button" onClick={() => move(i, 1)} className="p-0.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-20" disabled={i === items.length - 1}><ChevronDown size={14} /></button>
@@ -642,15 +656,15 @@ function SecurityPanel({ token }: { token: string }) {
   return (
     <div className="max-w-xl mx-auto">
       <div className="mb-8"><h2 className="font-display text-3xl text-[var(--ink)]">Security</h2><p className="text-sm text-[var(--ink-muted)] mt-0.5">Change your admin password</p></div>
-      <form onSubmit={save} className="glass-panel p-8 space-y-5" style={{ background: "rgba(255,255,255,0.65)" }}>
+       <form onSubmit={save} className="glass-panel surface-panel p-8 space-y-5">
         {status && (
           <div className={`py-2.5 px-4 rounded-xl text-sm ${status.type === "ok" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
             {status.msg}
           </div>
         )}
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Current Password</label><Input type="password" value={current} onChange={e => setCurrent(e.target.value)} required className="bg-white" /></div>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">New Password</label><Input type="password" value={next} onChange={e => setNext(e.target.value)} required className="bg-white" /></div>
-        <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Confirm New Password</label><Input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required className="bg-white" /></div>
+         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Current Password</label><Input type="password" value={current} onChange={e => setCurrent(e.target.value)} required /></div>
+         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">New Password</label><Input type="password" value={next} onChange={e => setNext(e.target.value)} required /></div>
+         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Confirm New Password</label><Input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required /></div>
         <button type="submit" disabled={loading} className="text-white px-8 py-3 rounded-full text-sm font-medium hover:opacity-90 hover:-translate-y-0.5 hover:shadow-md transition-all disabled:opacity-50"
           style={{ background: "linear-gradient(135deg, var(--app-accent), var(--app-accent-pink))" }}>
           {loading ? "Changing..." : "Change Password"}
@@ -673,7 +687,7 @@ function GuestbookPanel({ token }: { token: string }) {
         {isLoading ? <p className="text-[var(--ink-muted)]">Loading...</p>
           : messages?.length === 0 ? <div className="text-center py-12"><p className="text-4xl mb-3">📖</p><p className="text-[var(--ink-muted)] font-handwriting text-xl">No messages yet.</p></div>
           : messages?.map(msg => (
-            <div key={msg.id} className="glass-panel px-5 py-4 flex justify-between items-start gap-4" style={{ background: "rgba(255,255,255,0.6)" }}>
+             <div key={msg.id} className="glass-panel surface-panel px-5 py-4 flex justify-between items-start gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1"><span>{msg.emoji}</span><span className="font-semibold text-[var(--ink)] text-sm">{msg.name}</span><span className="text-xs text-[var(--ink-muted)]">{new Date(msg.createdAt).toLocaleString()}</span></div>
                 <p className="text-[var(--ink)]/80 text-sm">{msg.message}</p>

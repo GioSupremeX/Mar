@@ -9,10 +9,11 @@ interface FooterProps {
 export default function Footer({ artistName, settings }: FooterProps) {
   const s = settings as Record<string, string> | undefined;
   const links = [
-    { label: "Instagram", url: s?.socialInstagram },
-    { label: "Twitter / X", url: s?.socialTwitter },
-    { label: "TikTok", url: s?.socialTikTok },
-    { label: "DeviantArt", url: s?.socialDeviantArt },
+    { label: s?.socialInstagramLabel || "Instagram", url: s?.socialInstagram },
+    { label: s?.socialTwitterLabel || "Twitter / X", url: s?.socialTwitter },
+    { label: s?.socialTikTokLabel || "TikTok", url: s?.socialTikTok },
+    { label: s?.socialYouTubeLabel || "YouTube", url: s?.socialYouTube },
+    { label: s?.socialDeviantArtLabel || "DeviantArt", url: s?.socialDeviantArt },
   ].filter((l) => !!l.url && l.url.trim() !== "") as { label: string; url: string }[];
 
   return (
@@ -36,7 +37,6 @@ export default function Footer({ artistName, settings }: FooterProps) {
             ))}
           </div>
         )}
-        <p className="font-sans tracking-wide opacity-50">{s?.creditsText || "made by Giorgosxaral"}</p>
       </div>
     </footer>
   );

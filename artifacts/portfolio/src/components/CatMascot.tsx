@@ -42,7 +42,7 @@ export default function CatMascot() {
   const scrollTilt = Math.max(-8, Math.min(8, (scrollY % 200) / 25 - 4));
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 select-none">
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 select-none">
       <AnimatePresence>
         {showBubble && (
           <motion.div
@@ -50,7 +50,7 @@ export default function CatMascot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.85 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="absolute -top-10 -left-14 bg-white/90 backdrop-blur-md border border-[var(--glass-border)] px-3 py-1 rounded-2xl rounded-br-none shadow-lg whitespace-nowrap"
+            className="absolute -top-10 -left-14 surface-strong backdrop-blur-md border border-[var(--glass-border)] px-3 py-1 rounded-2xl rounded-br-none shadow-lg whitespace-nowrap"
           >
             <span className="font-sans text-xs font-medium tracking-wide text-[var(--ink)]">{msgs[msgIndex]}</span>
           </motion.div>

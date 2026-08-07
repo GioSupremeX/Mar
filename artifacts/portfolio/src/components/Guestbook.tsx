@@ -124,7 +124,7 @@ export default function Guestbook() {
 
       <div className="grid md:grid-cols-2 gap-10 md:gap-16">
         {/* Form */}
-        <FadeIn direction="left" className="glass-panel p-8 h-fit" style={{ background: "rgba(255,255,255,0.55)" }}>
+        <FadeIn direction="left" className="glass-panel surface-panel p-8 h-fit">
           {success && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -194,7 +194,7 @@ export default function Guestbook() {
                           className={`text-xl p-2 rounded-xl transition-all duration-200 ${
                             field.value === emoji
                               ? "bg-[var(--app-accent)]/25 scale-110 shadow-sm"
-                              : "hover:bg-black/5 opacity-50 hover:opacity-100"
+                              : "hover:bg-[var(--surface-strong)] opacity-60 hover:opacity-100"
                           }`}
                         >
                           {emoji}
@@ -207,7 +207,7 @@ export default function Guestbook() {
 
               {/* Challenge */}
               <div className="flex items-center gap-3">
-                <div className="bg-white/60 rounded-xl px-3 py-2 text-sm font-sans text-[var(--ink)] border border-[var(--glass-border)]">
+                <div className="surface-strong rounded-xl px-3 py-2 text-sm font-sans text-[var(--ink)] border border-[var(--glass-border)]">
                   {challenge?.q || "2 + 3"}
                 </div>
                 <span className="text-[var(--ink-muted)] text-sm">=</span>

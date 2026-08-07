@@ -67,6 +67,16 @@ export interface SiteSettings {
   showGuestbook?: string;
   guestbookCooldownSeconds?: string;
   adminPasswordHash?: string;
+  socialInstagram?: string;
+  socialInstagramLabel?: string;
+  socialTwitter?: string;
+  socialTwitterLabel?: string;
+  socialTikTok?: string;
+  socialTikTokLabel?: string;
+  socialYouTube?: string;
+  socialYouTubeLabel?: string;
+  socialDeviantArt?: string;
+  socialDeviantArtLabel?: string;
 }
 
 export interface SiteSettingsInput {
@@ -116,14 +126,24 @@ export interface SiteSettingsInput {
   adminPasswordHash?: string;
   /** @maxLength 300 */
   socialInstagram?: string;
+  /** @maxLength 40 */
+  socialInstagramLabel?: string;
   /** @maxLength 300 */
   socialTwitter?: string;
+  /** @maxLength 40 */
+  socialTwitterLabel?: string;
   /** @maxLength 300 */
   socialTikTok?: string;
+  /** @maxLength 40 */
+  socialTikTokLabel?: string;
+  /** @maxLength 300 */
+  socialYouTube?: string;
+  /** @maxLength 40 */
+  socialYouTubeLabel?: string;
   /** @maxLength 300 */
   socialDeviantArt?: string;
-  /** @maxLength 120 */
-  creditsText?: string;
+  /** @maxLength 40 */
+  socialDeviantArtLabel?: string;
 }
 
 export interface GuestbookMessage {

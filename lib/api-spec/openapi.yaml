@@ -475,6 +475,26 @@ components:
           type: string
         adminPasswordHash:
           type: string
+        socialInstagram:
+          type: string
+        socialInstagramLabel:
+          type: string
+        socialTwitter:
+          type: string
+        socialTwitterLabel:
+          type: string
+        socialTikTok:
+          type: string
+        socialTikTokLabel:
+          type: string
+        socialYouTube:
+          type: string
+        socialYouTubeLabel:
+          type: string
+        socialDeviantArt:
+          type: string
+        socialDeviantArtLabel:
+          type: string
 
     SiteSettingsInput:
       type: object
@@ -548,18 +568,33 @@ components:
         socialInstagram:
           type: string
           maxLength: 300
+        socialInstagramLabel:
+          type: string
+          maxLength: 40
         socialTwitter:
           type: string
           maxLength: 300
+        socialTwitterLabel:
+          type: string
+          maxLength: 40
         socialTikTok:
           type: string
           maxLength: 300
+        socialTikTokLabel:
+          type: string
+          maxLength: 40
+        socialYouTube:
+          type: string
+          maxLength: 300
+        socialYouTubeLabel:
+          type: string
+          maxLength: 40
         socialDeviantArt:
           type: string
           maxLength: 300
-        creditsText:
+        socialDeviantArtLabel:
           type: string
-          maxLength: 120
+          maxLength: 40
 
     GuestbookMessage:
       type: object

@@ -92,10 +92,15 @@ const DEFAULTS: Record<string, string> = {
   guestbookCooldownSeconds: "60",
   adminPasswordHash: "",
   socialInstagram: "https://instagram.com",
+  socialInstagramLabel: "Instagram",
   socialTwitter: "https://twitter.com",
+  socialTwitterLabel: "Twitter / X",
   socialTikTok: "https://tiktok.com",
+  socialTikTokLabel: "TikTok",
+  socialYouTube: "https://youtube.com",
+  socialYouTubeLabel: "YouTube",
   socialDeviantArt: "https://deviantart.com",
-  creditsText: "made by Giorgosxaral",
+  socialDeviantArtLabel: "DeviantArt",
 };
 
 const ALLOWED_KEYS = Object.keys(DEFAULTS);

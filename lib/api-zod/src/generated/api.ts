@@ -143,7 +143,17 @@ export const GetSiteSettingsResponse = zod.object({
   "showHobbies": zod.string().optional(),
   "showGuestbook": zod.string().optional(),
   "guestbookCooldownSeconds": zod.string().optional(),
-  "adminPasswordHash": zod.string().optional()
+  "adminPasswordHash": zod.string().optional(),
+  "socialInstagram": zod.string().optional(),
+  "socialInstagramLabel": zod.string().optional(),
+  "socialTwitter": zod.string().optional(),
+  "socialTwitterLabel": zod.string().optional(),
+  "socialTikTok": zod.string().optional(),
+  "socialTikTokLabel": zod.string().optional(),
+  "socialYouTube": zod.string().optional(),
+  "socialYouTubeLabel": zod.string().optional(),
+  "socialDeviantArt": zod.string().optional(),
+  "socialDeviantArtLabel": zod.string().optional()
 })
 
 
@@ -196,13 +206,23 @@ export const updateSiteSettingsBodyAdminPasswordHashMax = 500;
 
 export const updateSiteSettingsBodySocialInstagramMax = 300;
 
+export const updateSiteSettingsBodySocialInstagramLabelMax = 40;
+
 export const updateSiteSettingsBodySocialTwitterMax = 300;
+
+export const updateSiteSettingsBodySocialTwitterLabelMax = 40;
 
 export const updateSiteSettingsBodySocialTikTokMax = 300;
 
+export const updateSiteSettingsBodySocialTikTokLabelMax = 40;
+
+export const updateSiteSettingsBodySocialYouTubeMax = 300;
+
+export const updateSiteSettingsBodySocialYouTubeLabelMax = 40;
+
 export const updateSiteSettingsBodySocialDeviantArtMax = 300;
 
-export const updateSiteSettingsBodyCreditsTextMax = 120;
+export const updateSiteSettingsBodySocialDeviantArtLabelMax = 40;
 
 
 
@@ -230,10 +250,15 @@ export const UpdateSiteSettingsBody = zod.object({
   "guestbookCooldownSeconds": zod.string().max(updateSiteSettingsBodyGuestbookCooldownSecondsMax).optional(),
   "adminPasswordHash": zod.string().max(updateSiteSettingsBodyAdminPasswordHashMax).optional(),
   "socialInstagram": zod.string().max(updateSiteSettingsBodySocialInstagramMax).optional(),
+  "socialInstagramLabel": zod.string().max(updateSiteSettingsBodySocialInstagramLabelMax).optional(),
   "socialTwitter": zod.string().max(updateSiteSettingsBodySocialTwitterMax).optional(),
+  "socialTwitterLabel": zod.string().max(updateSiteSettingsBodySocialTwitterLabelMax).optional(),
   "socialTikTok": zod.string().max(updateSiteSettingsBodySocialTikTokMax).optional(),
+  "socialTikTokLabel": zod.string().max(updateSiteSettingsBodySocialTikTokLabelMax).optional(),
+  "socialYouTube": zod.string().max(updateSiteSettingsBodySocialYouTubeMax).optional(),
+  "socialYouTubeLabel": zod.string().max(updateSiteSettingsBodySocialYouTubeLabelMax).optional(),
   "socialDeviantArt": zod.string().max(updateSiteSettingsBodySocialDeviantArtMax).optional(),
-  "creditsText": zod.string().max(updateSiteSettingsBodyCreditsTextMax).optional()
+  "socialDeviantArtLabel": zod.string().max(updateSiteSettingsBodySocialDeviantArtLabelMax).optional()
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
@@ -258,7 +283,17 @@ export const UpdateSiteSettingsResponse = zod.object({
   "showHobbies": zod.string().optional(),
   "showGuestbook": zod.string().optional(),
   "guestbookCooldownSeconds": zod.string().optional(),
-  "adminPasswordHash": zod.string().optional()
+  "adminPasswordHash": zod.string().optional(),
+  "socialInstagram": zod.string().optional(),
+  "socialInstagramLabel": zod.string().optional(),
+  "socialTwitter": zod.string().optional(),
+  "socialTwitterLabel": zod.string().optional(),
+  "socialTikTok": zod.string().optional(),
+  "socialTikTokLabel": zod.string().optional(),
+  "socialYouTube": zod.string().optional(),
+  "socialYouTubeLabel": zod.string().optional(),
+  "socialDeviantArt": zod.string().optional(),
+  "socialDeviantArtLabel": zod.string().optional()
 })
 
 

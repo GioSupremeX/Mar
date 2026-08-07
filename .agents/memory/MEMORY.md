@@ -1,0 +1,1 @@
+- [Theme surface tokens](theme-surface-tokens.md) — shared semantic surfaces prevent hard-coded light backgrounds from breaking dark mode.

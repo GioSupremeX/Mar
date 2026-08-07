@@ -79,6 +79,11 @@
   --app-accent-pink: #F4A7C3;
   --app-accent-blue: #A8C8E8;
   --gold: #E8D4A8;
+  --surface: rgba(255, 255, 255, 0.68);
+  --surface-muted: rgba(255, 255, 255, 0.52);
+  --surface-strong: rgba(255, 255, 255, 0.9);
+  --control-bg: rgba(255, 255, 255, 0.78);
+  --control-placeholder: rgba(123, 111, 163, 0.6);
 
   --background: 252 100% 98%;
   --foreground: 255 41% 20%;
@@ -126,6 +131,11 @@
   --app-accent-pink: #F4A7C3;
   --app-accent-blue: #A8C8E8;
   --gold: #E8D4A8;
+  --surface: rgba(32, 27, 57, 0.86);
+  --surface-muted: rgba(32, 27, 57, 0.7);
+  --surface-strong: rgba(42, 35, 72, 0.96);
+  --control-bg: rgba(42, 35, 72, 0.92);
+  --control-placeholder: rgba(209, 199, 239, 0.62);
 
   --background: 255 30% 8%;
   --foreground: 252 50% 93%;
@@ -157,6 +167,15 @@
   --destructive-foreground: 0 0% 100%;
 }
 
+/* Legacy utility and inline surfaces should inherit the dark theme too. */
+.dark [class*="bg-white"] {
+  background-color: var(--surface-strong) !important;
+}
+
+.dark [style*="rgba(255,255,255"] {
+  background: var(--surface-strong) !important;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -176,6 +195,19 @@
   .font-handwriting {
     font-family: var(--app-font-handwriting);
   }
+
+  input,
+  textarea,
+  select {
+    color: var(--ink);
+    background-color: var(--control-bg);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--control-placeholder);
+    opacity: 1;
+  }
 }
 
 .glass-panel {
@@ -185,6 +217,18 @@
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+.surface-panel {
+  background: var(--surface);
+}
+
+.surface-muted {
+  background: var(--surface-muted);
+}
+
+.surface-strong {
+  background: var(--surface-strong);
 }
 
 .bottom-border-input {
