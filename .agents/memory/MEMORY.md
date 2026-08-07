@@ -1,1 +1,2 @@
 - [Theme surface tokens](theme-surface-tokens.md) — shared semantic surfaces prevent hard-coded light backgrounds from breaking dark mode.
+- [Vite artifact build defaults](vite-artifact-builds.md) — standalone builds need safe PORT and BASE_PATH defaults matching managed workflows.

@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useGetSiteSettings } from "@workspace/api-client-react";
 import { TextReveal, FadeIn } from "./TextReveal";
 import { SpotlightCard } from "./SpotlightCard";
+import { useDarkMode } from "./DarkModeProvider";
 
 interface Game { title: string; description: string; image: string; accentColor: string; textColor: string; }
 
@@ -18,6 +19,8 @@ const DEFAULT_GAMES: Game[] = [
 
 export default function Games() {
   const { data: settings } = useGetSiteSettings();
+  const { theme } = useDarkMode();
+  const isDark = theme === "dark";
   const games = safeParseJSON<Game[]>(settings?.games, DEFAULT_GAMES);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
@@ -46,10 +49,10 @@ export default function Games() {
             <SpotlightCard className="flex flex-col h-full" spotlightColor={`${game.accentColor}20`}>
               {/* Image */}
               <div className="h-48 overflow-hidden relative">
-                <div
-                  className="absolute inset-0 z-10 mix-blend-multiply opacity-40"
-                  style={{ background: game.accentColor }}
-                />
+                  <div
+                    className="absolute inset-0 z-10 mix-blend-multiply"
+                    style={{ background: game.accentColor, opacity: isDark ? 0.12 : 0.4 }}
+                  />
                 <motion.img
                   src={game.image}
                   alt={game.title}
@@ -62,17 +65,32 @@ export default function Games() {
                     el.parentElement!.style.background = game.accentColor;
                   }}
                 />
-                <div className="absolute top-3 left-3 z-20 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-xs font-bold" style={{ color: game.textColor }}>
+                <div
+                  className="absolute top-3 left-3 z-20 w-7 h-7 rounded-full surface-strong flex items-center justify-center text-xs font-bold"
+                  style={{ color: isDark ? "var(--ink)" : game.textColor }}
+                >
                   {index + 1}
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-7 flex-1 flex flex-col" style={{ background: `${game.accentColor}55` }}>
-                <h3 className="font-display text-2xl font-semibold mb-3" style={{ color: game.textColor }}>
+              <div
+                className="p-7 flex-1 flex flex-col border-t border-[var(--glass-border)]"
+                style={{ background: isDark ? "var(--surface-strong)" : `${game.accentColor}55` }}
+              >
+                <h3
+                  className="font-display text-2xl font-semibold mb-3"
+                  style={{ color: isDark ? "var(--ink)" : game.textColor }}
+                >
                   {game.title}
                 </h3>
-                <p className="font-sans text-sm leading-relaxed flex-1" style={{ color: game.textColor, opacity: 0.8 }}>
+                <p
+                  className="font-sans text-sm leading-relaxed flex-1"
+                  style={{
+                    color: isDark ? "var(--ink-muted)" : game.textColor,
+                    opacity: isDark ? 1 : 0.8,
+                  }}
+                >
                   {game.description}
                 </p>
               </div>
