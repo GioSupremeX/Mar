@@ -18,6 +18,12 @@ export default function AdminLogin() {
     return () => clearInterval(timer);
   }, [cooldown]);
 
+  useEffect(() => {
+    if (cooldown === 0 && error.startsWith("Temporarily locked")) {
+      setError("");
+    }
+  }, [cooldown, error]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -36,13 +42,17 @@ export default function AdminLogin() {
           setLocation("/admin/dashboard");
         },
         onError: (err: any) => {
-          const msg = err?.response?.data?.error || "Invalid login details.";
-          const remaining = err?.response?.data?.attemptsRemaining;
-          const cd = err?.response?.data?.cooldownSeconds;
+          // The generated fetch client stores parsed error JSON on `data`.
+          // Keep the response fallback for compatibility with other clients.
+          const errorData = err?.data ?? err?.response?.data ?? {};
+          const msg = errorData.error || "Invalid login details.";
+          const remaining = errorData.attemptsRemaining;
+          const cd = Number(errorData.cooldownSeconds);
 
-          if (cd) {
-            setCooldown(cd);
-            setError(msg);
+          if (Number.isFinite(cd) && cd > 0) {
+            setCooldown(Math.ceil(cd));
+            setAttemptsLeft(null);
+            setError(`Temporarily locked. Try again in ${Math.ceil(cd)}s.`);
           } else {
             setError(msg);
             if (remaining !== undefined) {
@@ -87,9 +97,20 @@ export default function AdminLogin() {
           onSubmit={handleLogin}
           className="space-y-8"
         >
+          <input
+            type="text"
+            name="username"
+            value="admin"
+            autoComplete="username"
+            readOnly
+            tabIndex={-1}
+            aria-hidden="true"
+            className="sr-only"
+          />
           <div className={error ? "animate-[shake_0.5s_ease-in-out]" : ""}>
             <Input
               type="password"
+              name="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
