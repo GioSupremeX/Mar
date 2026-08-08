@@ -28,6 +28,7 @@ app.use(
     },
   }),
 );
+
 app.use(cors());
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
@@ -35,14 +36,27 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 // Your API routes
 app.use("/api", router);
 
-// --- 2. ADD THESE LINES TO SERVE THE WEBSITE ---
-// Serve the static frontend files
-app.use(express.static(path.join(process.cwd(), "dist/public")));
+// Dynamically locate where the frontend build files actually live across the monorepo
+const possiblePaths = [
+  path.resolve(process.cwd(), "dist/public"),
+  path.resolve(process.cwd(), "../portfolio/dist/public"),
+  path.resolve(process.cwd(), "../../artifacts/portfolio/dist/public"),
+  path.resolve(process.cwd(), "../portfolio/dist"),
+];
 
-// Catch-all route so refreshing the page works (Express 5 RegExp Syntax)
+const staticPath = possiblePaths.find((p) => fs.existsSync(p)) || possiblePaths[0];
+
+// Serve static assets
+app.use(express.static(staticPath));
+
+// Catch-all route for frontend (Express 5 RegExp syntax)
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(process.cwd(), "dist/public/index.html"));
+  const indexPath = path.join(staticPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send("Frontend index.html not found");
+  }
 });
-// -----------------------------------------------
 
 export default app;
