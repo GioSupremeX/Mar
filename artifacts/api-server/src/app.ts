@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import path from "path"; // <-- 1. ADD THIS IMPORT
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -30,6 +31,17 @@ app.use(cors());
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
+// Your API routes
 app.use("/api", router);
+
+// --- 2. ADD THESE LINES TO SERVE THE WEBSITE ---
+// Serve the static frontend files
+app.use(express.static(path.join(process.cwd(), "dist/public")));
+
+// Catch-all route so refreshing the page works (Fixes Cannot GET /)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "dist/public/index.html"));
+});
+// -----------------------------------------------
 
 export default app;
