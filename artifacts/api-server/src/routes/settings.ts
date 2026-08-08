@@ -90,7 +90,6 @@ const DEFAULTS: Record<string, string> = {
   showHobbies: "true",
   showGuestbook: "true",
   guestbookCooldownSeconds: "60",
-  adminPasswordHash: "",
   socialInstagram: "https://instagram.com",
   socialInstagramLabel: "Instagram",
   socialTwitter: "https://twitter.com",
@@ -109,7 +108,9 @@ async function getSettings(): Promise<Record<string, string>> {
   const rows = await db.select().from(siteSettings);
   const map: Record<string, string> = { ...DEFAULTS };
   for (const row of rows) {
-    map[row.key] = row.value;
+    if (Object.prototype.hasOwnProperty.call(DEFAULTS, row.key)) {
+      map[row.key] = row.value;
+    }
   }
   return map;
 }

@@ -631,7 +631,7 @@ function SecurityPanel({ token }: { token: string }) {
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus(null);
-    if (next.length < 6) { setStatus({ type: "err", msg: "New password must be at least 6 characters" }); return; }
+    if (next.length < 12) { setStatus({ type: "err", msg: "New password must be at least 12 characters" }); return; }
     if (next !== confirm) { setStatus({ type: "err", msg: "Passwords do not match" }); return; }
     setLoading(true);
     try {

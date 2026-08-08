@@ -143,7 +143,6 @@ export const GetSiteSettingsResponse = zod.object({
   "showHobbies": zod.string().optional(),
   "showGuestbook": zod.string().optional(),
   "guestbookCooldownSeconds": zod.string().optional(),
-  "adminPasswordHash": zod.string().optional(),
   "socialInstagram": zod.string().optional(),
   "socialInstagramLabel": zod.string().optional(),
   "socialTwitter": zod.string().optional(),
@@ -202,8 +201,6 @@ export const updateSiteSettingsBodyShowGuestbookMax = 10;
 
 export const updateSiteSettingsBodyGuestbookCooldownSecondsMax = 10;
 
-export const updateSiteSettingsBodyAdminPasswordHashMax = 500;
-
 export const updateSiteSettingsBodySocialInstagramMax = 300;
 
 export const updateSiteSettingsBodySocialInstagramLabelMax = 40;
@@ -248,7 +245,6 @@ export const UpdateSiteSettingsBody = zod.object({
   "showHobbies": zod.string().max(updateSiteSettingsBodyShowHobbiesMax).optional(),
   "showGuestbook": zod.string().max(updateSiteSettingsBodyShowGuestbookMax).optional(),
   "guestbookCooldownSeconds": zod.string().max(updateSiteSettingsBodyGuestbookCooldownSecondsMax).optional(),
-  "adminPasswordHash": zod.string().max(updateSiteSettingsBodyAdminPasswordHashMax).optional(),
   "socialInstagram": zod.string().max(updateSiteSettingsBodySocialInstagramMax).optional(),
   "socialInstagramLabel": zod.string().max(updateSiteSettingsBodySocialInstagramLabelMax).optional(),
   "socialTwitter": zod.string().max(updateSiteSettingsBodySocialTwitterMax).optional(),
@@ -283,7 +279,6 @@ export const UpdateSiteSettingsResponse = zod.object({
   "showHobbies": zod.string().optional(),
   "showGuestbook": zod.string().optional(),
   "guestbookCooldownSeconds": zod.string().optional(),
-  "adminPasswordHash": zod.string().optional(),
   "socialInstagram": zod.string().optional(),
   "socialInstagramLabel": zod.string().optional(),
   "socialTwitter": zod.string().optional(),

@@ -4,9 +4,14 @@ import type { Request, Response, NextFunction } from "express";
 import { db, siteSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
-const JWT_SECRET = process.env.JWT_SECRET ?? process.env.SESSION_SECRET ?? "dev-secret-change-me";
+const configuredJwtSecret = process.env.JWT_SECRET ?? process.env.SESSION_SECRET;
+if (!configuredJwtSecret) {
+  throw new Error("JWT_SECRET or SESSION_SECRET must be configured.");
+}
+const JWT_SECRET: string = configuredJwtSecret;
 const ADMIN_PASSWORD_HASH_ENV = process.env.ADMIN_PASSWORD_HASH ?? "";
-const ADMIN_PASSWORD_PLAIN = process.env.ADMIN_PASSWORD ?? "admin123";
+const ADMIN_PASSWORD_PLAIN = process.env.ADMIN_PASSWORD ?? "";
+const DUMMY_PASSWORD_HASH = "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
 export async function verifyAdminPassword(password: string): Promise<boolean> {
   const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, "adminPasswordHash"));
@@ -14,7 +19,12 @@ export async function verifyAdminPassword(password: string): Promise<boolean> {
   if (hash) {
     return bcrypt.compare(password, hash);
   }
-  return password === ADMIN_PASSWORD_PLAIN;
+  if (ADMIN_PASSWORD_PLAIN) {
+    return password === ADMIN_PASSWORD_PLAIN;
+  }
+  // Keep timing consistent while failing closed when no password is configured.
+  await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
+  return false;
 }
 
 export function signAdminToken(): string {

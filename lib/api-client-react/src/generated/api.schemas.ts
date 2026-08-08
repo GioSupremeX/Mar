@@ -66,7 +66,6 @@ export interface SiteSettings {
   showHobbies?: string;
   showGuestbook?: string;
   guestbookCooldownSeconds?: string;
-  adminPasswordHash?: string;
   socialInstagram?: string;
   socialInstagramLabel?: string;
   socialTwitter?: string;
@@ -122,8 +121,6 @@ export interface SiteSettingsInput {
   showGuestbook?: string;
   /** @maxLength 10 */
   guestbookCooldownSeconds?: string;
-  /** @maxLength 500 */
-  adminPasswordHash?: string;
   /** @maxLength 300 */
   socialInstagram?: string;
   /** @maxLength 40 */

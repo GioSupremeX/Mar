@@ -50,7 +50,7 @@ A dreamy, cat-themed artist portfolio with soft pastel aesthetics, glassmorphism
 
 ## User preferences
 
-- Admin password: `8e333625d268` (change immediately in Security tab)
+- Admin password is stored securely; change it from the Security tab.
 - Images should use external URLs to save storage space (see `SETUP.md`)
 - Social links are editable from admin Settings — leave empty to hide
 

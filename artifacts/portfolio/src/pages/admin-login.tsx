@@ -24,7 +24,7 @@ export default function AdminLogin() {
     setAttemptsLeft(null);
 
     if (cooldown > 0) {
-      setError(`Locked. Wait ${cooldown}s.`);
+      setError(`Temporarily locked. Try again in ${cooldown}s.`);
       return;
     }
 
@@ -36,7 +36,7 @@ export default function AdminLogin() {
           setLocation("/admin/dashboard");
         },
         onError: (err: any) => {
-          const msg = err?.response?.data?.error || "Wrong password";
+          const msg = err?.response?.data?.error || "Invalid login details.";
           const remaining = err?.response?.data?.attemptsRemaining;
           const cd = err?.response?.data?.cooldownSeconds;
 

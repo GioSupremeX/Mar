@@ -6,16 +6,23 @@ import { verifyAdminPassword, signAdminToken, requireAdmin } from "../lib/auth";
 const router: IRouter = Router();
 
 interface AttemptState {
-  count: number;
+  failedAttempts: number;
+  lockLevel: number;
   lockedUntil: number;
+  lastFailureAt: number;
 }
 const loginAttempts = new Map<string, AttemptState>();
-const MAX_ATTEMPTS = 3;
-const COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+const ATTEMPTS_PER_LOCK = 3;
+const LOCKOUT_SECONDS = [20, 50, 60, 180] as const;
+const FAILURE_RESET_MS = 15 * 60 * 1000;
+const GLOBAL_FAILURE_WINDOW_MS = 60 * 1000;
+const GLOBAL_FAILURE_LIMIT = 12;
+const GLOBAL_LOCK_SECONDS = 60;
+const globalFailures: number[] = [];
+let globalLockedUntil = 0;
 
 function getClientIp(req: any): string {
-  return req.headers["x-forwarded-for"]?.split(",")[0]?.trim()
-    || req.headers["x-real-ip"]
+  return req.ip
     || req.socket?.remoteAddress
     || "unknown";
 }
@@ -23,9 +30,12 @@ function getClientIp(req: any): string {
 function cleanOldAttempts() {
   const now = Date.now();
   for (const [ip, state] of loginAttempts) {
-    if (now > state.lockedUntil + COOLDOWN_MS) {
+    if (now - state.lastFailureAt > FAILURE_RESET_MS) {
       loginAttempts.delete(ip);
     }
+  }
+  while (globalFailures[0] && now - globalFailures[0] > GLOBAL_FAILURE_WINDOW_MS) {
+    globalFailures.shift();
   }
 }
 
@@ -38,27 +48,66 @@ router.post("/admin/login", async (req, res): Promise<void> => {
 
   cleanOldAttempts();
   const ip = getClientIp(req);
-  const state = loginAttempts.get(ip) ?? { count: 0, lockedUntil: 0 };
+  const now = Date.now();
+  const state = loginAttempts.get(ip) ?? {
+    failedAttempts: 0,
+    lockLevel: 0,
+    lockedUntil: 0,
+    lastFailureAt: now,
+  };
 
-  if (Date.now() < state.lockedUntil) {
-    const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000);
-    res.status(429).json({ error: `Too many attempts. Wait ${remaining}s.`, cooldownSeconds: remaining });
+  if (now < state.lockedUntil) {
+    const remaining = Math.ceil((state.lockedUntil - now) / 1000);
+    res.setHeader("Retry-After", String(remaining));
+    res.status(429).json({
+      error: "Too many login attempts. Please try again later.",
+      cooldownSeconds: remaining,
+    });
+    return;
+  }
+
+  if (now < globalLockedUntil) {
+    const remaining = Math.ceil((globalLockedUntil - now) / 1000);
+    res.setHeader("Retry-After", String(remaining));
+    res.status(429).json({
+      error: "Too many login attempts. Please try again later.",
+      cooldownSeconds: remaining,
+    });
     return;
   }
 
   const valid = await verifyAdminPassword(password);
   if (!valid) {
+    const failedAttempts = state.failedAttempts + 1;
+    const shouldLock = failedAttempts >= ATTEMPTS_PER_LOCK;
+    const lockLevel = shouldLock ? Math.min(state.lockLevel, LOCKOUT_SECONDS.length - 1) : state.lockLevel;
+    const lockSeconds = shouldLock ? LOCKOUT_SECONDS[lockLevel] : 0;
     const newState: AttemptState = {
-      count: state.count + 1,
-      lockedUntil: state.count + 1 >= MAX_ATTEMPTS ? Date.now() + COOLDOWN_MS : 0,
+      failedAttempts: shouldLock ? 0 : failedAttempts,
+      lockLevel: shouldLock ? Math.min(lockLevel + 1, LOCKOUT_SECONDS.length - 1) : lockLevel,
+      lockedUntil: shouldLock ? now + lockSeconds * 1000 : 0,
+      lastFailureAt: now,
     };
     loginAttempts.set(ip, newState);
-    const remaining = MAX_ATTEMPTS - newState.count;
-    if (remaining <= 0) {
-      res.status(429).json({ error: "Too many attempts. Locked for 5 minutes.", cooldownSeconds: 300 });
+    globalFailures.push(now);
+
+    if (globalFailures.length >= GLOBAL_FAILURE_LIMIT) {
+      globalLockedUntil = now + GLOBAL_LOCK_SECONDS * 1000;
+      globalFailures.length = 0;
+    }
+
+    if (shouldLock) {
+      res.setHeader("Retry-After", String(lockSeconds));
+      res.status(429).json({
+        error: "Too many login attempts. Please try again later.",
+        cooldownSeconds: lockSeconds,
+      });
       return;
     }
-    res.status(401).json({ error: "Wrong password", attemptsRemaining: remaining });
+    res.status(401).json({
+      error: "Invalid login details.",
+      attemptsRemaining: ATTEMPTS_PER_LOCK - failedAttempts,
+    });
     return;
   }
 
@@ -73,8 +122,8 @@ router.post("/admin/change-password", requireAdmin, async (req, res): Promise<vo
     res.status(400).json({ error: "Current and new password required" });
     return;
   }
-  if (newPassword.length < 6) {
-    res.status(400).json({ error: "New password must be at least 6 characters" });
+  if (newPassword.length < 12) {
+    res.status(400).json({ error: "New password must be at least 12 characters" });
     return;
   }
   const valid = await verifyAdminPassword(currentPassword);
