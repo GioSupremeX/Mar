@@ -84,6 +84,10 @@
   --surface-strong: rgba(255, 255, 255, 0.9);
   --control-bg: rgba(255, 255, 255, 0.78);
   --control-placeholder: rgba(123, 111, 163, 0.6);
+  --success-ink: #2f7a45;
+  --success-surface: rgba(144, 200, 144, 0.2);
+  --danger-ink: #c04444;
+  --danger-surface: rgba(244, 100, 100, 0.1);
 
   --background: 252 100% 98%;
   --foreground: 255 41% 20%;
@@ -136,6 +140,10 @@
   --surface-strong: rgba(42, 35, 72, 0.96);
   --control-bg: rgba(42, 35, 72, 0.92);
   --control-placeholder: rgba(209, 199, 239, 0.62);
+  --success-ink: #9ee6aa;
+  --success-surface: rgba(100, 190, 120, 0.16);
+  --danger-ink: #ffaaa8;
+  --danger-surface: rgba(244, 100, 100, 0.16);
 
   --background: 255 30% 8%;
   --foreground: 252 50% 93%;
@@ -173,6 +181,10 @@
 }
 
 .dark [style*="rgba(255,255,255"] {
+  background: var(--surface-strong) !important;
+}
+
+.dark [style*="rgba(255, 255, 255"] {
   background: var(--surface-strong) !important;
 }
 

@@ -6,10 +6,11 @@ import {
   useListGuestbookMessages, useDeleteGuestbookMessage, getListGuestbookMessagesQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Trash2, Edit, Upload, X, ChevronUp, ChevronDown } from "lucide-react";
+import { LogOut, Plus, Trash2, Edit, Upload, X, ChevronUp, ChevronDown, Moon, Sun } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useUpload } from "@workspace/object-storage-web";
+import { useDarkMode } from "@/components/DarkModeProvider";
 
 type Tab = "artworks" | "settings" | "content" | "guestbook" | "security";
 
@@ -17,6 +18,7 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [token, setToken] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("artworks");
+  const { theme, toggle } = useDarkMode();
 
   useEffect(() => {
     const t = localStorage.getItem("admin_token");
@@ -55,8 +57,17 @@ export default function AdminDashboard() {
             </button>
           ))}
         </nav>
+        <button
+          type="button"
+          onClick={toggle}
+          className="mt-8 flex items-center gap-2 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors px-4 py-2 text-sm rounded-xl hover:bg-[var(--surface-muted)]"
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+          {theme === "dark" ? "Light mode" : "Dark mode"}
+        </button>
         <button onClick={handleLogout}
-          className="mt-8 flex items-center gap-2 text-[var(--ink-muted)] hover:text-red-500 transition-colors px-4 py-2 text-sm rounded-xl hover:bg-red-50">
+          className="mt-2 flex items-center gap-2 text-[var(--ink-muted)] hover:text-[var(--danger-ink)] transition-colors px-4 py-2 text-sm rounded-xl hover:bg-[var(--danger-surface)]">
           <LogOut size={14} /> Logout
         </button>
       </aside>
@@ -192,7 +203,7 @@ function ArtworksPanel({ token }: { token: string }) {
                     <td className="p-4 text-[var(--ink-muted)] hidden md:table-cell">{art.category}</td>
                     <td className="p-4 text-right">
                        <button onClick={() => openEdit(art)} className="p-2 text-[var(--ink-muted)] hover:text-[var(--app-accent)] rounded-lg hover:bg-[var(--surface-strong)] transition-colors"><Edit size={14} /></button>
-                      <button onClick={() => { if (confirm("Delete?")) deleteArtwork.mutate({ id: art.id }, { onSuccess: () => queryClient.invalidateQueries({ queryKey: getListArtworksQueryKey() }) }); }} className="p-2 text-[var(--ink-muted)] hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => { if (confirm("Delete?")) deleteArtwork.mutate({ id: art.id }, { onSuccess: () => queryClient.invalidateQueries({ queryKey: getListArtworksQueryKey() }) }); }} className="p-2 text-[var(--ink-muted)] hover:text-[var(--danger-ink)] rounded-lg hover:bg-[var(--danger-surface)] transition-colors"><Trash2 size={14} /></button>
                     </td>
                   </tr>
                 ))}
@@ -292,7 +303,7 @@ function SettingsPanel({ token }: { token: string }) {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8"><h2 className="font-display text-3xl text-[var(--ink)]">Site Settings</h2><p className="text-sm text-[var(--ink-muted)] mt-0.5">What visitors see</p></div>
-      {saved && <div className="mb-5 glass-panel py-3 px-5 text-green-700 text-sm" style={{ background: "rgba(144,200,144,0.2)" }}>✓ Saved!</div>}
+      {saved && <div className="mb-5 glass-panel py-3 px-5 text-[var(--success-ink)] text-sm" style={{ background: "var(--success-surface)" }}>✓ Saved!</div>}
       <form onSubmit={save} className="glass-panel surface-panel p-8 space-y-6">
         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Artist Name</label><Input value={form.artistName} onChange={e => setForm({ ...form, artistName: e.target.value })} /></div>
         <div><label className="block text-xs font-medium text-[var(--ink-muted)] uppercase tracking-wider mb-1.5">Tagline</label><Input value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value })} /></div>
@@ -373,7 +384,7 @@ function SettingsPanel({ token }: { token: string }) {
               <div key={i} className="flex gap-2 items-center">
                  <Input value={s.value} onChange={e => updateStat(i, "value", e.target.value)} placeholder="100+" className="w-28" />
                  <Input value={s.label} onChange={e => updateStat(i, "label", e.target.value)} placeholder="artworks" className="flex-1" />
-                <button type="button" onClick={() => removeStat(i)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><X size={13} /></button>
+                 <button type="button" onClick={() => removeStat(i)} className="p-1.5 text-[var(--danger-ink)] hover:text-[var(--ink)] hover:bg-[var(--danger-surface)] rounded-lg"><X size={13} /></button>
               </div>
             ))}
           </div>
@@ -450,7 +461,7 @@ function ContentPanel({ token }: { token: string }) {
           {update.isPending ? "Saving..." : "Save All"}
         </button>
       </div>
-      {saved && <div className="mb-4 glass-panel py-3 px-5 text-green-700 text-sm" style={{ background: "rgba(144,200,144,0.2)" }}>✓ Saved!</div>}
+      {saved && <div className="mb-4 glass-panel py-3 px-5 text-[var(--success-ink)] text-sm" style={{ background: "var(--success-surface)" }}>✓ Saved!</div>}
 
       {/* Sub-nav */}
       <div className="flex gap-2 mb-6 flex-wrap">
@@ -518,7 +529,7 @@ function ContentPanel({ token }: { token: string }) {
                 <div key={i} className="p-4 bg-[var(--surface-muted)] rounded-2xl border border-[var(--glass-border)] space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-[var(--ink)]">Game {i + 1}</span>
-                    <button onClick={() => setGames(games.filter((_, idx) => idx !== i))} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={13} /></button>
+                    <button onClick={() => setGames(games.filter((_, idx) => idx !== i))} className="p-1 text-[var(--danger-ink)] hover:text-[var(--ink)] hover:bg-[var(--danger-surface)] rounded-lg"><Trash2 size={13} /></button>
                   </div>
                    <Input value={g.title} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, title: e.target.value } : g2))} placeholder="Game title" />
                    <Textarea value={g.description} onChange={e => setGames(games.map((g2, idx) => idx === i ? { ...g2, description: e.target.value } : g2))} placeholder="Description" className="resize-none h-16" />
@@ -611,7 +622,7 @@ function ListEditor<T extends object>({ title, description, items, setItems, new
               <button type="button" onClick={() => move(i, 1)} className="p-0.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-20" disabled={i === items.length - 1}><ChevronDown size={14} /></button>
             </div>
             <div className="flex-1">{renderItem(item, i, (updated) => setItems(items.map((x, idx) => idx === i ? updated : x)))}</div>
-            <button type="button" onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0 mt-0.5"><X size={13} /></button>
+            <button type="button" onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="p-1.5 text-[var(--danger-ink)] hover:text-[var(--ink)] hover:bg-[var(--danger-surface)] rounded-lg shrink-0 mt-0.5"><X size={13} /></button>
           </div>
         ))}
         {items.length === 0 && <p className="text-sm text-[var(--ink-muted)] text-center py-4">No items yet. Click Add to create one.</p>}
@@ -658,7 +669,13 @@ function SecurityPanel({ token }: { token: string }) {
       <div className="mb-8"><h2 className="font-display text-3xl text-[var(--ink)]">Security</h2><p className="text-sm text-[var(--ink-muted)] mt-0.5">Change your admin password</p></div>
        <form onSubmit={save} className="glass-panel surface-panel p-8 space-y-5">
         {status && (
-          <div className={`py-2.5 px-4 rounded-xl text-sm ${status.type === "ok" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
+          <div
+            className="py-2.5 px-4 rounded-xl text-sm"
+            style={{
+              background: status.type === "ok" ? "var(--success-surface)" : "var(--danger-surface)",
+              color: status.type === "ok" ? "var(--success-ink)" : "var(--danger-ink)",
+            }}
+          >
             {status.msg}
           </div>
         )}
@@ -693,7 +710,7 @@ function GuestbookPanel({ token }: { token: string }) {
                 <p className="text-[var(--ink)]/80 text-sm">{msg.message}</p>
               </div>
               <button onClick={() => { if (confirm("Delete?")) deleteMessage.mutate({ id: msg.id }, { onSuccess: () => queryClient.invalidateQueries({ queryKey: getListGuestbookMessagesQueryKey() }) }); }}
-                className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 shrink-0 transition-colors"><Trash2 size={14} /></button>
+                className="text-[var(--danger-ink)] hover:text-[var(--ink)] p-1.5 rounded-lg hover:bg-[var(--danger-surface)] shrink-0 transition-colors"><Trash2 size={14} /></button>
             </div>
           ))}
       </div>
