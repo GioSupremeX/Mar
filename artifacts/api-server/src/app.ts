@@ -38,8 +38,8 @@ app.use("/api", router);
 // Serve the static frontend files
 app.use(express.static(path.join(process.cwd(), "dist/public")));
 
-// Catch-all route so refreshing the page works (Express 5 Syntax)
-app.get("/(.*)", (req, res) => {
+// Catch-all route so refreshing the page works (Express 5 RegExp Syntax)
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(process.cwd(), "dist/public/index.html"));
 });
 // -----------------------------------------------
